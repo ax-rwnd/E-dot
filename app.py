@@ -2,13 +2,13 @@
 DATABASE = 'database.db'
 
 #mysql
-HOST=''
-PORT=''
-USER=''
-PASSWD=''
-SQLDB=''
+HOST='localhost'
+PORT=3306
+USER='axel'
+PASSWD='bollboll'
+SQLDB='edot'
 
-from flask import Flask, render_template, request, g #Web server
+from flask import Flask, render_template, request, g
 import sqlite3, MySQLdb #DB support
 
 app = Flask(__name__)
@@ -39,26 +39,16 @@ def teardown_request(exception):
 	if db is not None:
 		db.close()
 	else:
-		print "DB was null!"
+		print "DB was null, DB initialization failure?"
+
+##Register Blueprints Here
+
 
 #main page
 @app.route("/")
 def main():
-	t = ("*",)
-	try:
-		cur = g.db.execute('SELECT * FROM tbl1')
-		print cur.fetchall()
-	except Exception as e:
-		print e
 	return render_template("index.html")
 
-@app.route("/home")
-def home():
-	try:
-		print request.args.get('username') 
-	except Exception as e:
-		print e
-	return render_template("index.html")
 
 if __name__ == "__main__":
 	app.run(host='192.168.1.6', port=5000)
