@@ -11,7 +11,21 @@ SQLDB='edot'
 from flask import Flask, render_template, request, g
 import sqlite3, MySQLdb #DB support
 
+#child pages
+from login_page import login_page
+from account_page import account_page
+from catalogue_page import catalogue_page
+from signup_page import signup_page
+
+
 app = Flask(__name__)
+
+
+##Register Blueprints Here
+app.register_blueprint(login_page)
+app.register_blueprint(account_page)
+app.register_blueprint(catalogue_page)
+app.register_blueprint(signup_page)
 
 #returns a dabase connection for sqlite3
 def connect_to_database_sqlite3():
@@ -41,10 +55,6 @@ def teardown_request(exception):
 	else:
 		print "DB was null, DB initialization failure?"
 
-##Register Blueprints Here
-
-
-#main page
 @app.route("/")
 def main():
 	return render_template("index.html")
