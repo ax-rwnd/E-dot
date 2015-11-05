@@ -10,6 +10,12 @@ SQLDB='edot'
 
 from flask import Flask, render_template, request, g
 import sqlite3, MySQLdb #DB support
+import ssl
+
+def ready_ssl_context():
+	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+	context.load_cert_chain('edot.crt', 'edot.key')
+	return context;
 
 #child pages
 from login_page import login_page
@@ -61,4 +67,4 @@ def main():
 
 
 if __name__ == "__main__":
-	app.run(host='192.168.1.6', port=5000)
+	app.run(host='192.168.1.6', port=5000, ssl_context=ready_ssl_context())
