@@ -4,5 +4,5 @@ catalogue_page = Blueprint('catalogue_page', __name__, template_folder='template
 
 @catalogue_page.route("/catalogue")
 def show_catalogue():
-	print "In catalogue!"
+	#fetch items from catalogue to insert into template
 	return render_template("catalogue.html")

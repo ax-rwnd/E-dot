@@ -1,0 +1,127 @@
+-- MySQL dump 10.13  Distrib 5.5.46, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: edot
+-- ------------------------------------------------------
+-- Server version	5.5.46-0+deb8u1
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,ANSI' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table "category"
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE "category" (
+  "id" int(11) NOT NULL,
+  "name" varchar(32) NOT NULL,
+  PRIMARY KEY ("id")
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table "category"
+--
+
+INSERT INTO "category" VALUES (1,'ammunition');
+
+--
+-- Table structure for table "order"
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE "order" (
+  "id" int(11) NOT NULL,
+  "customer_id" int(11) NOT NULL,
+  "date" date NOT NULL,
+  PRIMARY KEY ("id"),
+  KEY "ordering_user_idx" ("customer_id"),
+  CONSTRAINT "ordering_user" FOREIGN KEY ("customer_id") REFERENCES "user" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table "order"
+--
+
+
+--
+-- Table structure for table "order_lines"
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE "order_lines" (
+  "prod_id" int(11) NOT NULL,
+  "order_id" int(11) NOT NULL,
+  KEY "prod_key_idx" ("prod_id"),
+  KEY "order_key_idx" ("order_id"),
+  CONSTRAINT "order_key" FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT "prod_key" FOREIGN KEY ("prod_id") REFERENCES "product" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table "order_lines"
+--
+
+
+--
+-- Table structure for table "product"
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE "product" (
+  "id" int(11) NOT NULL,
+  "name" varchar(45) NOT NULL,
+  "description" varchar(256) DEFAULT NULL,
+  "image_url" varchar(128) DEFAULT NULL,
+  "price" decimal(10,0) NOT NULL,
+  "cate_id" int(11) NOT NULL,
+  PRIMARY KEY ("id"),
+  KEY "cate_key_idx" ("cate_id"),
+  CONSTRAINT "cate_key" FOREIGN KEY ("cate_id") REFERENCES "category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table "product"
+--
+
+INSERT INTO "product" VALUES (4,'rock','a basic rock','/static/img/rock.png',5000,1);
+
+--
+-- Table structure for table "user"
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE "user" (
+  "username" varchar(16) NOT NULL,
+  "password" varchar(32) NOT NULL,
+  "email" varchar(45) DEFAULT NULL,
+  "id" int(11) NOT NULL,
+  PRIMARY KEY ("id")
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table "user"
+--
+
+INSERT INTO "user" VALUES ('axel','bollboll',NULL,1);
+INSERT INTO "user" VALUES ('kurt','aoeu1234',NULL,2);
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-11-05 19:48:17
