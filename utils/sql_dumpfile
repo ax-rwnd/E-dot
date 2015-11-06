@@ -104,7 +104,7 @@ INSERT INTO "product" VALUES (4,'rock','a basic rock','/static/img/rock.png',500
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE "user" (
   "username" varchar(16) NOT NULL,
-  "password" varchar(32) NOT NULL,
+  "password" varchar(128) NOT NULL,
   "email" varchar(45) DEFAULT NULL,
   "id" int(11) NOT NULL,
   PRIMARY KEY ("id")
@@ -115,7 +115,7 @@ CREATE TABLE "user" (
 -- Dumping data for table "user"
 --
 
-INSERT INTO "user" VALUES ('axel','bollboll',NULL,1);
+INSERT INTO "user" VALUES ('axel','pbkdf2:sha1:1000$MV7JxrC9$e0286128b6eea38bca5d7161764e118185f19942',NULL,1);
 INSERT INTO "user" VALUES ('kurt','aoeu1234',NULL,2);
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -124,4 +124,4 @@ INSERT INTO "user" VALUES ('kurt','aoeu1234',NULL,2);
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-05 19:48:17
+-- Dump completed on 2015-11-06  8:33:20
