@@ -12,16 +12,16 @@ def show_login_post():
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
 
+	#prepare query
 	name = (request.form['usertext'],)
 	password = (request.form['pwtext'],)
 	query = "select (password) from user where username = (%s);"
 
 	try :
-		cursor.execute(query,name)
-		if check_password_hash(cursor.fetchone()[0], password[0]):
-			return 'You have been logged in! \
-			<br/>Follow <a href="/">this</a> link to proceed.'
-			
+		if cursor.execute(query,name)>0:		
+			if check_password_hash(cursor.fetchone()[0], password[0]):
+				return 'You have been logged in! \
+				<br/>Follow <a href="/">this</a> link to proceed.'
 	except Exception as e:
 		print e
 	

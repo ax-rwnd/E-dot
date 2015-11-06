@@ -1,4 +1,3 @@
-import sqlite3, MySQLdb #DB support
 #sqlite3
 DATABASE = 'misc/database.db'
 
@@ -10,7 +9,7 @@ PASSWD='bollboll'
 SQLDB='edot'
 
 import ssl #ssl support
-def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
+def ready_ssl_context(cert='./misc/edot.crt', key='misc/edot.key'):
 	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 	context.load_cert_chain(cert, key)
 	return context;
@@ -18,22 +17,24 @@ def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 #flask app glue
 from flask import Flask, render_template, request, g
 
-#child pages
+#blueprint imports
 from login_page import login_page
 from account_page import account_page
 from catalogue_page import catalogue_page
 from signup_page import signup_page
 
-###
 ## Actually constructs the program!
 app = Flask(__name__)
-###
+##---------------------------------
 
 ##Register Blueprints Here
 app.register_blueprint(login_page)
 app.register_blueprint(account_page)
 app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
+
+#DB support
+import sqlite3, MySQLdb 
 
 #returns a dabase connection for sqlite3
 def connect_to_database_sqlite3():
@@ -63,6 +64,7 @@ def teardown_request(exception):
 	else:
 		print "DB was null, DB initialization failure?"
 
+#main website route
 @app.route("/")
 def main():
 	return render_template("index.html")
