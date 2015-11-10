@@ -34,6 +34,7 @@ tbl_category = "tbl_category"
 
 def main():
     print "E-dot commerce database tester...\n"
+    clear_database()
     add_testdata()
     print_database()  # Removing existing database if it already exists
     print "\nCompleted sucessfully"
@@ -42,11 +43,38 @@ def add_testdata():
     db = DBFUNC(SQLDB)
     print "Adding testdata"
     cursor = db.cursor()
-    cursor.execute("insert into " + tbl_user + " (username, password, email) VALUES ('kurt', 'pass', 'kurt@live.se');")
-    cursor.execute("insert into " + tbl_category + "(name) values ('weapons');")
-    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('rock', 'a hard thing', '/images/rock.png', '1337.0', 1);")
+    cursor.execute("insert into " + tbl_user + " (username, password, email) VALUES ('kurt', 'ollonmacka', 'kurt@live.se');")
+    cursor.execute("insert into " + tbl_user + " (username, password, email) VALUES ('axel', 'bollboll', 'axel@gmail.se');")
+     
+    cursor.execute("insert into " + tbl_category + "(name) values ('Fine Gravel');")
+    cursor.execute("insert into " + tbl_category + "(name) values ('Lag Gravel');")
+    cursor.execute("insert into " + tbl_category + "(name) values ('Plateau Gravel');")
+    cursor.execute("insert into " + tbl_category + "(name) values ('Pea Gravel');")
+    cursor.execute("insert into " + tbl_category + "(name) values ('Crushed Stone');")
+   
+    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('Gravel 2mm', 'Two millimeter fine gravel', '/images/fine1.png', '29.50', (SELECT id from tbl_category WHERE name='Fine Gravel'));")
+    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('Gravel 4mm', 'Four millimeter fine gravel', '/images/fine2.png', '99.90', (SELECT id from tbl_category WHERE name='Fine Gravel'));")
+    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('Granite', 'A common type of felsic intrusive igneous rock that is granular and phaneritic in texture.', '/images/granite.png', '995.90', (SELECT id from tbl_category WHERE name='Crushed Stone'));")
+    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('Limestone', 'A sedimentary rock composed largely of the minerals calcite and aragonite.', '/images/limestone.png', '1050.0', (SELECT id from tbl_category WHERE name='Crushed Stone'));")
+    cursor.execute("insert into " + tbl_product + "(name, description, image_url, price, cat_id) values ('Dolomite', 'An anhydrous carbonate mineral composed of calcium magnesium carbonate.', '/images/rock.png', '1250.0', (SELECT id from tbl_category WHERE name='Crushed Stone'));")
+    
     db.commit()
     db.close()
+    
+def clear_database():
+    db = DBFUNC(SQLDB)
+    print "Removing testdata"
+    cursor = db.cursor()
+    cursor.execute("delete from tbl_user;")
+    cursor.execute("delete from tbl_product;")
+    cursor.execute("delete from tbl_orderlines;")
+    cursor.execute("delete from tbl_order;")
+    cursor.execute("delete from tbl_category;")
+    print "Done"
+    db.commit()
+    db.close()   
+    
+    
 
 def print_database():
     db = DBFUNC(SQLDB)

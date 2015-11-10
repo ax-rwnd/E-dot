@@ -26,8 +26,27 @@
 		<h3>{{ catname }}</h3>
 		
 		<ul class="list-unstyled">
-		
+		{% for name in c %}
+		<a href="/catalogue/{{name}}">{{name}}</a><br>
+		{% endfor %}
 		</ul>
+
+		<table style="width:100%">
+		<tr>
+				<td>Name</td>
+				<td>Description</td>
+				<td>Price</td>
+			{% for product in p%}
+			</tr>
+			<br>
+			<tr>
+				<td>{{product[0]}}</td>
+				<td>{{product[1]}}</td>
+				<td>{{product[2]}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		
 
 		</body>
 </html>
