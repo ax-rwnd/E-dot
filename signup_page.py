@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, g
+from werkzeug.security import generate_password_hash
 
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
 
@@ -10,9 +11,9 @@ def show_signup():
 @signup_page.route("/signup", methods=['POST'])
 def show_signup_post():
 	db = getattr(g, 'db', None)
-	cursor = db.cursor()
+	fmt = getattr(g, 'fmt', None)
 
-	#automated policy check
+	#policy check
 	def password_policy(pwd):
 		if not pwd:
 			return False
@@ -30,19 +31,32 @@ def show_signup_post():
 		else:
 			return True
 
+	user = request.form['usertext']
+	email = request.form['emailtext']
+	passwd = request.form['pwtext']
+	repass = request.form['repwtext']
+
 	#validate form
-	if not request.form['usertext'] or len(request.form['usertext'])>16:
+	if not user or len(user)>16:
 		return 'Invalid username.<br/>Follow <a href="/signup">this</a> \
 			link to try again.'
-	elif request.form['emailtext'] and not email_validation(request.form['emailtext']):
+	elif email and not email_validation(email):
 		return 'Invalid e-mail, make sure you\'ve typed it in correctly.<br/> \
 			Follow <a href="/signup">this</a> link to try again.'
-	elif not password_policy(request.form['pwtext']):
+	elif not password_policy(passwd):
 		return 'Invalid password.<br/>Follow <a href="/signup">this</a> \
 			link to try again.'
-	elif not (request.form['pwtext'] == request.form['repwtext']):
+	elif not (passwd == repass):
 		return 'The passwords you entered did not match.<br/>Follow \
 			<a href="/signup">this</a> link to try again.'
 	else:
+		cursor = g.db.cursor()
+		if email:
+			data = (user, generate_password_hash(passwd), email)
+		else:
+			data = (user, generate_password_hash(passwd))
+
+		cursor.execute ("INSERT INTO user (username, password"+("" if not email else ", email")+ ") values ("+fmt+", "+fmt+("" if not email else ", "+fmt)+");", data)
+		db.commit()
 		#TODO: add real behavior here!
 		return 'Registration okay!'

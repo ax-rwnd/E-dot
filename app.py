@@ -1,5 +1,5 @@
 #sqlite3
-DATABASE = 'misc/database.db'
+DATABASE = 'misc/sql_dumpfile.db'
 
 #mysql
 HOST='localhost'
@@ -8,8 +8,11 @@ USER='axel'
 PASSWD='bollboll'
 SQLDB='edot'
 
+#SSL-enabled?
+USE_SSL=False
+
 import ssl #ssl support
-def ready_ssl_context(cert='./misc/edot.crt', key='misc/edot.key'):
+def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 	context.load_cert_chain(cert, key)
 	return context;
@@ -38,10 +41,14 @@ import sqlite3, MySQLdb
 
 #returns a dabase connection for sqlite3
 def connect_to_database_sqlite3():
+	#alleviates formatting issues between backends
+	g.fmt = '?'
 	return sqlite3.connect(DATABASE)
 
 #returns a database connection for MySQL
 def connect_to_database_mysql():
+	#alleviates formatting issues between backends
+	g.fmt = '%s'
 	return MySQLdb.connect(host=HOST, port=PORT, user=USER, passwd=PASSWD, db=SQLDB)
 
 #set this line to define database connection
@@ -71,4 +78,8 @@ def main():
 
 
 if __name__ == "__main__":
-	app.run(host='192.168.1.6', port=5000, debug=True, ssl_context=ready_ssl_context())
+	if USE_SSL:
+		app.run(host='192.168.1.6', port=5000, debug=True, ssl_context=ready_ssl_context())
+	else:
+		app.run(host='192.168.1.6', port=5000, debug=True)
+		

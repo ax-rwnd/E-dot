@@ -15,7 +15,7 @@ def show_login_post():
 	#prepare query
 	name = (request.form['usertext'],)
 	password = (request.form['pwtext'],)
-	query = "select (password) from user where username = (%s);"
+	query = "select (password) from user where username = ("+g.fmt+");"
 
 	try :
 		if cursor.execute(query,name)>0:		
