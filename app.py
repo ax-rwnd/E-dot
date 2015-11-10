@@ -1,16 +1,3 @@
-#sqlite3
-#DATABASE = 'misc/sql_dumpfile.db'
-
-#mysql
-HOST='localhost'
-PORT=3306
-USER='axel'
-PASSWD='bollboll'
-SQLDB='edot'
-
-#SSL-enabled?
-USE_SSL=False
-
 import ssl #ssl support
 def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
@@ -19,7 +6,8 @@ def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 
 #flask app glue
 from flask import Flask, render_template, request, g
-from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager, UserMixin
+from config import config
 
 #blueprint imports
 from login_page import login_page
@@ -40,19 +28,18 @@ app.register_blueprint(signup_page)
 #DB support
 import MySQLdb #sqlite3
 
-"""
-#returns a dabase connection for sqlite3
-def connect_to_database_sqlite3():
-	#alleviates formatting issues between backends
-	g.fmt = '?'
-	return sqlite3.connect(DATABASE)
-"""
+#login management support
+try:
+	#setup login manager
+	login_manager = LoginManager()
+	login_manager.init_app(app)
+	login_manager.user_callback = UserMixin
+except Exception as e:
+	print e
 
 #returns a database connection for MySQL
 def connect_to_database_mysql():
-	#alleviates formatting issues between backends
-	#g.fmt = '%s'
-	return MySQLdb.connect(host=HOST, port=PORT, user=USER, passwd=PASSWD, db=SQLDB)
+	return MySQLdb.connect(host=config['HOST'], port=config['PORT'], user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'])
 
 #set this line to define database connection
 DBFUNC = connect_to_database_mysql
@@ -61,9 +48,11 @@ DBFUNC = connect_to_database_mysql
 @app.before_request
 def before_request():
 	try:
+		#setup DB
 		g.db = DBFUNC()
 	except Exception as e:
 		print e
+	
 
 ##Kill DB connection
 @app.teardown_request
@@ -81,8 +70,6 @@ def main():
 
 
 if __name__ == "__main__":
-	if USE_SSL:
-		app.run(host='192.168.1.6', port=5000, debug=True, ssl_context=ready_ssl_context())
-	else:
-		app.run(host='192.168.1.6', port=5000, debug=True)
+	context = None if not config['USE_SSL'] else ready_ssl_context()
+	app.run(host='192.168.1.6', port=5000, debug=True, ssl_context=context)
 		
