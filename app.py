@@ -1,5 +1,5 @@
 #sqlite3
-DATABASE = 'misc/sql_dumpfile.db'
+#DATABASE = 'misc/sql_dumpfile.db'
 
 #mysql
 HOST='localhost'
@@ -19,6 +19,7 @@ def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 
 #flask app glue
 from flask import Flask, render_template, request, g
+from flask.ext.login import LoginManager
 
 #blueprint imports
 from login_page import login_page
@@ -37,18 +38,20 @@ app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
 
 #DB support
-import sqlite3, MySQLdb 
+import MySQLdb #sqlite3
 
+"""
 #returns a dabase connection for sqlite3
 def connect_to_database_sqlite3():
 	#alleviates formatting issues between backends
 	g.fmt = '?'
 	return sqlite3.connect(DATABASE)
+"""
 
 #returns a database connection for MySQL
 def connect_to_database_mysql():
 	#alleviates formatting issues between backends
-	g.fmt = '%s'
+	#g.fmt = '%s'
 	return MySQLdb.connect(host=HOST, port=PORT, user=USER, passwd=PASSWD, db=SQLDB)
 
 #set this line to define database connection

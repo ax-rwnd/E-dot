@@ -11,7 +11,7 @@ def show_signup():
 @signup_page.route("/signup", methods=['POST'])
 def show_signup_post():
 	db = getattr(g, 'db', None)
-	fmt = getattr(g, 'fmt', None)
+	#fmt = getattr(g, 'fmt', None)
 
 	#policy check
 	def password_policy(pwd):
@@ -56,7 +56,7 @@ def show_signup_post():
 		else:
 			data = (user, generate_password_hash(passwd))
 
-		cursor.execute ("INSERT INTO user (username, password"+("" if not email else ", email")+ ") values ("+fmt+", "+fmt+("" if not email else ", "+fmt)+");", data)
+		cursor.execute ("INSERT INTO user (username, password"+("" if not email else ", email")+ ") values (%s, %s" + ("" if not email else ", %s")+");", data)
 		db.commit()
 		#TODO: add real behavior here!
 		return 'Registration okay!'
