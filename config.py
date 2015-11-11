@@ -10,7 +10,7 @@ config = dict(
 	PORT=3306,
 	USER='axel',
 	PASSWD='bollboll',
-	SQLDB='edot',
+	SQLDB='db_edot',
 
 	#SSL-enabled?
 	USE_SSL=False

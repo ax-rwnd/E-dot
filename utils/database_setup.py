@@ -48,6 +48,8 @@ def create_category_tbl():
     print "Creating table", tbl_category
     query = "create table " + tbl_category + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(32));"
     cursor.execute(query)
+
+    db.commit()
     db.close()
 
 def create_product_tbl():
@@ -59,6 +61,8 @@ def create_product_tbl():
     
     query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id);"
     cursor.execute(query)
+
+    db.commit()
     db.close()
 
 def create_orderlines_tbl():
@@ -73,6 +77,7 @@ def create_orderlines_tbl():
     
     query = "alter table "+tbl_orderlines +" add CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES "+tbl_order+"(id);"
     cursor.execute(query)
+    db.commit()
     db.close()
 
 def create_order_tbl():
@@ -83,6 +88,8 @@ def create_order_tbl():
     cursor.execute(query)
     query = "alter table "+ tbl_order+" add CONSTRAINT customer_id FOREIGN KEY (id) REFERENCES "+tbl_user+"(id);"
     cursor.execute(query)
+
+    db.commit()
     db.close()
 
 def create_user_tbl():
@@ -91,6 +98,8 @@ def create_user_tbl():
     print "Creating table", tbl_user
     query = "create table "+ tbl_user+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, username VARCHAR(16), password VARCHAR(128), email VARCHAR(32));"
     cursor.execute(query)
+
+    db.commit();
     db.close()
 
 def create_db():
@@ -99,6 +108,8 @@ def create_db():
     print "Creating database", DATABASE
     query = "create database " + DATABASE + ";"
     cursor.execute(query)
+
+    db.commit();
     db.close()
 
 def remove_db():
@@ -114,7 +125,7 @@ def remove_db():
             query = "drop database " + DATABASE + ";"
             cursor.execute(query)
             break
-
+    db.commit();
     db.close()
 
 
