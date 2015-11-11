@@ -2,7 +2,6 @@
 from flask import Flask, render_template, request, g
 from flask.ext.login import LoginManager, UserMixin
 from config import config
-#from user import user
 
 #blueprint imports
 from login_page import login_page
@@ -18,6 +17,7 @@ import ssl
 
 # Initiate flask 'app'
 app = Flask(__name__)
+app.secret_key = config['HOSTKEY']
 
 ##Register Blueprints Here
 app.register_blueprint(login_page)
@@ -26,13 +26,21 @@ app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
 
 #login management support
+"""
 try:
 	#setup login manager
 	login_manager = LoginManager()
 	login_manager.init_app(app)
-	login_manager.user_callback = UserMixin
+	login_manager.user_callback = UserMixin 
 except Exception as e:
 	print e
+"""
+#@login_manager.user_loader
+#def user_loader(user_id):
+#	return g.db.
+
+def load_user(user_id):
+	return UserMixin.get(user_id)
 
 #returns a database connection for MySQL
 def connect_to_database_mysql():

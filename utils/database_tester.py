@@ -3,18 +3,14 @@ DATABASE = 'db_edot'
 # mysql
 HOST = 'localhost'
 PORT = 3306
-USER = 'root'
-PASSWD = ''
+USER = 'axel'
+PASSWD = 'bollboll'
 SQLDB = 'db_edot'
 from flask import Flask, render_template, request, g
 app = Flask(__name__)
 
 # DB support
-import sqlite3, MySQLdb
-
-# returns a dabase connection for sqlite3
-def connect_to_database_sqlite3():
-    return sqlite3.connect(DATABASE)
+import MySQLdb
 
 # returns a database connection for MySQL
 def connect_to_database_mysql(database=None):

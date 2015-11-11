@@ -56,7 +56,6 @@ def show_signup_post():
 		else:
 			data = (user, generate_password_hash(passwd))
 
-		cursor.execute ("INSERT INTO user (username, password"+("" if not email else ", email")+ ") values (%s, %s" + ("" if not email else ", %s")+");", data)
+		cursor.execute ("INSERT INTO tbl_user (username, password"+("" if not email else ", email")+ ") values (%s, %s" + ("" if not email else ", %s")+");", data)
 		db.commit()
-		#TODO: add real behavior here!
 		return 'Registration okay!'
