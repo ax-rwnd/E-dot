@@ -19,8 +19,8 @@ def show_catalogue(catname):
 def read_products(catname):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select product.name, description, price from tbl_product join\
-		category on tbl_product.cat_id = tbl_category.id where tbl_category.name = %s;")
+	query = ("select tbl_product.name, description, price from tbl_product join\
+		tbl_category on tbl_product.cat_id = tbl_category.id where tbl_category.name = %s;")
 	data = (catname,)
 	cursor.execute(query, data)
 	prod = []

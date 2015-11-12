@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basket</title>
+		<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+		<link href="../static/favicon.ico" rel="shortcut icon" />
+	</head>
+	<body>
+	    <div class="container">
+		<div class="header">
+		    <nav>
+			<ul class="nav nav-pills pull-right">
+			    <li role="presentation"><a href="/">Home</a>
+			    </li>
+			    <li role="presentation"><a href="catalogue">Catalogue</a>
+			    </li>
+			    {% if not current_user.is_authenticated %}
+				<li role="presentation"><a href="login">Sign In</a>
+			    {% else %}
+				<li role="presentation"><a href="logout">Sign Out</a>
+			    {% endif %}
+			    </li>
+			    <li role="presentation"><a href="signup">Sign Up</a>
+			    </li>
+			</ul>
+		    </nav>
+		    <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
+		</div>
+
+		<h2>Basket</h2>
+		<p>These products are in your basket.</p>
+		<div class = "table-responsive">
+			<table class="table">
+				<thead>
+				<tr>
+					<th>Product</th>
+					<th>Price</th>
+					<th>Amount</th>
+				</tr>
+				</thead>
+				<tbody>
+					{% for prod in plist %}
+					<tr>
+						<td>{{prod.name}}</td>
+						<td>{{prod.price}}</td>
+						<td>{{prod.amount}}</td>
+					</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+		</div>
+		</body>
+</html>
+	

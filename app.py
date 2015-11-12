@@ -4,13 +4,14 @@ from flask.ext.login import LoginManager, UserMixin, current_user
 from config import config
 
 #for user session management
-from user import  User #load_user,
+from user import  User
 
 #blueprint imports
 from login_page import login_page, logout_page
 from account_page import account_page
 from catalogue_page import catalogue_page
 from signup_page import signup_page
+from basket_page import basket_page
 
 #DB support
 import MySQLdb
@@ -27,6 +28,7 @@ app.register_blueprint(login_page)
 app.register_blueprint(account_page)
 app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
+app.register_blueprint(basket_page)
 
 #login management support
 try:
