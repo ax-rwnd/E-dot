@@ -36,8 +36,13 @@
         <div class="jumbotron">
             <h1>e-dot Web Store</h1>
             <p class="lead"></p>
-            <p><a class="btn btn-lg btn-success" href="/login" role="button">Sign In to Start Shopping!</a>
-            <p><a class="btn btn-default" href="/catalogue" role="button">Browse Catalogue</a>
+	    {% if not current_user.is_authenticated %}
+	            <p><a class="btn btn-lg btn-success" href="/login" role="button">Sign In to Start Shopping!</a>
+        	    <p><a class="btn btn-default" href="/catalogue" role="button">Browse Catalogue</a>
+	    {% else %}
+	            <p><a class="btn btn-lg btn-info" href="/catalogue" role="button">Start Shopping!</a>
+	    {% endif %}
+	    	    
             </p>
         </div>
 
