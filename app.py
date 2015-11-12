@@ -1,10 +1,13 @@
 #flask app glue
 from flask import Flask, render_template, request, g
-from flask.ext.login import LoginManager, UserMixin
+from flask.ext.login import LoginManager, UserMixin, current_user
 from config import config
 
+#for user session management
+from user import  User #load_user,
+
 #blueprint imports
-from login_page import login_page
+from login_page import login_page, logout_page
 from account_page import account_page
 from catalogue_page import catalogue_page
 from signup_page import signup_page
@@ -26,21 +29,16 @@ app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
 
 #login management support
-"""
 try:
 	#setup login manager
 	login_manager = LoginManager()
 	login_manager.init_app(app)
-	login_manager.user_callback = UserMixin 
 except Exception as e:
 	print e
-"""
-#@login_manager.user_loader
-#def user_loader(user_id):
-#	return g.db.
 
-def load_user(user_id):
-	return UserMixin.get(user_id)
+@login_manager.user_loader
+def load_user(userid):
+	return User(userid)
 
 #returns a database connection for MySQL
 def connect_to_database_mysql():

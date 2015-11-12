@@ -15,7 +15,11 @@
 			    </li>
 			    <li role="presentation"><a href="catalogue">Catalogue</a>
 			    </li>
-			    <li role="presentation" class="active"><a href="login">Sign In</a>
+			    {% if not current_user.is_authenticated %}
+				<li role="presentation"><a href="login">Sign In</a>
+			    {% else %}
+				<li role="presentation"><a href="logout">Sign Out</a>
+			    {% endif %}
 			    </li>
 			    <li role="presentation"><a href="signup">Sign Up</a>
 			    </li>
@@ -24,6 +28,21 @@
 		    <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
 		</div>
 		
+		<form>
+			<div class="form-group">
+			<label for="usertext">Username</label>
+			 <input type="text" class="form-control" id="usertext">
+			</div>
+			<div class="form-group">
+			<label for="pwtext">Password</label>
+			 <input type="password" class="form-control" id="pwtext">
+			</div>
+			<input type="submit" name="my-form" value="Send">
+			  <button type="submit" name="my-form2" class="btn btn-default" value="Send">Submit</button>
+
+		</form>
+
+		<!--
 		<center>
 		<form action="/login" method="POST">
 		<p>Username:</p>
@@ -37,6 +56,7 @@
 		<input type="submit" name="my-form" value="Send">
 		</form>
 		</center>
+		-->
 		</body>
 </html>
 	

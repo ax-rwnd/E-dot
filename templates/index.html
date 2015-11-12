@@ -19,7 +19,11 @@
                     </li>
                     <li role="presentation"><a href="catalogue">Catalogue</a>
                     </li>
-                    <li role="presentation"><a href="login">Sign In</a>
+		    {% if not current_user.is_authenticated %}
+	                <li role="presentation"><a href="login">Sign In</a>
+		    {% else %}
+	                <li role="presentation"><a href="logout">Sign Out</a>
+		    {% endif %}
                     </li>
                     <li role="presentation"><a href="signup">Sign Up</a>
                     </li>
@@ -32,7 +36,7 @@
         <div class="jumbotron">
             <h1>e-dot Web Store</h1>
             <p class="lead"></p>
-            <p><a class="btn btn-lg btn-success" href="/login" role="button">Log In to Start Shopping!</a>
+            <p><a class="btn btn-lg btn-success" href="/login" role="button">Sign In to Start Shopping!</a>
             <p><a class="btn btn-default" href="/catalogue" role="button">Browse Catalogue</a>
             </p>
         </div>
@@ -60,7 +64,11 @@
 
         <footer class="footer">
 	<center>
-            <p>This webstore is running free software.</p>
+            <p>
+	    This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and 
+	    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a>.
+	    </p>
+	    
 	</center>
         </footer>
 

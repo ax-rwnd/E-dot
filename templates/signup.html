@@ -15,7 +15,11 @@
 			    </li>
 			    <li role="presentation"><a href="catalogue">Catalogue</a>
 			    </li>
-			    <li role="presentation"><a href="login">Sign In</a>
+			    {% if not current_user.is_authenticated %}
+				<li role="presentation"><a href="login">Sign In</a>
+			    {% else %}
+				<li role="presentation"><a href="logout">Sign Out</a>
+			    {% endif %}
 			    </li>
 			    <li role="presentation" class="active"><a href="signup">Sign Up</a>
 			    </li>
