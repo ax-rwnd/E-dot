@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, g
+from itertools import product
 
 catalogue_page = Blueprint('catalogue_page', __name__, template_folder='templates')
 
@@ -15,6 +16,23 @@ def show_catalogue(catname):
 	cats = read_categories()
 	return render_template("catalogue.html", catname=catname, c = cats, p = products)
 
+@catalogue_page.route("/catalogue/<catname>/<prodname>")
+def show_product(catname, prodname):
+	product_info = read_product_info(prodname)
+	cats = read_categories()
+	return render_template("catalogue.html", catname=catname, c = cats, prod = product_info)
+
+def read_product_info(prodname):
+	db = getattr(g, 'db', None)
+	cursor = db.cursor()
+	query = ("select name, description, price from tbl_product where name = %s;")
+	data = (prodname,)
+	cursor.execute(query, data)
+	
+	prod_info = cursor.fetchone()
+	
+	return prod_info
+
 #Read products from catalogue where catname is correct
 def read_products(catname):
 	db = getattr(g, 'db', None)
@@ -26,7 +44,6 @@ def read_products(catname):
 	prod = []
 		
 	for x in cursor:
-		print x
 		prod.append(x)
 	
 	return prod
