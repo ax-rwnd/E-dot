@@ -42,9 +42,9 @@
 				<tbody>
 					{% for prod in plist %}
 					<tr>
-						<td>{{prod.name}}</td>
-						<td>{{prod.price}}</td>
-						<td>{{prod.amount}}</td>
+						{% for elem in prod %}
+						<td>{{elem}}</td>
+						{% endfor %}
 					</tr>
 					{% endfor %}
 
