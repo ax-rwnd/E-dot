@@ -49,6 +49,8 @@ def show_basket():
 		with db as cursor:
 			cursor.execute(query,data)
 			res = cursor.fetchone()
+
+			#fill temporary object with data
 			tmp = prod()
 			tmp.name = res[0]
 			tmp.url = res[1]
