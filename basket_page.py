@@ -26,7 +26,7 @@ def show_basket():
 			data = (tup[0],)
 			cursor.execute(query,data)
 			ret = cursor.fetchone()
-			return (ret[0], ret[1], tup[1])
+			return (ret[0], ret[1], tup[1], ret[2])
 
 	return render_template("basket.html", plist = map(resolve, prods))
 

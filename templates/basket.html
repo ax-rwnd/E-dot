@@ -42,16 +42,17 @@
 				<tbody>
 					{% for prod in plist %}
 					<tr>
-						{% for elem in prod %}
+						{% for elem in prod[0:3] %}
 						<td>{{elem}}</td>
 						{% endfor %}
+						<td><img src="{{prod[3]}}" /></td>
 					</tr>
 					{% endfor %}
 
 				</tbody>
 			</table>
 		</div>
-	            <p><a class="btn btn-success" href="/" role="button">Start Shopping!</a>
+	            <p><a class="btn btn-success" href="/" role="button">Place Order</a>
 		</body>
 </html>
 	
