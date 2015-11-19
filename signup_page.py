@@ -58,4 +58,5 @@ def show_signup_post():
 
 		cursor.execute ("INSERT INTO tbl_user (username, password"+("" if not email else ", email")+ ") values (%s, %s" + ("" if not email else ", %s")+");", data)
 		db.commit()
-		return 'Registration okay!'
+		return 'Registration okay!\
+			<br/>Follow <a href="/">this</a> link to proceed.'

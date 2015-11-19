@@ -8,6 +8,30 @@ basket_page = Blueprint('basket_page', __name__, template_folder='templates')
 def show_basket():
 	db = getattr(g, 'db', None)
 	orderlist = {} 
+
+	#select all basketed products and amounts for this user
+	with db as cursor:
+		query = "select prod_id, amount from tbl_basketlines where user_id = %s;"
+		data = (current_user.uid,)
+		cursor.execute(query,data)
+		prods = cursor.fetchall()
+
+	#sample insert into basketlines
+	#insert into tbl_basketlines (user_id, prod_id, amount) values ((select id from tbl_user where id=4), (select id from tbl_product where id=1), 1);
+
+	#resolve name, price and amount
+	def resolve(tup):
+		with db as cursor:
+			query = "select name, price, image_url from tbl_product where id = %s;"
+			data = (tup[0],)
+			cursor.execute(query,data)
+			ret = cursor.fetchone()
+			return (ret[0], ret[1], tup[1], ret[2])
+
+	return render_template("basket.html", plist = map(resolve, prods))
+
+	"""
+	return ""
 	
 
 	#get orders placed by this user
@@ -49,6 +73,8 @@ def show_basket():
 		with db as cursor:
 			cursor.execute(query,data)
 			res = cursor.fetchone()
+
+			#fill temporary object with data
 			tmp = prod()
 			tmp.name = res[0]
 			tmp.url = res[1]
@@ -57,3 +83,4 @@ def show_basket():
 			prodlist += [tmp]
 	
 	return render_template("basket.html", plist = prodlist)
+	"""

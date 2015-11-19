@@ -1,4 +1,3 @@
-DATABASE = 'db_edot'
 
 # mysql
 HOST = 'localhost'
@@ -6,6 +5,8 @@ PORT = 3306
 USER = 'axel'
 PASSWD = 'bollboll'
 SQLDB = 'db_edot'
+DATABASE = SQLDB
+
 from flask import Flask, render_template, request, g
 app = Flask(__name__)
 
@@ -25,6 +26,7 @@ DBFUNC = connect_to_database_mysql
 tbl_user = "tbl_user"
 tbl_product = "tbl_product"
 tbl_orderlines = "tbl_orderlines"
+tbl_basketlines = "tbl_basketlines"
 tbl_order = "tbl_order"
 tbl_category = "tbl_category"
 
@@ -39,6 +41,7 @@ def main():
     create_product_tbl()
     create_order_tbl()
     create_orderlines_tbl()
+    create_basketlines_tbl()
     
     print "Completed sucessfully"
         
@@ -76,6 +79,22 @@ def create_orderlines_tbl():
     cursor.execute(query)
     
     query = "alter table "+tbl_orderlines +" add CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES "+tbl_order+"(id);"
+    cursor.execute(query)
+    db.commit()
+    db.close()
+
+
+def create_basketlines_tbl():
+    db = DBFUNC(SQLDB)
+    cursor = db.cursor()
+    print "Creating table", tbl_basketlines
+    query = "create table "+ tbl_basketlines +" (user_id INT(11) UNSIGNED, prod_id INT(11) UNSIGNED, amount INT(11) UNSIGNED);"
+    cursor.execute(query)
+    
+    query = "alter table "+tbl_basketlines + " add CONSTRAINT fk_basket_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
+    cursor.execute(query)
+    
+    query = "alter table "+tbl_basketlines +" add CONSTRAINT fk_basket_user FOREIGN KEY (user_id) REFERENCES "+tbl_user+"(id);"
     cursor.execute(query)
     db.commit()
     db.close()
