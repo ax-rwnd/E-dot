@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Content Management</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="\static/favicon.ico" rel="shortcut icon"/>
+    <link href="\static/style.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script>
+      $(document).on('change', '.btn-file :file', function() {
+      var input = $(this),
+          numFiles = input.get(0).files ? input.get(0).files.length : 1,
+          label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.trigger('fileselect', [numFiles, label]);
+    });
+
+    $(document).ready( function() {
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }
+
+        });
+    });
+
+
+
+    </script>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                <li role="presentation"><a href="/">Home</a></li>
+                <li role="presentation"><a href="/catalogue">Catalogue</a></li>
+                {%if not current_user.is_authenticated%}
+                <li role="presentation"><a href="/login">Sign In</a> {%else%}
+                <li role="presentation"><a href="/logout">Sign Out</a>
+                    {%endif%}
+                </li>
+                <li role="presentation"><a href="/signup">Sign Up</a></li>
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+
+    <div id="categories">
+        <h3>Content Management</h3>
+        <ul class="list-unstyled">
+            <a href="/cms/Add Category">Add Category</a>
+            <br>
+            <a href="/cms/Remove Category">Remove Category</a>
+            <br>
+            <a href="/cms/Add Product">Add Product</a>
+            <br>
+            <a href="/cms/Remove Product">Remove Product</a>
+            <br>
+            <a href="/cms/Front Page">Front Page</a>
+            <br>
+            <a href="/cms/Color Scheme">Color Scheme</a>
+        </ul>
+    </div>
+
+    <div id="products">
+        {% if editname == "Add Category" %}
+        <form id="input" action="/cms/Add Category" method="POST">
+            <fieldset>
+                <legend>Add Category</legend>
+                <ol>
+                    <li><label for=cat>Category Name</label> <input id=catname
+                                                                    name=catname type=text placeholder="Category Name"
+                                                                    required>
+                    </li>
+                </ol>
+            </fieldset>
+            <br>
+            <fieldset>
+                <button name="button" value="addcat" type=submit>Add
+                    Category
+                </button>
+            </fieldset>
+        </form>
+        <br> <br>
+        {%elif editname =="Remove Category"%}
+        <form id="input" action="/cms/Remove Category" method="POST">
+            <fieldset>
+                <legend>Remove Category</legend>
+                <ol>
+                    <li><label for=cat>Category Name</label> <select
+                            name=removecat placeholder="Select Category" required>
+                        <option value="" disabled selected hidden>Select
+                            Category
+                        </option>
+                        {%for c in cats%}
+                        <option value="{{c}}">{{c}}</option>
+                        {% endfor %}
+                    </select><br></li>
+                </ol>
+            </fieldset>
+            <br>
+            <fieldset>
+                <button name="button" value="removecat" type=submit>Remove
+                    Category
+                </button>
+            </fieldset>
+        </form>
+        {% elif editname == "Add Product" %}
+        <form id="input" action="/cms/Add Product" method="POST" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Add Product</legend>
+                <ol>
+                    <li><label for=prodname>Product Name:</label> <input
+                            id=prodname name=prodname type=text placeholder="Product Name"
+                            required></li>
+                    <li><label for=prodprice>Product Price:</label> <input
+                            id=prodprice name=prodprice type=text placeholder="Product Price"
+                            required> <br></li>
+                    <li><label for=proddesc>Description:</label> <textarea
+                            id=proddesc name=proddesc style="resize: none" rows=4
+                            cols="38" placeholder="Product Description" required></textarea>
+                    </li>
+                    <li><label for=prodcat>Category:</label> <select name=prodcat
+                                                                     placeholder="Select Category" required>
+                        <option value="" disabled selected hidden>Select
+                            Category
+                        </option>
+                        {%for c in cats%}
+                        <option value="{{c}}">{{c}}</option>
+                        {% endfor %}
+                    </select><br></li>
+                    <li><label>Image:</label>
+                        <br> <br>
+                        <div class="input-group">
+								<span class="input-group-btn"> <span
+                                        class="btn btn-primary btn-file"> Browse Image&hellip; <input
+                                        type="file" id="prodfile" name="prodfile" accept="image/*">
+								</span>
+								</span> <input type="text" class="form-control" readonly>
+                        </div>
+                    </li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit>Add Product</button>
+            </fieldset>
+        </form>
+        {% elif editname == "Remove Product" %}
+        <form id="input" action="/cms/Remove Product" method="POST">
+            <fieldset>
+                <legend>Remove Product</legend>
+                <ol>
+                    <li><label for=cat>Product Name</label> <select id="removeprod" name="removeprod"
+                                                                    placeholder="Select Category" required>
+                        <option value="" disabled selected hidden>Select
+                            Product
+                        </option>
+                        {% for p in prod%}
+                        <option value="{{p}}">{{p}}</option>
+                        {%endfor%}
+                    </select></li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit>Remove Product</button>
+            </fieldset>
+        </form>
+        {% elif editname == "Front Page" %} Edit frontpage information here
+        {% elif editname == "Color Scheme" %} Edit website color scheme here
+        {% endif %}
+    </div>
+</body>
+</html>
+
