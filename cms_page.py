@@ -40,6 +40,12 @@ def add_product():
 	prodcat = request.form['prodcat']
 	prodfile = request.files['prodfile']
 	produrl = ""
+
+	existing_products = read_products()
+	cats = read_categories()
+	if prodname in existing_products:
+		return render_template("cms.html", editname = "Add Product", cats = cats, ins = "error")
+
 	if prodfile and allowed_file(prodfile.filename) and not os.path.isfile(config['UPLOAD_FOLDER'] + "/" + prodfile.filename):
 		# Make the filename safe, remove unsupported chars
 		filename = secure_filename(prodfile.filename)
@@ -56,8 +62,7 @@ def add_product():
 			db.commit()
 	except Exception as e:
 		print e
-	cats = read_categories()
-	return render_template("cms.html", editname = "Add Product", cats = cats)
+	return render_template("cms.html", editname = "Add Product", cats = cats, ins = "success")
 
 
 @cms_page.route("/cms/Remove Product", methods=['POST'])
@@ -84,7 +89,7 @@ def remove_product():
     except Exception as e:
         print e
     p = read_products()
-    return render_template("cms.html", editname = "Remove Product", prod = p)
+    return render_template("cms.html", editname = "Remove Product", prod = p, ins = "success")
 
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
@@ -92,7 +97,7 @@ def add_category():
 	catname = request.form['catname']
 	cats = read_categories()
 	if catname in cats:
-		print "Category Already Exists"
+		return render_template("cms.html", editname = "Add Category", ins = "error")
 	else:
 		db = getattr(g, 'db', None)
 		try:
@@ -103,7 +108,7 @@ def add_category():
 		except Exception as e:
 			print e
 
-	return render_template("cms.html", editname = "Add Category")
+	return render_template("cms.html", editname = "Add Category", ins = "success")
 
 
 @cms_page.route("/cms/Remove Category", methods=['POST'])
@@ -119,7 +124,7 @@ def remove_category():
 		print e
 
 	cats = read_categories()
-	return render_template("cms.html", editname = "Remove Category", cats=cats)
+	return render_template("cms.html", editname = "Remove Category", cats=cats, ins = "success")
 
 # Read categories fom database and returm them as a list
 def read_categories():

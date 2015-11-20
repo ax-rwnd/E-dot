@@ -8,6 +8,9 @@
     <link href="\static/style.css" rel="stylesheet">
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script>
       $(document).on('change', '.btn-file :file', function() {
       var input = $(this),
@@ -33,11 +36,40 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </head>
 <body>
-
-
 <div class="container">
     <div class="header">
         <nav>
@@ -76,94 +108,92 @@
 
     <div id="products">
         {% if editname == "Add Category" %}
-        <form id="input" action="/cms/Add Category" method="POST">
+        <form id="manage" action="/cms/Add Category" method="POST">
             <fieldset>
                 <legend>Add Category</legend>
                 <ol>
-                    <li><label for=cat>Category Name</label> <input id=catname
-                                                                    name=catname type=text placeholder="Category Name"
-                                                                    required>
+                    <li><label for=cat>Category Name</label>
+                        <input id=catname name=catname type=text placeholder="Category Name" required autofocus>
                     </li>
                 </ol>
             </fieldset>
             <br>
             <fieldset>
-                <button name="button" value="addcat" type=submit>Add
-                    Category
-                </button>
+                <button name="button" value="addcat" type=submit>Add Category</button>
             </fieldset>
         </form>
         <br> <br>
         {%elif editname =="Remove Category"%}
-        <form id="input" action="/cms/Remove Category" method="POST">
+        <form id="manage" action="/cms/Remove Category" method="POST">
             <fieldset>
                 <legend>Remove Category</legend>
                 <ol>
-                    <li><label for=cat>Category Name</label> <select
-                            name=removecat placeholder="Select Category" required>
-                        <option value="" disabled selected hidden>Select
-                            Category
-                        </option>
-                        {%for c in cats%}
-                        <option value="{{c}}">{{c}}</option>
-                        {% endfor %}
-                    </select><br></li>
+                    <li><label for=cat>Category Name</label>
+                        <select name=removecat placeholder="Select Category" required autofocus>
+                            <option value="" disabled selected hidden>Select Category</option>
+                            {%for c in cats%}
+                            <option value="{{c}}">{{c}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                    </li>
                 </ol>
             </fieldset>
             <br>
             <fieldset>
-                <button name="button" value="removecat" type=submit>Remove
-                    Category
-                </button>
+                <button name="button" value="removecat" type=submit>Remove Category</button>
             </fieldset>
         </form>
         {% elif editname == "Add Product" %}
-        <form id="input" action="/cms/Add Product" method="POST" enctype="multipart/form-data">
+        <form id="manage" action="/cms/Add Product" method="POST" enctype="multipart/form-data">
             <fieldset>
                 <legend>Add Product</legend>
                 <ol>
-                    <li><label for=prodname>Product Name:</label> <input
-                            id=prodname name=prodname type=text placeholder="Product Name"
-                            required></li>
-                    <li><label for=prodprice>Product Price:</label> <input
-                            id=prodprice name=prodprice type=text placeholder="Product Price"
-                            required> <br></li>
-                    <li><label for=proddesc>Description:</label> <textarea
-                            id=proddesc name=proddesc style="resize: none" rows=4
-                            cols="38" placeholder="Product Description" required></textarea>
+                    <li>
+                        <label for=prodname>Product Name:</label>
+                        <input id=prodname name=prodname type=text placeholder="Product Name" required autofocus>
                     </li>
-                    <li><label for=prodcat>Category:</label> <select name=prodcat
-                                                                     placeholder="Select Category" required>
-                        <option value="" disabled selected hidden>Select
-                            Category
-                        </option>
-                        {%for c in cats%}
-                        <option value="{{c}}">{{c}}</option>
-                        {% endfor %}
-                    </select><br></li>
+                    <li>
+                        <label for=prodprice>Product Price:</label>
+                        <input id=prodprice name=prodprice type=text placeholder="Product Price" required> <br></li>
+                    <li>
+                        <label for=proddesc>Description:</label>
+                        <textarea id=proddesc name=proddesc style="resize: none" rows=4 cols=38"
+                                  placeholder="Product Description" required></textarea>
+                    </li>
+                    <li>
+                        <label for=prodcat>Category:</label>
+                        <select name=prodcat placeholder="Select Category" required autofocus>
+                            <option value="" disabled selected hidden>Select Category</option>
+                            {%for c in cats%}
+                            <option value="{{c}}">{{c}}</option>
+                            {% endfor %}
+                        </select><br>
+                    </li>
                     <li><label>Image:</label>
                         <br> <br>
+
                         <div class="input-group">
-								<span class="input-group-btn"> <span
-                                        class="btn btn-primary btn-file"> Browse Image&hellip; <input
-                                        type="file" id="prodfile" name="prodfile" accept="image/*">
+								<span class="input-group-btn">
+                                    <span class="btn btn-primary btn-file"> Browse Image&hellip;
+                                        <input type="file" id="prodfile" name="prodfile" accept="image/*">
 								</span>
-								</span> <input type="text" class="form-control" readonly>
+								</span><input type="text" class="form-control" readonly tabindex="-1">
                         </div>
                     </li>
                 </ol>
             </fieldset>
             <fieldset>
-                <button type=submit>Add Product</button>
+                <button type=submit class="btn btn-primary btn-file">Add Product</button>
             </fieldset>
         </form>
         {% elif editname == "Remove Product" %}
-        <form id="input" action="/cms/Remove Product" method="POST">
+        <form id="manage" action="/cms/Remove Product" method="POST">
             <fieldset>
                 <legend>Remove Product</legend>
                 <ol>
                     <li><label for=cat>Product Name</label> <select id="removeprod" name="removeprod"
-                                                                    placeholder="Select Category" required>
+                                                                    placeholder="Select Category" required autofocus>
                         <option value="" disabled selected hidden>Select
                             Product
                         </option>
@@ -180,6 +210,17 @@
         {% elif editname == "Front Page" %} Edit frontpage information here
         {% elif editname == "Color Scheme" %} Edit website color scheme here
         {% endif %}
+        {%if ins == "success"%}
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Operation successful.
+        </div>
+        {%elif ins == "error"%}
+        <div class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error!</strong> Something went wrong, maybe the product already exists.
+        </div>
+        {%endif%}
     </div>
 </body>
 </html>
