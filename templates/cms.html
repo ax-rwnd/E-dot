@@ -5,12 +5,12 @@
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="\static/favicon.ico" rel="shortcut icon"/>
-    <link href="\static/style.css" rel="stylesheet">
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="\static/style.css" rel="stylesheet">
     <script>
       $(document).on('change', '.btn-file :file', function() {
       var input = $(this),
@@ -47,7 +47,10 @@
                 <li role="presentation"><a href="/logout">Sign Out</a>
                     {%endif%}
                 </li>
-                <li role="presentation"><a href="/signup">Sign Up</a></li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="signup">Sign Up</a>
+                </li>
+                {%endif%}
             </ul>
         </nav>
         <h3 class="text-muted">
