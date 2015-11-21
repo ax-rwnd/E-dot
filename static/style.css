@@ -176,7 +176,7 @@ form#manage ol ol li {
 form#manage label {
 	float: left;
 	font-size: 12px;
-	width: 120px;
+	width: 140px;
 }
 form#manage fieldset fieldset label {
 	background:none no-repeat left 50%;
@@ -232,7 +232,6 @@ form#manage button:focus {
 
 form#manage button:hover {
 	background: #23567F;
-	cursor: pointer;
 }
 
 .btn-file {
@@ -262,8 +261,4 @@ form#manage button:hover {
 input[readonly] {
   background-color: white !important;
   cursor: text !important;
-}
-
-form#payment label[for=visa] {
-	background-image: url(visa.gif);
 }
