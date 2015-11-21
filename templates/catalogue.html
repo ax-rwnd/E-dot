@@ -21,6 +21,10 @@ function clicked(e)
 		<div class="header">
 			<nav>
 				<ul class="nav nav-pills pull-right">
+					{% if current_user.is_authenticated %}
+					<li role="presentation"><a href="/basket"><img src="/static/basket.png"/></a>
+					</li>
+					{% endif %}
 					<li role="presentation"><a href="/">Home</a></li>
 					<li role="presentation" class="active"><a href="/catalogue">Catalogue</a>
 					</li> {% if not current_user.is_authenticated %}
@@ -28,7 +32,10 @@ function clicked(e)
 						%}
 					<li role="presentation"><a href="/logout">Sign Out</a> {%
 						endif %}</li>
-					<li role="presentation"><a href="/signup">Sign Up</a></li>
+					{% if not current_user.is_authenticated %}
+					<li role="presentation"><a href="signup">Sign Up</a>
+					</li>
+					{%endif%}
 				</ul>
 			</nav>
 			<h3 class="text-muted">

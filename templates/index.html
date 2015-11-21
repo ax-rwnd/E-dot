@@ -7,6 +7,10 @@
     <link href="../static/style.css" rel="stylesheet"/>
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="\static/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -29,13 +33,20 @@
 	                <li role="presentation"><a href="logout">Sign Out</a>
 		    {% endif %}
                     </li>
+                    {% if not current_user.is_authenticated %}
                     <li role="presentation"><a href="signup">Sign Up</a>
                     </li>
+                    {%endif%}
                 </ul>
             </nav>
             <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
         </div>
-
+        {%if message and status%}
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> {{message}}
+        </div>
+        {%endif%}
 	<div class="bg"></div>
         <div class="jumbotron">
             <h1>e-dot Web Store</h1>
@@ -75,7 +86,7 @@
 	<center>
             <p>
 	    This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and 
-	    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a>.
+	    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
 	    </p>
 	</center>
         </footer>

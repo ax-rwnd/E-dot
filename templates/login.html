@@ -1,63 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Log In</title>
-		<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-		<link href="../static/favicon.ico" rel="shortcut icon" />
-	</head>
-	<body>
-	    <div class="container">
-		<div class="header">
-		    <nav>
-			<ul class="nav nav-pills pull-right">
-			    <li role="presentation"><a href="/">Home</a>
-			    </li>
-			    <li role="presentation"><a href="catalogue">Catalogue</a>
-			    </li>
-			    {% if not current_user.is_authenticated %}
-				<li role="presentation"><a href="login">Sign In</a>
-			    {% else %}
-				<li role="presentation"><a href="logout">Sign Out</a>
-			    {% endif %}
-			    </li>
-			    <li role="presentation"><a href="signup">Sign Up</a>
-			    </li>
-			</ul>
-		    </nav>
-		    <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
-		</div>
-		
-		<!--
-		<form>
-			<div class="form-group">
-			<label for="usertext">Username</label>
-			 <input type="text" class="form-control" id="usertext">
-			</div>
-			<div class="form-group">
-			<label for="pwtext">Password</label>
-			 <input type="password" class="form-control" id="pwtext">
-			</div>
-			<input type="submit" name="my-form" value="Send">
-			  <button type="submit" name="my-form2" class="btn btn-default" value="Send">Submit</button>
+<head>
+    <title>Log In</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/favicon.ico" rel="shortcut icon"/>
+    <link href="\static/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                <li role="presentation"><a href="/">Home</a>
+                </li>
+                <li role="presentation"><a href="catalogue">Catalogue</a>
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="login">Sign In</a>
+                    {% else %}
+                <li role="presentation"><a href="logout">Sign Out</a>
+                    {% endif %}
+                </li>
+                <li role="presentation"><a href="signup">Sign Up</a>
+                </li>
+            </ul>
+        </nav>
+        <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
+    </div>
 
-		</form>
-		-->
+    {%if message and status%}
+    <div class="alert alert-success fade in">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Success!</strong> {{message}}
+    </div>
+    {%elif message and not status%}
+    <div class="alert alert-danger fade in">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Error!</strong> {{message}}
+    </div>
+    {%endif%}
+    <center>
+        <form id="manage" action="/login" method="POST">
+            <fieldset>
+                <legend>Sign in</legend>
+                <ol>
+                    <li>
+                        <label for=emailtext>Email:</label>
+                        <input id=emailtext name=emailtext type=text placeholder="example@domain.com" required autofocus>
+                    </li>
+                    <li>
+                        <label for=pwtext>Password:</label>
+                        <input id=pwtext name=pwtext type=password required> <br></li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit class="btn btn-primary btn-file">Sign In</button>
+            </fieldset>
+        </form>
+    </center>
+    <!--
+    <form>
+        <div class="form-group">
+        <label for="usertext">Username</label>
+         <input type="text" class="form-control" id="usertext">
+        </div>
+        <div class="form-group">
+        <label for="pwtext">Password</label>
+         <input type="password" class="form-control" id="pwtext">
+        </div>
+        <input type="submit" name="my-form" value="Send">
+          <button type="submit" name="my-form2" class="btn btn-default" value="Send">Submit</button>
 
-		<center>
-		<h2>Sign In</h2>
-		<form action="/login" method="POST">
-		<p>Username:</p>
-		<input type="text" name="usertext" required>
-		<br/>
-		<br/>
-		<p>Password:</p>
-		<input type="password" name="pwtext" required>
-		<br/>
-		<br/>
-		<input type="submit" name="my-form" value="Send">
-		</form>
-		</center>
-		</body>
+    </form>
+    -->
+    <!--
+        <center>
+            <h2>Sign In</h2>
+            <form action="/login" method="POST">
+                <p>Username:</p>
+                <input type="text" name="usertext" required>
+                <br/>
+                <br/>
+
+                <p>Password:</p>
+                <input type="password" name="pwtext" required>
+                <br/>
+                <br/>
+                <input type="submit" name="my-form" value="Send">
+            </form>
+        </center>
+
+        -->
+</body>
 </html>
 	

@@ -5,12 +5,20 @@
 		<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
 		<link href="/static/favicon.ico" rel="shortcut icon" />
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link href="\static/style.css" rel="stylesheet">
 	</head>
 	<body>
 	    <div class="container">
 		<div class="header">
 		    <nav>
 			<ul class="nav nav-pills pull-right">
+				{% if current_user.is_authenticated %}
+				<li role="presentation" class="active"><a href="/basket"><img src="/static/basket.png"/></a>
+				</li>
+				{% endif %}
 			    <li role="presentation"><a href="/">Home</a>
 			    </li>
 			    <li role="presentation"><a href="catalogue">Catalogue</a>
@@ -21,13 +29,20 @@
 				<li role="presentation"><a href="logout">Sign Out</a>
 			    {% endif %}
 			    </li>
-			    <li role="presentation"><a href="signup">Sign Up</a>
-			    </li>
+				{% if not current_user.is_authenticated %}
+				<li role="presentation"><a href="signup">Sign Up</a>
+				</li>
+				{%endif%}
 			</ul>
 		    </nav>
 		    <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
 		</div>
-
+		{%if message%}
+		<div class="alert alert-success fade in">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Success!</strong> {{message}}
+		</div>
+		{%endif%}
 		<h2>Basket</h2>
 		<p>These products are in your basket.</p>
 		<div class = "table-responsive">
