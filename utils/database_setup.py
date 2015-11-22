@@ -1,12 +1,4 @@
-
-# mysql
-HOST = 'localhost'
-PORT = 3306
-USER = 'axel'
-PASSWD = 'bollboll'
-SQLDB = 'db_edot'
-DATABASE = SQLDB
-
+from util_config import config
 from flask import Flask, render_template, request, g
 app = Flask(__name__)
 
@@ -16,9 +8,11 @@ import MySQLdb
 # returns a database connection for MySQL
 def connect_to_database_mysql(database=None):
     if database:
-        return MySQLdb.connect(host=HOST, port=PORT, user=USER, passwd=PASSWD, db=database)
+	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
+	user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'])
     else:
-        return MySQLdb.connect(host=HOST, port=PORT, user=USER, passwd=PASSWD)
+	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
+	user=config['USER'], passwd=config['PASSWD'])
 
 # set this line to define database connection
 DBFUNC = connect_to_database_mysql
@@ -46,7 +40,7 @@ def main():
     print "Completed sucessfully"
         
 def create_category_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_category
     query = "create table " + tbl_category + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(32));"
@@ -56,7 +50,7 @@ def create_category_tbl():
     db.close()
 
 def create_product_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_product
     query = "create table " + tbl_product + " (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
@@ -69,7 +63,7 @@ def create_product_tbl():
     db.close()
 
 def create_orderlines_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_orderlines
     query = "create table "+ tbl_orderlines +" (prod_id INT(11) UNSIGNED, order_id INT(11) UNSIGNED);"
@@ -85,7 +79,7 @@ def create_orderlines_tbl():
 
 
 def create_basketlines_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_basketlines
     query = "create table "+ tbl_basketlines +" (user_id INT(11) UNSIGNED, prod_id INT(11) UNSIGNED, amount INT(11) UNSIGNED);"
@@ -100,7 +94,7 @@ def create_basketlines_tbl():
     db.close()
 
 def create_order_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_order
     query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11), date DATE);"
@@ -112,7 +106,7 @@ def create_order_tbl():
     db.close()
 
 def create_user_tbl():
-    db = DBFUNC(SQLDB)
+    db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_user
     query = "create table "+ tbl_user+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, email VARCHAR(32) UNIQUE,\
@@ -125,8 +119,8 @@ def create_user_tbl():
 def create_db():
     db = DBFUNC()
     cursor = db.cursor()
-    print "Creating database", DATABASE
-    query = "create database " + DATABASE + ";"
+    print "Creating database", config["SQLDB"]
+    query = "create database " + config["SQLDB"]+ ";"
     cursor.execute(query)
 
     db.commit();
@@ -140,9 +134,9 @@ def remove_db():
 
     for x in range(0, numrows):
         row = cursor.fetchone()
-        if row[0] == DATABASE:
-            print "Removing database", DATABASE
-            query = "drop database " + DATABASE + ";"
+        if row[0] == config["SQLDB"]:
+            print "Removing database", config["SQLDB"]
+            query = "drop database " + config["SQLDB"]+ ";"
             cursor.execute(query)
             break
     db.commit();
