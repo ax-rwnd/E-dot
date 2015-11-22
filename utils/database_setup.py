@@ -115,7 +115,7 @@ def create_user_tbl():
     db = DBFUNC(SQLDB)
     cursor = db.cursor()
     print "Creating table", tbl_user
-    query = "create table "+ tbl_user+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, email VARCHAR(32),\
+    query = "create table "+ tbl_user+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, email VARCHAR(32) UNIQUE,\
      password VARCHAR(128),name VARCHAR(128), address VARCHAR(64), postcode VARCHAR(9), city VARCHAR(32), country VARCHAR(32));"
     cursor.execute(query)
 

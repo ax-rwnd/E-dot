@@ -49,10 +49,10 @@ def show_signup_post():
     try:
         query = ""
         with db as cursor:
-            data = (email)
+            data = (email,)
             query = "SELECT * FROM tbl_user WHERE email=%s;"
             cursor.execute(query, data)
-            if cursor.fetchone() > 0:
+            if cursor.fetchall() > 0:
                 return render_template("signup.html", message = "Email Address Already Registered.")
     except Exception as e:
         print e
