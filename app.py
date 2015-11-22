@@ -12,6 +12,7 @@ from account_page import account_page
 from catalogue_page import catalogue_page
 from signup_page import signup_page
 from basket_page import basket_page
+from cms_page import cms_page
 
 #DB support
 import MySQLdb
@@ -29,6 +30,7 @@ app.register_blueprint(account_page)
 app.register_blueprint(catalogue_page)
 app.register_blueprint(signup_page)
 app.register_blueprint(basket_page)
+app.register_blueprint(cms_page)
 
 #login management support
 try:

@@ -3,8 +3,8 @@ DATABASE = 'db_edot'
 # mysql
 HOST = 'localhost'
 PORT = 3306
-USER = 'axel'
-PASSWD = 'bollboll'
+USER = 'root'
+PASSWD = ''
 SQLDB = 'db_edot'
 from flask import Flask, render_template, request, g
 app = Flask(__name__)
@@ -39,9 +39,7 @@ def add_testdata():
     db = DBFUNC(SQLDB)
     print "Adding testdata"
     cursor = db.cursor()
-    cursor.execute("insert into " + tbl_user + " (username, password, email) VALUES ('kurt', 'ollonmacka', 'kurt@live.se');")
-    cursor.execute("insert into " + tbl_user + " (username, password, email) VALUES ('axel', 'bollboll', 'axel@gmail.se');")
-     
+
     cursor.execute("insert into " + tbl_category + "(name) values ('Fine Gravel');")
     cursor.execute("insert into " + tbl_category + "(name) values ('Lag Gravel');")
     cursor.execute("insert into " + tbl_category + "(name) values ('Plateau Gravel');")

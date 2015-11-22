@@ -9,9 +9,9 @@ class User (UserMixin):
 
 			with db as cursor:
 				data = (uid,)
-				query = "select (username) from tbl_user where id = (%s);"
+				query = "select (name) from tbl_user where id = (%s);"
 				cursor.execute(query, data)
-				username = cursor.fetchone()[0]
+				name = cursor.fetchone()[0]
 
 			with db as cursor:
 				query = "select (email) from tbl_user where id = (%s);"
@@ -22,7 +22,7 @@ class User (UserMixin):
 
 			#create user
 			self.email = email
-			self.username = username
+			self.name = name
 			self.uid = uid
 
 
