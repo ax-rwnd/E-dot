@@ -67,4 +67,4 @@ def show_signup_post():
     except Exception as e:
         print e
 
-    return render_template("login.html", message = "Registration Complete", status = true)
+    return render_template("login.html", message = "Registration Complete", status = True)

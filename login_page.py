@@ -26,29 +26,26 @@ def show_logout():
 # main login routine
 @login_page.route("/login", methods=['POST'])
 def show_login_post():
-    db = getattr(g, 'db', None)
-    try:
-        email = (request.form['emailtext'])
-        password = request.form['pwtext']
-        query = "select id, email, password from tbl_user WHERE email = (%s);"
-        pw = ""
+	db = getattr(g, 'db', None)
 
-        with db as cursor:
-            cursor.execute(query, email)
-            row = cursor.fetchall()
-            uid = row[0][0]
-            em = row[0][1]
-            pw = row[0][2]
+	email = (request.form['emailtext'],)
+	password = request.form['pwtext']
+	query = "select id, email, password from tbl_user WHERE email = (%s);"
+	pw = ""
 
-        if check_password_hash(pw, password) and (email == em):
-            login_user(User(uid))
-            print "yay"
-            return render_template("basket.html", message="You have been logged in!", status = False)
+	with db as cursor:
+	    cursor.execute(query, email)
+	    row = cursor.fetchone()
+	    uid = row[0]
+	    em = row[1]
+	    pw = row[2]
+		
 
-    except Exception as e:
-        print e
+	if check_password_hash(pw, password):
+	    login_user(User(uid))
+	    return render_template("basket.html", message="You have been logged in!", status = False)
 
-    return render_template("login.html", message="Login failed.")
+	return render_template("login.html", message="Login failed.")
 
     # try:
     #     # prepare query
