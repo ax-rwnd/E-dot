@@ -52,19 +52,21 @@ function clicked(e)
 
 		{% if p%}
 		<div id="products">
-			{% for i in range(0, 10)%} {% for product in p%}
-			<div class="product_box" tabindex="{{p.index(product)}}">
-				<div class="product_info">
-				<a href="/catalogue/{{catname}}/{{product[0]}}">
-					<h3>{{product[0]}}</h3>
-					{{product[1]}} <br> <br> <b>Price: {{product[2]}}$</b>
-				</a>
+			{% for i in range(0, 10)%}
+				{% for product in p%}
+				<div class="product_box" tabindex="{{p.index(product)}}">
+					<div class="product_info">
+					<a href="/catalogue/{{catname}}/{{product[0]}}">
+						<h3>{{product[1]}}</h3>
+						{{product[2]}} <br> <br> <b>Price: {{product[3]}}$</b>
+					</a>
+					</div>
+					<div class="product_image">
+						<img src="/static/img/Desert.jpg" />
+					</div>
 				</div>
-				<div class="product_image">
-					<img src="/static/img/Desert.jpg" />
-				</div>
-			</div>
-			{% endfor %} {% endfor %}
+				{% endfor %}
+			{% endfor %}
 
 		</div>
 		{%endif%} {%if prod%}
@@ -76,7 +78,11 @@ function clicked(e)
 			<div class="product_info">
 			<h3>{{prod[0]}}</h3>
 			{{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
-			<input type="submit" value="Buy Now" onclick="clicked(event)" />
+			{% if current_user.is_authenticated %}
+			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+				<input type="submit" name="submit" value="Send to Basket">
+			</form>
+			{% endif %}
 			</div>
 			
 

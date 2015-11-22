@@ -1,5 +1,8 @@
-from flask import Blueprint, render_template, g
+from flask import Blueprint, render_template, request, g
+from flask.ext.login import current_user
 from itertools import product
+
+from basket_page import add_to_basket
 
 catalogue_page = Blueprint('catalogue_page', __name__, template_folder='templates')
 
@@ -16,17 +19,29 @@ def show_catalogue(catname):
 	cats = read_categories()
 	return render_template("catalogue.html", catname=catname, c = cats, p = products)
 
-@catalogue_page.route("/catalogue/<catname>/<prodname>")
-def show_product(catname, prodname):
-	product_info = read_product_info(prodname)
+@catalogue_page.route("/catalogue/<catname>/<prodid>")
+def show_product(catname, prodid):
+	product_info = read_product_info(prodid)
 	cats = read_categories()
-	return render_template("catalogue.html", catname=catname, c = cats, prod = product_info)
+	return render_template("catalogue.html", catname=catname, prodid=prodid, c = cats, prod = product_info)
 
-def read_product_info(prodname):
+@catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
+def show_product_post(catname, prodid):
+	if request.method == 'POST' and current_user.is_authenticated:
+		add_to_basket(prodid, current_user.uid)
+		return "Success!"
+	"""
+		if request.form['submit'] == 'Send to Basket':
+			print "added!"
+			return ""
+	"""
+	return "Failed!"
+
+def read_product_info(prodid):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select name, description, price from tbl_product where name = %s;")
-	data = (prodname,)
+	query = ("select name, description, price from tbl_product where id = %s;")
+	data = (prodid,)
 	cursor.execute(query, data)
 	
 	prod_info = cursor.fetchone()
@@ -37,7 +52,7 @@ def read_product_info(prodname):
 def read_products(catname):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select tbl_product.name, description, price from tbl_product join\
+	query = ("select tbl_product.id, tbl_product.name, description, price from tbl_product join\
 		tbl_category on tbl_product.cat_id = tbl_category.id where tbl_category.name = %s;")
 	data = (catname,)
 	cursor.execute(query, data)
