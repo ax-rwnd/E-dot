@@ -10,7 +10,7 @@ config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 cms_page = Blueprint('cms_page', __name__, template_folder='templates')
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in config['ALLOWED_EXTENSIONS']
+	return '.' in filename and filename.rsplit('.', 1)[1] in config['ALLOWED_EXTENSIONS']
 
 # render catalogue with listed categories
 @cms_page.route("/cms/")
@@ -68,55 +68,46 @@ def add_product():
 
 @cms_page.route("/cms/Remove Product", methods=['POST'])
 def remove_product():
-    prodname = request.form['removeprod']
-    db = getattr(g, 'db', None)
-    url = ""
-    try:
-        query = "SELECT image_url from tbl_product WHERE name = %s"
-        with db as cursor:
-            data = (prodname)
-            cursor.execute(query, data)
-            url = cursor.fetchone()[0]
-    except Exception as e:
-        print e
-	if url:
-	    os.remove(url)
-    db = getattr(g, 'db', None)
-    try:
-        query = "DELETE FROM tbl_product WHERE name = %s"
-        with db as cursor:
-            data = (prodname)
-            cursor.execute(query, data)
-            db.commit()
-    except Exception as e:
-        print e
-    p = read_products()
-    return render_template("cms.html", editname = "Remove Product", prod = p, ins = "success")
+	prodname = (request.form['removeprod'],)
+	db = getattr(g, 'db', None)
+	url = ""
+	query = "SELECT image_url from tbl_product WHERE name = %s"
+	with db as cursor:
+		cursor.execute(query, prodname)
+		url = cursor.fetchone()[0]
+		if url:
+			os.remove(url)
+
+	query = "DELETE FROM tbl_product WHERE name = %s"
+	with db as cursor:
+		data = (prodname,)
+		cursor.execute(query, data)
+		db.commit()
+
+	p = read_products()
+	return render_template("cms.html", editname = "Remove Product", prod = p, ins = "success")
 
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
 def add_category():
-	catname = request.form['catname']
+	catname = (request.form['catname'],)
 	cats = read_categories()
 
-	if catname in cats:
+	if catname[0] in cats:
 		return render_template("cms.html", editname = "Add Category", ins = "error")
 	else:
 		db = getattr(g, 'db', None)
-		try:
-			query = "insert into tbl_category (name) VALUES (%s);";
-			with db as cursor:
-				cursor.execute(query, catname)
-				db.commit()
-		except Exception as e:
-			print e
+		query = "insert into tbl_category (name) VALUES (%s);";
+		with db as cursor:
+			cursor.execute(query, catname)
+			db.commit()
 
 	return render_template("cms.html", editname = "Add Category", ins = "success")
 
 
 @cms_page.route("/cms/Remove Category", methods=['POST'])
 def remove_category():
-	catname = request.form['removecat']
+	catname = (request.form['removecat'],)
 	db = getattr(g, 'db', None)
 	try:
 		query = "DELETE FROM tbl_category WHERE name = %s;";
