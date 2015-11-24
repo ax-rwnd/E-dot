@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from flask import Blueprint, request, render_template, g
 from config import config
@@ -78,7 +79,8 @@ def remove_product():
             url = cursor.fetchone()[0]
     except Exception as e:
         print e
-    os.remove(url)
+	if url:
+	    os.remove(url)
     db = getattr(g, 'db', None)
     try:
         query = "DELETE FROM tbl_product WHERE name = %s"
@@ -96,6 +98,7 @@ def remove_product():
 def add_category():
 	catname = request.form['catname']
 	cats = read_categories()
+
 	if catname in cats:
 		return render_template("cms.html", editname = "Add Category", ins = "error")
 	else:

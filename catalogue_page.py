@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, g
 from flask.ext.login import current_user
 from itertools import product
@@ -40,7 +41,7 @@ def show_product_post(catname, prodid):
 def read_product_info(prodid):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select name, description, price from tbl_product where id = %s;")
+	query = ("select name, description, price, image_url from tbl_product where id = %s;")
 	data = (prodid,)
 	cursor.execute(query, data)
 	
@@ -52,7 +53,7 @@ def read_product_info(prodid):
 def read_products(catname):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select tbl_product.id, tbl_product.name, description, price from tbl_product join\
+	query = ("select tbl_product.id, tbl_product.name, description, price, image_url from tbl_product join\
 		tbl_category on tbl_product.cat_id = tbl_category.id where tbl_category.name = %s;")
 	data = (catname,)
 	cursor.execute(query, data)

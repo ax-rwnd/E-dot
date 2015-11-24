@@ -34,7 +34,7 @@ def main():
     add_testdata()
     print_database()  # Removing existing database if it already exists
     print "\nCompleted sucessfully"
-
+"""
 def add_testdata():
     db = DBFUNC(SQLDB)
     print "Adding testdata"
@@ -54,6 +54,7 @@ def add_testdata():
     
     db.commit()
     db.close()
+	"""
     
 def clear_database():
     db = DBFUNC(SQLDB)
