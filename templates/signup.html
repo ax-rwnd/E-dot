@@ -7,6 +7,14 @@
 	<link href="/static/favicon.ico" rel="shortcut icon"/>
 	<link href="/static/style.css" rel="stylesheet">
 
+
+	<script type="text/javascript">
+		window.addEventListener("load", function load(event){
+			window.removeEventListener("load", load, false); //remove listener, no longer needed
+			document.getElementById('signup_button').disabled = true;
+		},false);
+	</script>
+
 	<script type="text/javascript">
 		function pwcheck()
 		{
@@ -142,12 +150,6 @@
 				</fieldset>
 				<fieldset>
 					<button type=submit id="signup_button" name="signup_button" class="btn btn-primary btn-file">Sign Up</button>
-					<script type="text/javascript">
-						window.addEventListener("load", function load(event){
-							window.removeEventListener("load", load, false); //remove listener, no longer needed
-							document.getElementById('signup_button').disabled = false;
-						},false);
-					</script>
 				</fieldset>
 			</form>
 		</center>
