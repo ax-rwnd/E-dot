@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #flask app glue
 from flask import Flask, render_template, request, g
 from flask.ext.login import LoginManager, UserMixin, current_user
@@ -47,7 +48,7 @@ def load_user(userid):
 #returns a database connection for MySQL
 def connect_to_database_mysql():
 	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
-	user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'])
+	user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'], charset=config['CHARSET'])
 
 DBFUNC = connect_to_database_mysql
 
