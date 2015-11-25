@@ -9,12 +9,7 @@
 	rel="stylesheet">
 <link href="/static/favicon.ico" rel="shortcut icon" />
 <link href="/static/style.css" rel="stylesheet">
-<script>
-function clicked(e)
-{
-    if(!confirm('Are you really sure you want to buy this crappy mountain?'))e.preventDefault();
-}
-</script>
+
 </head>
 <body>
 	<div class="container">
@@ -79,9 +74,12 @@ function clicked(e)
 		{%endif%} {%if prod%}
 
 		<div id="product_page">
+			{% if prod[3] %}
 			<div class="product_page_image">
 				<img src="/{{prod[3]}}" />
 			</div>
+			{% endif %}
+
 			<div class="product_info">
 			<h3>{{prod[0]}}</h3>
 			{{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
