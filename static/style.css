@@ -139,6 +139,44 @@ body {
 	border-bottom: 1px solid #e5e5e5;
 }
 
+/* side-spacing */
+.header,
+.marketing,
+.footer {
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+	margin-top: 0;
+	margin-bottom: 0;
+	line-height: 40px;
+}
+
+/* Custom page footer */
+.footer {
+	padding-top: 19px;
+	color: #777;
+	border-top: 1px solid #e5e5e5;
+}
+
+.alert {
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+	text-align: center;
+	border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+	padding: 14px 24px;
+	font-size: 21px;
+}
+
 form#manage {
 	background: #EEEEEE;
 	-moz-border-radius: 5px;
