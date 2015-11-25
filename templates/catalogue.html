@@ -51,22 +51,19 @@
 
 		{% if p%}
 		<div id="products">
-			{% for i in range(0, 10)%}
-				{% for product in p%}
-				<div class="product_box" tabindex="{{p.index(product)}}">
-					<div class="product_info">
-					<a href="/catalogue/{{catname}}/{{product[0]}}">
-						<h3>{{product[1]}}</h3>
-						{{product[2]}} <br> <br> <b>Price: {{product[3]}}$</b>
-					</a>
-					</div>
-					<div class="product_image">
-						<img src="/{{product[4]}}" />
-					</div>
+			{% for product in p%}
+			<div class="product_box" tabindex="{{p.index(product)}}">
+				<div class="product_info">
+				<a href="/catalogue/{{catname}}/{{product[0]}}">
+					<h3>{{product[1]}}</h3>
+					{{product[2]}} <br> <br> <b>Price: {{product[3]}}$</b>
+				</a>
 				</div>
-				{% endfor %}
+				<div class="product_image">
+					<img src="/{{product[4]}}" />
+				</div>
+			</div>
 			{% endfor %}
-
 		</div>
 		{%endif%} {%if prod%}
 
