@@ -121,7 +121,22 @@ body {
 	background: #ffffff;
 	color: #111111;
 	font-family: Georgia, "Times New Roman", Times, serif;
-	padding: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+
+/* Customize container */
+@media (min-width: 768px) {
+.container {
+	max-width: 730px;
+	}
+}
+
+/* Custom page header */
+.header {
+	padding-bottom: 20px;
+	border-bottom: 1px solid #e5e5e5;
 }
 
 form#manage {
