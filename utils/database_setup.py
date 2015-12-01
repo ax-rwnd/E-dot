@@ -81,7 +81,8 @@ def create_orderlines_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_orderlines
-    query = "create table "+ tbl_orderlines +" (prod_id INT(11) UNSIGNED, order_id INT(11) UNSIGNED);"
+    query = "create table "+ tbl_orderlines +" (prod_id INT(11) UNSIGNED, order_id INT(11) UNSIGNED, amount INT(11) " \
+											 "UNSIGNED);"
     cursor.execute(query)
     
     query = "alter table "+tbl_orderlines+" add CONSTRAINT fk_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
@@ -112,7 +113,8 @@ def create_order_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_order
-    query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11), date DATE);"
+    query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11) NOT " \
+									   "NULL, date DATE);"
     cursor.execute(query)
     query = "alter table "+ tbl_order+" add CONSTRAINT customer_id FOREIGN KEY (id) REFERENCES "+tbl_user+"(id);"
     cursor.execute(query)
