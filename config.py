@@ -6,10 +6,10 @@ config = dict(
 	HOSTKEY="SUPER-SECRET-SIGNING-KEY-:o)",
 
 	#mysql
-	HOST='46.162.93.54',
+	HOST='',
 	PORT=3306,
-	USER='kurt',
-	PASSWD='ollonmacka',
+	USER='',
+	PASSWD='',
 	SQLDB='db_edot',
 	CHARSET='utf8',
 
