@@ -1,15 +1,15 @@
 config = dict(
 	#server
-	HOSTIP='192.168.1.6',
+	HOSTIP='localhost',
 	HOSTPORT=5000,
 	HOSTDBG=True,
 	HOSTKEY="SUPER-SECRET-SIGNING-KEY-:o)",
 
 	#mysql
-	HOST='localhost',
+	HOST='',
 	PORT=3306,
-	USER='axel',
-	PASSWD='bollboll',
+	USER='',
+	PASSWD='',
 	SQLDB='db_edot',
 
 	#SSL-enabled?
