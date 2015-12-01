@@ -8,11 +8,11 @@ import MySQLdb
 # returns a database connection for MySQL
 def connect_to_database_mysql(database=None):
     if database:
-	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
-	user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'])
+		return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
+		user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'])
     else:
-	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
-	user=config['USER'], passwd=config['PASSWD'])
+		return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
+		user=config['USER'], passwd=config['PASSWD'])
 
 # set this line to define database connection
 DBFUNC = connect_to_database_mysql
@@ -23,6 +23,7 @@ tbl_orderlines = "tbl_orderlines"
 tbl_basketlines = "tbl_basketlines"
 tbl_order = "tbl_order"
 tbl_category = "tbl_category"
+tbl_stock = "tbl_stock"
 
 def main():
     print "E-dot commerce database script starting..."
@@ -36,9 +37,21 @@ def main():
     create_order_tbl()
     create_orderlines_tbl()
     create_basketlines_tbl()
-    
+    create_stock_tbl()
+
     print "Completed sucessfully"
-        
+
+def create_stock_tbl():
+	db = DBFUNC(config["SQLDB"])
+	cursor = db.cursor()
+	print "Creating table", tbl_stock
+	query = "create table " + tbl_stock + "(product_id INT(11) UNSIGNED PRIMARY KEY, amount INT(9));"
+	cursor.execute(query)
+	query = "alter table " + tbl_stock+" add CONSTRAINT fk_prod FOREIGN KEY (product_id) REFERENCES "+tbl_product+"id;"
+	cursor.execute(query)
+	db.commit()
+	db.close()
+
 def create_category_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
@@ -53,7 +66,8 @@ def create_product_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_product
-    query = "create table " + tbl_product + " (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
+    query = "create table " + tbl_product + " (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), " \
+											"\description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
     cursor.execute(query)
     
     query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id);"
