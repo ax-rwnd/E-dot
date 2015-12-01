@@ -82,7 +82,7 @@ def create_basketlines_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_basketlines
-    query = "create table "+ tbl_basketlines +" (user_id INT(11) UNSIGNED, prod_id INT(11) UNSIGNED, amount INT(11) UNSIGNED);"
+    query = "create table "+ tbl_basketlines +" (user_id INT(11) UNSIGNED, prod_id INT(11) UNSIGNED, amount INT(11) UNSIGNED, PRIMARY KEY(user_id, prod_id));"
     cursor.execute(query)
     
     query = "alter table "+tbl_basketlines + " add CONSTRAINT fk_basket_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
