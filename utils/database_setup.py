@@ -47,7 +47,8 @@ def create_stock_tbl():
 	print "Creating table", tbl_stock
 	query = "create table " + tbl_stock + "(product_id INT(11) UNSIGNED PRIMARY KEY, amount INT(9));"
 	cursor.execute(query)
-	query = "alter table " + tbl_stock+" add CONSTRAINT fk_prod FOREIGN KEY (product_id) REFERENCES "+tbl_product+"id;"
+	query = "alter table " + tbl_stock+" add CONSTRAINT fk_prod_stock FOREIGN KEY (product_id) REFERENCES " \
+									   ""+tbl_product+"(id);"
 	cursor.execute(query)
 	db.commit()
 	db.close()
@@ -67,7 +68,7 @@ def create_product_tbl():
     cursor = db.cursor()
     print "Creating table", tbl_product
     query = "create table " + tbl_product + " (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), " \
-											"\description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
+											"description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
     cursor.execute(query)
     
     query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id);"
