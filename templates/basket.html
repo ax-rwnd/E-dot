@@ -37,9 +37,13 @@
 		    <h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
 		</div>
 		{%if message%}
+		{%if status %}
 		<div class="alert alert-success fade in">
+		{%else%}
+		<div class="alert alert-danger fade in">
+		{%endif%}
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Success!</strong> {{message}}
+			<strong>{%if status %}Success!{%else%}Failure:{%endif%}</strong> {{message}}
 		</div>
 		{%endif%}
 		<h2>Basket</h2>
@@ -59,7 +63,7 @@
 						{% for elem in prod[0:3] %}
 						<td>{{elem}}</td>
 						{% endfor %}
-						<td><img class="product_image" src="{{prod[3]}}" /></td>
+						<td><img src="{{prod[3]}}" /></td>
 					</tr>
 					{% endfor %}
 

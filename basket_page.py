@@ -97,27 +97,16 @@ def place_order (uid):
 			
 			cursor.execute("commit;")
 
-				
-		return (True, "Your order was placed.")
+	return (True, "Your order was placed.")
 
-			#get all amounts in stock
-			#query = "select product_id, amount from tbl_stock where product_id in\
-			#	(select prod_id from tbl_basketlines where user_id = %s);"
-			#cursor.execute(query, (uid,))
-
-			#stock = cursor.fetchall()
-
-			#print str(cursor.fetchall())
-			#for prod, amount in cursor.fetchall():
-			
 
 @basket_page.route("/basket", methods=['POST'])
 @login_required
 #transact all wares from basket to order
 def show_basket_post():
 	db = getattr(g, 'db', None)
-	success, resstr = place_order(current_user.uid)
-	return str(success)+" : "+resstr
+	suc, resstr = place_order(current_user.uid)
+	return render_template("/basket.html", status=suc, message=resstr)
 
 
 
