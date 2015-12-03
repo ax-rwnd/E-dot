@@ -116,7 +116,7 @@ def create_order_tbl():
     query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11) NOT " \
 									   "NULL, date DATE);"
     cursor.execute(query)
-    query = "alter table "+ tbl_order+" add CONSTRAINT customer_id FOREIGN KEY (id) REFERENCES "+tbl_user+"(id);"
+    query = "alter table "+ tbl_order+" add CONSTRAINT fk_customer_id FOREIGN KEY (id) REFERENCES "+tbl_user+"(id);"
     cursor.execute(query)
 
     db.commit()
