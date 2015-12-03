@@ -33,6 +33,93 @@ def amount_in_basket (prod_id, user_id):
 			amount = 0
 	return amount
 	
+"""
+Order of transaction:
+1. Secure amount in store
+2. Create order
+3. Remove amount from store
+4. Clear basket
+"""
+
+#creates an order from the basket of a user
+def place_order (uid):
+	db = getattr(g, 'db', None)
+
+	with db as cursor:
+		#Start transaction
+		query = "start transaction;"
+		cursor.execute(query)
+		
+		#create order
+		query = "select prod_id, amount from tbl_basketlines where user_id = %s;"
+		if cursor.execute(query, (uid,)) <= 0:
+			cursor.execute("ROLLBACK;")
+			return (False, "No items in basket.");
+		else:
+			prods = cursor.fetchall() #will contain all products in basket with amount
+
+			
+			#check stock amount
+			query = "select amount from tbl_stock where product_id = %s;"
+			for current in prods:
+				if cursor.execute(query, (current[0],)) <= 0:
+					cursor.execute("rollback;")
+					return (False, 'Product '+current[0]+' is missing from the stock.')
+				else:
+					line = cursor.fetchone()[0]
+					line = 0 if not line else line
+
+					if current[1] > line:
+						cursor.execute("ROLLBACK;")
+						return (False, "Too few items of id "+str(current[0])+" in stock.");
+
+			#create row in order 
+			query = "insert into tbl_order (customer_id, date) values \
+				((select id from tbl_user where id=%s), NOW());"
+			cursor.execute(query, (uid,))
+			last_row = cursor.lastrowid
+
+			#update stock amount
+			update_query = "update tbl_stock set amount = amount - %s where product_id = %s and amount > 0;"
+			query = "insert into tbl_orderlines (prod_id, order_id, amount) values (\
+				(select id from tbl_product where id = %s),\
+				(select id from tbl_order where id = %s), \
+				%s);"
+
+			#add to order, remove from stock
+			for current in prods:
+				cursor.execute(query, (current[0], last_row, current[1]))
+				cursor.execute(update_query, (current[1], current[0]))
+
+			#remove from basket
+			query = "delete from tbl_basketlines where user_id=%s;"
+			cursor.execute(query, (uid,))
+			
+			cursor.execute("commit;")
+
+				
+		return (True, "Your order was placed.")
+
+			#get all amounts in stock
+			#query = "select product_id, amount from tbl_stock where product_id in\
+			#	(select prod_id from tbl_basketlines where user_id = %s);"
+			#cursor.execute(query, (uid,))
+
+			#stock = cursor.fetchall()
+
+			#print str(cursor.fetchall())
+			#for prod, amount in cursor.fetchall():
+			
+
+@basket_page.route("/basket", methods=['POST'])
+@login_required
+#transact all wares from basket to order
+def show_basket_post():
+	db = getattr(g, 'db', None)
+	success, resstr = place_order(current_user.uid)
+	return str(success)+" : "+resstr
+
+
 
 @basket_page.route("/basket")
 @login_required

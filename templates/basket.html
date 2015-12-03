@@ -59,14 +59,17 @@
 						{% for elem in prod[0:3] %}
 						<td>{{elem}}</td>
 						{% endfor %}
-						<td><img src="{{prod[3]}}" /></td>
+						<td><img class="product_image" src="{{prod[3]}}" /></td>
 					</tr>
 					{% endfor %}
 
 				</tbody>
 			</table>
 		</div>
-	            <p><a class="btn btn-success" href="/" role="button">Place Order</a>
+
+		<form method="POST">
+	            <button type=submit class="btn btn-success">Place Order</button>
+		</form>
 		</body>
 </html>
 	
