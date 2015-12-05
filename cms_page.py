@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, g
 from config import config
 from werkzeug import secure_filename
 
-config['UPLOAD_FOLDER'] = '/static/img'
+config['UPLOAD_FOLDER'] = 'static/img'
 config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 
 cms_page = Blueprint('cms_page', __name__, template_folder='templates')
