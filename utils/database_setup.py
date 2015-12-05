@@ -52,7 +52,7 @@ def create_rating_tbl():
 		query = "alter table "+tbl_rating+" add constraint fk_rating_user foreign key (user_id) references "+tbl_user+"(id);"
 		cursor.execute(query)
 
-		query = "alter table "+tbl_rating+" add constraint fk_rating_product foreign key (user_id) references "+tbl_product+"(id);"
+		query = "alter table "+tbl_rating+" add constraint fk_rating_product foreign key (prod_id) references "+tbl_product+"(id);"
 		cursor.execute(query)
 
 	db.commit()
