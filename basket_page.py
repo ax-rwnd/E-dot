@@ -20,6 +20,8 @@ def add_to_basket(prod_id, user_id):
 		data = (user_id, prod_id, ne)
 		cursor.execute(query,data)
 		db.commit()
+
+	return render_template("/basket.html", status=True, message="Your product was added.", plist = map(resolve, get_lines(current_user.uid))) 
 	
 def amount_in_basket (prod_id, user_id):
 	db = getattr(g, 'db', None)
@@ -75,7 +77,7 @@ def place_order (uid):
 
 			#create row in order 
 			query = "insert into tbl_order (customer_id, date) values \
-				((select id from tbl_user where id=%s), NOW());"
+				((select id from tbl_user where id=%s), CURDATE());"
 			cursor.execute(query, (uid,))
 			last_row = cursor.lastrowid
 
@@ -112,7 +114,6 @@ def decrement_product(uid, pid):
 				query = "delete from tbl_basketlines where user_id = %s and prod_id = %s;"
 				cursor.execute(query, (uid, pid))
 			else:
-				print "prod: "+str(pid)+" uid: "+str(uid)
 				query = "update tbl_basketlines set amount = amount - 1 where prod_id = %s and user_id = %s;"
 				cursor.execute(query, (pid, uid))
 

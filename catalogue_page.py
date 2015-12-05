@@ -29,14 +29,9 @@ def show_product(catname, prodid):
 @catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
 def show_product_post(catname, prodid):
 	if request.method == 'POST' and current_user.is_authenticated:
-		add_to_basket(prodid, current_user.uid)
-		return "Success!"
-	"""
-		if request.form['submit'] == 'Send to Basket':
-			print "added!"
-			return ""
-	"""
-	return "Failed!"
+		return add_to_basket(prodid, current_user.uid)
+	else:
+		abort(403)
 
 def read_product_info(prodid):
 	db = getattr(g, 'db', None)
