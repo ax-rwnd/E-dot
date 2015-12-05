@@ -66,7 +66,7 @@ def place_order (uid):
 			for current in prods:
 				if cursor.execute(query, (current[0],)) <= 0:
 					cursor.execute("rollback;")
-					return (False, 'Product '+current[0]+' is missing from the stock.')
+					return (False, 'Product '+str(current[0])+' is missing from the stock.')
 				else:
 					line = cursor.fetchone()[0]
 					line = 0 if not line else line
