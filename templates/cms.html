@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta charset="ISO-8859-1">
-	<title>Content Management</title>
-	<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-<!--	<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> -->
-	<link href="/static/favicon.ico" rel="shortcut icon"/>
-	<link href="/static/style.css" rel="stylesheet">
-	<script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-	<!-- <script src="/netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
-<!--	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
-	<!-- <script src="/code.jquery.com/jquery-1.11.0.min.js"></script>-->
-	<script>
+    <meta charset="UTF-8">
+    <meta charset="ISO-8859-1">
+    <title>Content Management</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/favicon.ico" rel="shortcut icon">
+    <link href="/static/cms_style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script>
 	  $(document).on('change', '.btn-file :file', function() {
 	  var input = $(this),
 		  numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -36,164 +31,387 @@
 
 		});
 	});
-	</script>
+    </script>
 </head>
 <body>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                <li role="presentation"><a href="/">Home</a></li>
+                <li role="presentation"><a href="/catalogue">Catalogue</a></li>
+                {%if not current_user.is_authenticated%}
+                <li role="presentation"><a href="/login">Sign In</a> {%else%}
+                <li role="presentation"><a href="/logout">Sign Out</a>
+                    {%endif%}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
+
 <div class="container">
-	<div class="header">
-		<nav>
-			<ul class="nav nav-pills pull-right">
-				<li role="presentation"><a href="/">Home</a></li>
-				<li role="presentation"><a href="/catalogue">Catalogue</a></li>
-				{%if not current_user.is_authenticated%}
-				<li role="presentation"><a href="/login">Sign In</a> {%else%}
-				<li role="presentation"><a href="/logout">Sign Out</a>
-					{%endif%}
-				</li>
-				{% if not current_user.is_authenticated %}
-				<li role="presentation"><a href="signup">Sign Up</a>
-				</li>
-				{%endif%}
-			</ul>
-		</nav>
-		<h3 class="text-muted">
-			<i>e-dot &#8212; drop the com.</i>
-		</h3>
-	</div>
+    <div class="categories">
+        <h3>{{editname}}</h3>
+        <ul class="list-unstyled">
+            <a href="/cms/Add Category">Add Category</a>
+            <br>
+            <a href="/cms/Add Product">Add Product</a>
+            <br>
+            <a href="/cms/Edit Categories">Edit Categories</a>
+            <br>
+            <a href="/cms/Edit Products">Edit Products</a>
+            <br>
+            <a href="/cms/Remove Category">Remove Category</a>
+            <br>
+            <a href="/cms/Remove Product">Remove Product</a>
+        </ul>
+    </div>
 
-	<div id="categories">
-		<h3>Content Management</h3>
-		<ul class="list-unstyled">
-			<a href="/cms/Add Category">Add Category</a>
-			<br>
-			<a href="/cms/Remove Category">Remove Category</a>
-			<br>
-			<a href="/cms/Add Product">Add Product</a>
-			<br>
-			<a href="/cms/Remove Product">Remove Product</a>
-			<br>
-			<a href="/cms/Front Page">Front Page</a>
-			<br>
-			<a href="/cms/Color Scheme">Color Scheme</a>
-		</ul>
-	</div>
+    <div class="content">
 
-	<div id="products">
-		{% if editname == "Add Category" %}
-		<form id="manage" action="/cms/Add Category" method="POST">
-			<fieldset>
-				<legend>Add Category</legend>
-				<ol>
-					<li><label for=cat>Category Name</label>
-						<input id=catname name=catname type=text placeholder="Category Name" required autofocus>
-					</li>
-				</ol>
-			</fieldset>
-			<br>
-			<fieldset>
-				<button name="button" value="addcat" type=submit>Add Category</button>
-			</fieldset>
-		</form>
-		<br> <br>
-		{%elif editname =="Remove Category"%}
-		<form id="manage" action="/cms/Remove Category" method="POST">
-			<fieldset>
-				<legend>Remove Category</legend>
-				<ol>
-					<li><label for=cat>Category Name</label>
-						<select name=removecat placeholder="Select Category" required autofocus>
-							<option value="" disabled selected hidden>Select Category</option>
-							{%for c in cats%}
-							<option value="{{c}}">{{c}}</option>
-							{% endfor %}
-						</select>
-						<br>
-					</li>
-				</ol>
-			</fieldset>
-			<br>
-			<fieldset>
-				<button name="button" value="removecat" type=submit>Remove Category</button>
-			</fieldset>
-		</form>
-		{% elif editname == "Add Product" %}
-		<form id="manage" action="/cms/Add Product" method="POST" enctype="multipart/form-data">
-			<fieldset>
-				<legend>Add Product</legend>
-				<ol>
-					<li>
-						<label for=prodname>Product Name:</label>
-						<input id=prodname name=prodname type=text placeholder="Product Name" required autofocus>
-					</li>
-					<li>
-						<label for=prodprice>Product Price:</label>
-						<input id=prodprice name=prodprice type=text placeholder="Product Price" required> <br></li>
-					<li>
-						<label for=proddesc>Description:</label>
+        {%if ins == "success"%}
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Operation successful.
+        </div>
+        {%elif ins == "error"%}
+        <div class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error!</strong> Something went wrong.
+        </div>
+        {%endif%}
+
+        {% if editname == "Add Category" %}
+        <form id="manage" action="/cms/Add Category" method="POST">
+            <fieldset>
+                <legend>
+                    <center>Add Category</center>
+                </legend>
+                <ol>
+                    <li><label for=cat>Add Category</label>
+                        <input id=catname name=catname type=text placeholder="Category Name" required autofocus>
+                    </li>
+                </ol>
+            </fieldset>
+            <br>
+            <fieldset>
+                <button name="button" value="addcat" type=submit>Add Category</button>
+            </fieldset>
+        </form>
+        {% elif editname == "Add Product" %}
+        <form id="manage" action="/cms/Add Product" method="POST" enctype="multipart/form-data">
+            <fieldset>
+                <legend>
+                    <center>Add Product</center>
+                </legend>
+                <ol>
+                    <li>
+                        <label for=prodname>Name:</label>
+                        <input id=prodname name=prodname type=text placeholder="Product Name" required autofocus>
+                    </li>
+                    <li>
+                        <label for=prodprice>Price:</label>
+                        <input id=prodprice name=prodprice type=text placeholder="Product Price" required> <br>
+                    </li>
+                    <li>
+                        <label for=proddesc>Description:</label>
 						<textarea id=proddesc name=proddesc style="resize: none" rows=4 cols=38"
-								  placeholder="Product Description" required></textarea>
-					</li>
-					<li>
-						<label for=prodcat>Category:</label>
-						<select name=prodcat placeholder="Select Category" required autofocus>
-							<option value="" disabled selected hidden>Select Category</option>
-							{%for c in cats%}
-							<option value="{{c}}">{{c}}</option>
-							{% endfor %}
-						</select><br>
-					</li>
-					<li><label>Image:</label>
-						<br> <br>
-
-						<div class="input-group">
+                                  placeholder="Product Description" required></textarea>
+                    </li>
+                    <li>
+                        <label for=prodcat>Category:</label>
+                        <select name=prodcat placeholder="Select Category" required autofocus>
+                            <option value="" disabled selected hidden>Select Category</option>
+                            {%for c in cat_info%}
+                            <option value="{{c}}">{{c}}</option>
+                            {% endfor %}
+                        </select><br>
+                    </li>
+                    <li>
+                        <label for=prodstock>In Stock:</label>
+                        <input id=prodstock name=prodstock type=number min="0" max="999" step="1"
+                               style="text-align:right;" value="0" required>
+                    </li>
+                    <li><label>Image:</label>
+                        <br><br>
+                        <div class="input-group">
 								<span class="input-group-btn">
 									<span class="btn btn-primary btn-file"> Browse Image&hellip;
-										<input type="file" id="prodfile" name="prodfile" accept="image/*">
+                                        <input type="file" id="prodfile" name="prodfile" accept="image/*">
 								</span>
 								</span><input type="text" class="form-control" readonly tabindex="-1">
-						</div>
-					</li>
-				</ol>
-			</fieldset>
-			<fieldset>
-				<button type=submit class="btn btn-primary btn-file">Add Product</button>
-			</fieldset>
-		</form>
-		{% elif editname == "Remove Product" %}
-		<form id="manage" action="/cms/Remove Product" method="POST">
-			<fieldset>
-				<legend>Remove Product</legend>
-				<ol>
-					<li><label for=cat>Product Name</label> <select id="removeprod" name="removeprod"
-																	placeholder="Select Category" required autofocus>
-						<option value="" disabled selected hidden>Select
-							Product
-						</option>
-						{% for p in prod%}
-						<option value="{{p}}">{{p}}</option>
-						{%endfor%}
-					</select></li>
-				</ol>
-			</fieldset>
-			<fieldset>
-				<button type=submit>Remove Product</button>
-			</fieldset>
-		</form>
-		{% elif editname == "Front Page" %} Edit frontpage information here
-		{% elif editname == "Color Scheme" %} Edit website color scheme here
-		{% endif %}
-		{%if ins == "success"%}
-		<div class="alert alert-success fade in">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Success!</strong> Operation successful.
-		</div>
-		{%elif ins == "error"%}
-		<div class="alert alert-danger fade in">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Error!</strong> Something went wrong, maybe the product already exists.
-		</div>
-		{%endif%}
-	</div>
+                        </div>
+                    </li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit class="btn btn-primary btn-file">Submit</button>
+            </fieldset>
+        </form>
+        <br>
+
+        {% elif editname == "Edit Categories"%}
+        <form id="manage" action="/cms/Edit Categories" method="POST">
+            <fieldset>
+                <legend><center>Avaliable Categories</center></legend>
+                {%if cat_info%}
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>Rename</th>
+                        <th>Kategori</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in cat_info %}
+                    <tr>
+                        <td><a href="?f={{item}}">Edit</a></td>
+                        <td>{{item}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </fieldset><br>
+            {% else %}
+            <center><p>No Categories found.</p></center>
+            {%endif%}
+        </form>
+        <br>
+        {% if request.args.get('f') %}
+        <form id="manage" action="/cms/Edit Categories" method="POST">
+            <fieldset>
+                <legend>
+                    <center>Edit Category</center>
+                </legend>
+                <ol>
+                    <li><label for=catname>Renaming: <i>{{request.args.get('f')}}</i></label>
+                        <input type="hidden" name="old_name" value="{{request.args.get('f')}}">
+                        <input id="rename_cat" name="rename_cat" type=text value="{{request.args.get('f')}}" required
+                               autofocus>
+                    </li>
+                </ol>
+            </fieldset>
+            <br>
+            <fieldset>
+                <button name="renamecat" value="renamecat" type=submit>Rename Category</button>
+            </fieldset>
+        </form>
+        {% endif%}
+        {% elif editname == "Edit Products"%}
+        {% if request.args.get('f') %}
+        <form id="manage" action="/cms/Edit Products" method="POST" enctype="multipart/form-data">
+            <fieldset>
+                <legend>
+                    <center>Edit Product</center>
+                </legend>
+                <ol>
+                    <li>
+                        <label for=prodname>Name:</label>
+                        <input id=prodname name=prodname type=text value="{{request.args.get('f')}}" required autofocus>
+                        <input type="hidden" name="old_name" value="{{request.args.get('f')}}">
+                    </li>
+                    <li>
+                        <label for=prodprice>Price:</label>
+                        <input id=prodprice name=prodprice type=text value="{{request.args.get('price')}}"
+                               required> <br>
+                    </li>
+                    <li>
+                        <label for=proddesc>Description:</label>
+						<textarea id=proddesc name=proddesc style="resize: none" rows=4 cols=38" required>{{request
+                            .args.get('desc')}}</textarea>
+                    </li>
+                    <li>
+                        <label for=prodcat>Category:</label>
+                        <select name=prodcat placeholder="Select Category" required autofocus>
+                            <option value="{{request.args.get('cat')}}" selected hidden>{{request.args.get('cat')}}</option>
+                            {%for c in cat_info%}
+                            <option value="{{c}}">{{c}}</option>
+                            {% endfor %}
+                        </select><br>
+                    </li>
+                    <li>
+                        <label for=prodstock>In Stock:</label>
+                        <input id=prodstock name=prodstock type=number value="{{request.args.get('stock')}}" min="0"
+                               max="999" step="1"
+                               style="text-align:right;" value="0" required>
+                    </li>
+                    <li><label>Image:</label>
+                        <br><br>
+                        <div class="input-group">
+								<span class="input-group-btn">
+									<span class="btn btn-primary btn-file"> Browse Image&hellip;
+                                        <input type="file" id="prodfile" name="prodfile" accept="image/*">
+								</span>
+								</span><input name="img_url" type="text" class="form-control"
+                                              value="{{request.args.get('img')}}" readonly tabindex="-1">
+                        </div>
+                    </li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type="submit" name="edit" value="edit_prod" class="btn btn-primary btn-file">Submit
+                    Changes</button>
+            </fieldset>
+        </form>
+        <br>
+        {% endif %}
+        <form id="manage" action="/cms/Edit Products" method="POST">
+            <fieldset>
+                <center><legend>Products in Catalogue</legend></center>
+                {% if info %}
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Kategori</th>
+                        <th>Produkt</th>
+                        <th>Stock</th>
+                        <th>Avaliable</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in info %}
+                    <tr>
+                        <td><a
+                                href="?f={{item[1]}}&price={{item[3]}}&cat={{item[0]}}&stock={{item[2]}}&desc={{item[4]}}&img={{item[5]}}">Edit</a></td>
+                        <td>{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="999"
+                                    style="text-align:right;"
+                                    value="{{item[2]}}"></td>
+                        <td><input type="checkbox" name="check_{{item[1]}}" value="{{item[1]}}" checked></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table><br>
+                <button name="edit" value="set_unavaliable" type=submit>Update Changes</button>
+                {% else %}
+                <center><p>No products found.</p></center>
+                {% endif %}
+            </fieldset>
+            </form>
+        <br>
+        <form id="manage" action="/cms/Edit Products" method="POST">
+            <center><legend>Products not in Catalogue</legend></center>
+            {% if others %}
+            <fieldset>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Kategori</th>
+                        <th>Produkt</th>
+                        <th>Stock</th>
+                        <th>Avaliable</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in others %}
+                    <tr>
+                        <td><a href="/cms/Edit">Edit</a></td>
+                        <td>{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="999"
+                                    style="text-align:right;"
+                                    value="0"></td>
+                        <td><input type="checkbox" name="check_{{item[1]}}" value="{{item[1]}}"></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <button name="edit" value="set_avaliable" type=submit>Update Changes</button>
+            </fieldset>
+            {% else %}
+            <center><p>No products found that are not in stock.</p></center>
+            {% endif %}
+        </form>
+        {%elif editname =="Remove Category"%}
+        <form id="manage" action="/cms/Remove Category" method="POST">
+            <fieldset>
+                <legend><center>Remove Category</center></legend>
+                <p>This will completely remove the Category from the database!</p>
+                <p>If you want, it is possible to change it's name in the <a href="/cms/Edit Categories">Edit
+                    Categories</a> page.</p>
+                <br>
+            </fieldset>
+            <fieldset>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for c in cat_info %}
+                    <tr>
+                        <td>{{c}}</td>
+                        <td><input type="checkbox" name="{{c}}" value="{{c}}"></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                {% if not cat_info %}
+                <center><p>No products found.</p></center>
+                {% else %}
+                    <button name="button" value="removecat" type=submit>Remove Selected</button>
+                {% endif %}
+            </fieldset>
+        </form>
+        {% elif editname == "Remove Product" %}
+        <form id="manage" name="removeform" action="/cms/Remove Product" method="POST">
+            <legend><center>Remove Product</center></legend>
+            <p>This will completely remove the Product from the database!</p>
+            <p>If you do not want the product to be
+                visible in the webstore, you can instead use
+                <a href="/cms/Edit Products">Edit Products</a> in order to make them unavaliable.</p>
+            <br>
+            <fieldset>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Produkt</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in info %}
+                    <tr>
+                        <td>{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <td><input type="checkbox" name="{{item[1]}}" value="{{item[1]}}"></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if not info %}
+                <br>
+                <center><p>No products found.</p></center>
+                {% endif %}
+            </fieldset>
+            <br>
+            <fieldset>
+            {% if info %}
+            <button name="button" value="removeprod" type=submit>Remove Selected</button>
+            {% endif %}
+            </fieldset>
+        </form>
+        {% endif %}
+
+    </div>
+</div>
+
 </body>
 </html>
 

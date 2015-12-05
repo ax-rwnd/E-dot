@@ -1,0 +1,186 @@
+html {
+       overflow-y: scroll;
+}
+
+body {
+	background: #ffffff;
+	color: #111111;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #337AB7;
+    color: white;
+}
+
+th, td {
+    font: 12px Georgia, "Times New Roman", Times, serif;
+    padding: 5px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.categories {
+    float:left;
+	padding-bottom: 20px;
+	padding-top:80px;
+    background:#FFFFFF;
+    margin:0px auto;
+    padding-bottom: 20px;
+}
+
+.content{
+    padding-top:80px;
+    float:right;
+}
+
+
+.header-cont {
+    width:100%;
+    position:fixed;
+    top:0px;
+    background:#FFFFFF;
+}
+
+.header {
+	padding-bottom: 20px;
+	height:50px;
+    background:#FFFFFF;
+    width:730px;
+    margin:0px auto;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+@media (min-width: 768px) {
+    .container {
+	    max-width: 730px;
+	}
+}
+
+form#manage {
+	background: #FFFFFF;
+	border:2px solid #e5e5e5;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 8px;
+	padding: 20px;
+	width: 450px;
+}
+
+
+form#manage legend {
+	color: #337AB7;
+	font-size: 16px;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+form#manage fieldset fieldset legend {
+	color: #111111;
+	font-size: 13px;
+	font-weight: normal;
+	padding-bottom: 0;
+}
+
+form#manage ol li {
+	background: #b9cf6a;
+	background: rgba(255,255,255,.3);
+	border-color: #e3ebc3;
+	border-color: rgba(255,255,255,.6);
+	border-style: solid;
+	border-width: 2px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	list-style: none;
+	padding: 5px 10px;
+	margin-bottom: 2px;
+}
+form#manage ol ol li {
+	background: none;
+	border: none;
+	float: left;
+}
+
+form#manage label {
+	float: left;
+	font-size: 12px;
+	width: 140px;
+}
+form#manage fieldset fieldset label {
+	background:none no-repeat left 50%;
+	line-height: 20px;
+	padding: 0 0 0 30px;
+	width: auto;
+}
+
+form#manage fieldset fieldset label:hover {
+	cursor: pointer;
+}
+
+form#manage input:not([type=submit]):focus,
+form#manage textarea:focus {
+	background: #eaeaea;
+}
+
+
+form#manage button {
+	background: #337AB7;
+	border: none;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	border-radius: 2px;
+	color: #ffffff;
+	display: block;
+	font: 14px Georgia, "Times New Roman", Times, serif;
+	letter-spacing: 1px;
+	margin: auto;
+	padding: 7px 25px;
+	text-transform: uppercase;
+}
+
+form#manage button:focus {
+	background: #23567F;
+}
+
+form#manage button:hover {
+	background: #23567F;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.btn-file input[type=file]:hover {
+    background: #337AB7;
+}
+
+input[readonly] {
+  background-color: white !important;
+  cursor: text !important;
+}
