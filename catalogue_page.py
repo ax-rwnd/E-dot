@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, g
-from flask.ext.login import current_user
+from flask.ext.login import current_user, login_required
 from itertools import product
 
 from basket_page import add_to_basket
@@ -26,12 +26,31 @@ def show_product(catname, prodid):
 	cats = read_categories()
 	return render_template("catalogue.html", catname=catname, prodid=prodid, c = cats, prod = product_info)
 
+def vote (uid, pid, mod):
+	db = getattr(g, 'db', None)
+	
+	with db as cursor:
+		query = "insert into tbl_rating (user_id, prod_id, score) values\
+			( (select id from tbl_user where id = %s),\
+			(select id from tbl_product where id = %s), %s)\
+			on duplicate key update score=VALUES(score);"
+		cursor.execute(query, (uid, pid, mod))
+
+
 @catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
+@login_required
 def show_product_post(catname, prodid):
-	if request.method == 'POST' and current_user.is_authenticated:
+
+	if 'send' in request.form:
 		return add_to_basket(prodid, current_user.uid)
+	elif 'vote_up' in request.form:
+		vote(current_user.uid, prodid, 1)	
+		return 'You voted up!'
+	elif 'vote_down' in request.form:
+		vote(current_user.uid, prodid, -1)	
+		return 'You voted down.'
 	else:
-		abort(403)
+		abort(500)
 
 def read_product_info(prodid):
 	db = getattr(g, 'db', None)
