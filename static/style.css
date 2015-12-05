@@ -17,6 +17,19 @@ html {
 	/*background:transparent;*/
 }
 
+#comment-field {
+	margin-top: 14px;
+}
+
+#comment-container {
+	margin-top: 7px;
+}
+
+.comment-box {
+	margin-top:5px;
+	border-top: 1px solid #aaa;
+}
+
 #products {
 	float:right;
 	height:600px;
@@ -27,7 +40,7 @@ html {
 
 #product_page {
 	float:right;
-	height:600px;
+	/*height:600px;*/
 	width:75%;
 	border: 1px solid gray;
 	background: rgba(212,228,239,1);
@@ -41,16 +54,16 @@ html {
 }
 
 .product_page_image{
-	width:500px;
-	height:400px;
-	margin-top: auto;
-    margin-bottom: auto; 
+	width: 50%;
+	height:50%;
+	margin: auto;
+	margin-top: 7px;
 	border:5px;
-  	margin:10px;
-	float:right;
+	/*float:right;*/
 }
 
 .product_page_image img{
+	border: 1px solid black;
 	max-width: 100%;
    	max-height: 100%;
 }
@@ -88,11 +101,11 @@ html {
 }
 
 .product_info{
-	float:left;
+	/*float:left;*/
 	border:5px;
   	margin:10px;
   	margin-top:0px;
-  	width:70%;
+  	/*width:70%;*/
 }
 
 

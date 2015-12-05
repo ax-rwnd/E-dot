@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from _mysql_exceptions import IntegrityError
 from flask import Blueprint, render_template, request, g
 from flask.ext.login import current_user, login_required
 from itertools import product
@@ -24,8 +25,9 @@ def show_catalogue(catname):
 def show_product(catname, prodid):
 	product_info = read_product_info(prodid)
 	cats = read_categories()
-	return render_template("catalogue.html", catname=catname, prodid=prodid, c = cats, prod = product_info)
+	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid), catname=catname, prodid=prodid, c = cats, prod = product_info)
 
+#set user vote
 def vote (uid, pid, mod):
 	db = getattr(g, 'db', None)
 	
@@ -36,13 +38,42 @@ def vote (uid, pid, mod):
 			on duplicate key update score=VALUES(score);"
 		cursor.execute(query, (uid, pid, mod))
 
+def post_comment (uid, pid, comment):
+	db = getattr(g, 'db', None)
+
+	with db as cursor:
+		query = "insert into tbl_review (user_id, prod_id, comment, commentdate) values\
+			( (select id from tbl_user where id = %s),\
+			(select id from tbl_product where id = %s), %s, NOW()) on duplicate key\
+			update comment=values(comment), commentdate=NOW();"
+		cursor.execute(query, (uid, pid, comment))
+		
+def read_comments (pid):
+	db = getattr(g, 'db', None)
+	
+	with db as cursor:
+		query = "select user_id, commentdate, comment from tbl_review where prod_id = %s order by commentdate desc;"
+		cursor.execute(query, (pid,))
+		return cursor.fetchall()
+
+def read_score (pid):
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select sum(score) as totalscore from tbl_rating where prod_id = %s;"
+		cursor.execute(query, (pid,))
+		return cursor.fetchone()[0]
 
 @catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
 @login_required
 def show_product_post(catname, prodid):
-
 	if 'send' in request.form:
 		return add_to_basket(prodid, current_user.uid)
+	elif 'post_comment' in request.form:
+		try:
+			post_comment(current_user.uid, prodid, request.form['comment_text'])
+		except IntegrityError:
+			return "You have already commented."
+		return 'You commented.'
 	elif 'vote_up' in request.form:
 		vote(current_user.uid, prodid, 1)	
 		return 'You voted up!'
@@ -53,6 +84,7 @@ def show_product_post(catname, prodid):
 		abort(500)
 
 def read_product_info(prodid):
+	
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
 	query = ("select name, description, price, image_url from tbl_product where id = %s;")
