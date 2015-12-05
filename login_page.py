@@ -42,30 +42,6 @@ def show_login_post():
 
 	if check_password_hash(pw, password):
 		login_user(User(uid))
-		return render_template("basket.html", message="You have been logged in!", status = False)
+		return render_template("/index.html", message="You have been logged in!", status = True)
 	else:
-		 return render_template("login.html", message="Invalid e-mail or password.")
-
-	# try:
-	#	 # prepare query
-	#	 name = (request.form['usertext'],)
-	#	 password = (request.form['pwtext'],)
-	#	 query = "select (password) from tbl_user where username = (%s);"
-	#
-	#	 with db as cursor:
-	#		 cursor.execute(query, name)
-	#		 pw = cursor.fetchone()[0]
-	#
-	#	 if check_password_hash(pw, password[0]):
-	#		 with db as cursor:
-	#			 query = "select (id) from tbl_user where username = (%s);"
-	#			 cursor.execute(query, name)
-	#			 uid = cursor.fetchall()[0][0]
-	#
-	#		 login_user(User(uid))
-	#		 return 'You have been logged in! \
-		# 	<br/>Follow <a href="/">this</a> link to proceed.'
-	# except Exception as e:
-	#	 print e
-	# return 'Login failed.<br/>Follow <a href="/login">this</a> \
-		#  link to try again.'
+		 return render_template("/login.html", message="Invalid e-mail or password.")

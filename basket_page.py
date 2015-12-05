@@ -20,6 +20,8 @@ def add_to_basket(prod_id, user_id):
 		data = (user_id, prod_id, ne)
 		cursor.execute(query,data)
 		db.commit()
+
+	return render_template("/basket.html", status=True, message="Your product was added.", plist = map(resolve, get_lines(current_user.uid))) 
 	
 def amount_in_basket (prod_id, user_id):
 	db = getattr(g, 'db', None)
@@ -33,12 +35,107 @@ def amount_in_basket (prod_id, user_id):
 			amount = 0
 	return amount
 	
+"""
+Order of transaction:
+1. Secure amount in store
+2. Create order
+3. Remove amount from store
+4. Clear basket
+"""
 
-@basket_page.route("/basket")
-@login_required
-def show_basket():
+#creates an order from the basket of a user
+def place_order (uid):
 	db = getattr(g, 'db', None)
-	orderlist = {} 
+
+	with db as cursor:
+		#Start transaction
+		query = "start transaction;"
+		cursor.execute(query)
+		
+		#create order
+		query = "select prod_id, amount from tbl_basketlines where user_id = %s;"
+		if cursor.execute(query, (uid,)) <= 0:
+			cursor.execute("ROLLBACK;")
+			return (False, "No items in basket.");
+		else:
+			prods = cursor.fetchall() #will contain all products in basket with amount
+
+			
+			#check stock amount
+			query = "select amount from tbl_stock where product_id = %s;"
+			for current in prods:
+				if cursor.execute(query, (current[0],)) <= 0:
+					cursor.execute("rollback;")
+					return (False, 'Product '+str(current[0])+' is missing from the stock.')
+				else:
+					line = cursor.fetchone()[0]
+					line = 0 if not line else line
+
+					if current[1] > line:
+						cursor.execute("ROLLBACK;")
+						return (False, "Too few items of id "+str(current[0])+" in stock.");
+
+			#create row in order 
+			query = "insert into tbl_order (customer_id, date) values \
+				((select id from tbl_user where id=%s), CURDATE());"
+			cursor.execute(query, (uid,))
+			last_row = cursor.lastrowid
+
+			#update stock amount
+			update_query = "update tbl_stock set amount = amount - %s where product_id = %s and amount > 0;"
+			query = "insert into tbl_orderlines (prod_id, order_id, amount) values (\
+				(select id from tbl_product where id = %s),\
+				(select id from tbl_order where id = %s), \
+				%s);"
+
+			#add to order, remove from stock
+			for current in prods:
+				cursor.execute(query, (current[0], last_row, current[1]))
+				cursor.execute(update_query, (current[1], current[0]))
+
+			#remove from basket
+			query = "delete from tbl_basketlines where user_id=%s;"
+			cursor.execute(query, (uid,))
+			
+			cursor.execute("commit;")
+
+	return (True, "Your order was placed.")
+
+#removes 1x of the selected ID from a basket
+def decrement_product(uid, pid):
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select amount from tbl_basketlines where user_id = %s and prod_id = %s;"
+		if cursor.execute(query, (uid, pid)) <= 0:
+			return (False, "Product "+str(pid)+" was not found in basket.")
+		else:
+			amount = cursor.fetchone()[0]
+			if amount <= 1:
+				query = "delete from tbl_basketlines where user_id = %s and prod_id = %s;"
+				cursor.execute(query, (uid, pid))
+			else:
+				query = "update tbl_basketlines set amount = amount - 1 where prod_id = %s and user_id = %s;"
+				cursor.execute(query, (pid, uid))
+
+			return (True, "Product "+str(pid)+" was removed from the basket.")
+
+@basket_page.route("/basket", methods=['POST'])
+@login_required
+#transact all wares from basket to order
+def show_basket_post():
+	db = getattr(g, 'db', None)
+	if 'place_order' in request.form:
+		suc, resstr = place_order(current_user.uid)
+	elif 'remove_item' in request.form:
+		suc, resstr = decrement_product(current_user.uid, request.form['target'])
+	else:
+		abort(500)
+
+	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(current_user.uid))) 
+
+
+def get_lines (uid):
+	db = getattr(g, 'db', None)
 
 	#select all basketed products and amounts for this user
 	with db as cursor:
@@ -46,17 +143,20 @@ def show_basket():
 		data = (current_user.uid,)
 		cursor.execute(query,data)
 		prods = cursor.fetchall()
+		
+		return prods
 
-	#sample insert into basketlines
-	#insert into tbl_basketlines (user_id, prod_id, amount) values ((select id from tbl_user where id=4), (select id from tbl_product where id=1), 1);
+#resolve name, price and amount
+def resolve(tup):
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select name, price, image_url, id from tbl_product where id = %s;"
+		data = (tup[0],)
+		cursor.execute(query,data)
+		ret = cursor.fetchone()
+		return (ret[0], ret[1], tup[1], ret[2], ret[3])
 
-	#resolve name, price and amount
-	def resolve(tup):
-		with db as cursor:
-			query = "select name, price, image_url from tbl_product where id = %s;"
-			data = (tup[0],)
-			cursor.execute(query,data)
-			ret = cursor.fetchone()
-			return (ret[0], ret[1], tup[1], ret[2])
-
-	return render_template("basket.html", plist = map(resolve, prods))
+@basket_page.route("/basket")
+@login_required
+def show_basket():
+	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)))

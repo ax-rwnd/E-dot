@@ -24,6 +24,7 @@ tbl_basketlines = "tbl_basketlines"
 tbl_order = "tbl_order"
 tbl_category = "tbl_category"
 tbl_stock = "tbl_stock"
+tbl_rating = "tbl_rating"
 
 def main():
     print "E-dot commerce database script starting..."
@@ -38,8 +39,23 @@ def main():
     create_orderlines_tbl()
     create_basketlines_tbl()
     create_stock_tbl()
+    create_rating_tbl()
 
     print "Completed sucessfully"
+
+def create_rating_tbl():
+	db = DBFUNC(config["SQLDB"])
+	with db as cursor:
+		query = "create table "+tbl_rating+" (user_id INT(11) UNSIGNED NOT NULL, prod_id INT(11) UNSIGNED NOT NULL, score INT(2), PRIMARY KEY (user_id, prod_id));"
+		cursor.execute(query)
+
+		query = "alter table "+tbl_rating+" add constraint fk_rating_user foreign key (user_id) references "+tbl_user+"(id);"
+		cursor.execute(query)
+
+		query = "alter table "+tbl_rating+" add constraint fk_rating_product foreign key (prod_id) references "+tbl_product+"(id);"
+		cursor.execute(query)
+
+	db.commit()
 
 def create_stock_tbl():
 	db = DBFUNC(config["SQLDB"])
@@ -113,10 +129,10 @@ def create_order_tbl():
     db = DBFUNC(config["SQLDB"])
     cursor = db.cursor()
     print "Creating table", tbl_order
-    query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11) NOT " \
-									   "NULL, date DATE);"
+    query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11) UNSIGNED NOT " \
+					  "NULL, date DATE);"
     cursor.execute(query)
-    query = "alter table "+ tbl_order+" add CONSTRAINT fk_customer_id FOREIGN KEY (id) REFERENCES "+tbl_user+"(id);"
+    query = "alter table "+ tbl_order+" add CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES "+tbl_user+"(id);"
     cursor.execute(query)
 
     db.commit()

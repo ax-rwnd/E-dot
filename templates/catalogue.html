@@ -79,7 +79,14 @@
 			{{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
 			{% if current_user.is_authenticated %}
 			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-				<input type="submit" name="submit" value="Send to Basket">
+				<input type="submit" name="send" value="Send to Basket">
+			</form>
+
+			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+				<input type="submit" name="vote_up" value="+1">
+			</form>
+			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+				<input type="submit" name="vote_down" value="-1">
 			</form>
 			{% endif %}
 			</div>
