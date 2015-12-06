@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, g
 from flask.ext.login import login_required, current_user
+from config import config
 
 basket_page = Blueprint('basket_page', __name__, template_folder='templates')
 
@@ -156,7 +157,7 @@ def resolve(tup):
 		data = (tup[0],)
 		cursor.execute(query,data)
 		ret = cursor.fetchone()
-		return (ret[0], ret[1], tup[1], ret[2], ret[3])
+		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3])
 
 @basket_page.route("/basket")
 @login_required
