@@ -29,7 +29,8 @@
         <nav>
             <ul class="nav nav-pills pull-right">
                 {% if current_user.is_authenticated %}
-                <li role="presentation" class="active"><a href="/basket"><img src="/static/basket.png"/></a>
+                <li role="presentation" class="active"><a href="/basket"><img src="/static/basket.png"/> &nbsp <span
+                        class="badge">{{numbasket}}</span></a>
                 </li>
                 {% endif %}
                 <li role="presentation"><a href="/">Home</a>

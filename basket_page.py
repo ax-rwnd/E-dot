@@ -134,7 +134,9 @@ def show_basket_post():
 	else:
 		abort(500)
 
-	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(current_user.uid))) 
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
+		current_user.uid)), numbasket=numbasket)
 
 
 def get_lines (uid):
@@ -159,7 +161,18 @@ def resolve(tup):
 		ret = cursor.fetchone()
 		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3])
 
+def prods_in_basket(uid):
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select * from tbl_basketlines where tbl_basketlines.user_id = %s"
+		data = (uid,)
+		cursor.execute(query,data)
+		l = len(cursor.fetchall())
+		print l
+		return l
+
 @basket_page.route("/basket")
 @login_required
 def show_basket():
-	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)))
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)), numbasket=numbasket)
