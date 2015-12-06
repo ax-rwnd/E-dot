@@ -2,94 +2,113 @@
 <html lang="en">
 
 <head>
-	<title>e-dot</title>
-	<link href="/static/favicon.ico" rel="shortcut icon" />
-	<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-<!--	<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> -->
-	<link href="/static/style.css" rel="stylesheet">
-	<script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <title>e-dot</title>
+    <link href="/static/favicon.ico" rel="shortcut icon"/>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--	<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> -->
+    <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/index_style.css" rel="stylesheet">
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 
 <body>
-
-	<div class="container">
-		<div class="header">
-			<nav>
-				<ul class="nav nav-pills pull-right">
-			{% if current_user.is_authenticated %}
-					<li role="presentation"><a href="/basket"><img src="/static/basket.png"/></a>
-					</li>
-			{% endif %}
-					<li role="presentation" class="active"><a href="/">Home</a>
-					</li>
-					<li role="presentation"><a href="catalogue">Catalogue</a>
-					</li>
-			{% if not current_user.is_authenticated %}
-					<li role="presentation"><a href="login">Sign In</a>
-			{% else %}
-					<li role="presentation"><a href="logout">Sign Out</a>
-			{% endif %}
-					</li>
-					{% if not current_user.is_authenticated %}
-					<li role="presentation"><a href="signup">Sign Up</a>
-					</li>
-					{%endif%}
-				</ul>
-			</nav>
-			<h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
-		</div>
-		{%if message and status%}
-		<div class="alert alert-success fade in">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Success!</strong> {{message}}
-		</div>
-		{%endif%}
-	<div class="bg"></div>
-		<div class="jumbotron">
-			<h1>e-dot Web Store</h1>
-			<p class="lead"></p>
-		{% if not current_user.is_authenticated %}
-				<p><a class="btn btn-lg btn-success" href="/login" role="button">Sign In to Start Shopping!</a>
-				<p><a class="btn btn-default" href="/catalogue" role="button">Browse Catalogue</a>
-		{% else %}
-				<p><a class="btn btn-lg btn-info" href="/catalogue" role="button">Start Shopping!</a>
-		{% endif %}
-				
-			</p>
-		</div>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/></a>
+                </li>
+                {% endif %}
+                <li role="presentation" class="active"><a href="/">Home</a>
+                </li>
+                <li role="presentation"><a href="catalogue">Catalogue</a>
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="login">Sign In</a>
+                    {% else %}
+                <li role="presentation"><a href="logout">Sign Out</a>
+                    {% endif %}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
 
 
-	<!-- left div -->
-		<div class="row marketing">
-			<div class="col-lg-6">
-				<h4>Innovation Proposition</h4>
-				<p>Going forward, our next-generation stack will deliver value to platforms.</p>
+<div class="container">
 
-				<h4>Core Asset</h4>
-				<p>In the agile workflow space, industry is globally connecting its competitive synergies.</p>
-			</div>
+    <div class="content">
 
-			<!-- right div -->
-			<div class="col-lg-6">
-				<h4>Ballpark Figure</h4>
-				<p>Virtually facilitating effectively unparalleled industry leaders is crucial to our long-term organic growth.</p>
+        {%if message and status%}
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> {{message}}
+        </div>
+        {%endif%}
+        <div class="bg"></div>
+        <div class="jumbotron">
+            <h1>e-dot Web Store</h1>
 
-				<h4>Paradigm Shift</h4>
-				<p>Best-in-class step-changes are becoming end-to-end dot-bomb experts.</p>
-			</div>
-		</div>
+            <p class="lead"></p>
+            {% if not current_user.is_authenticated %}
+            <p><a class="btn btn-lg btn-success" href="/login" role="button">Sign In to Start Shopping!</a>
 
-		<footer class="footer">
-	<center>
-			<p>
-		This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and 
-		<a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
-		</p>
-	</center>
-		</footer>
+            <p><a class="btn btn-default" href="/catalogue" role="button">Browse Catalogue</a>
+                {% else %}
 
-	</div>
+            <p><a class="btn btn-lg btn-info" href="/catalogue" role="button">Start Shopping!</a>
+                {% endif %}
+
+            </p>
+        </div>
+
+
+        <!-- left div -->
+        <div class="row marketing">
+            <div class="col-lg-6">
+                <h4>Innovation Proposition</h4>
+
+                <p>Going forward, our next-generation stack will deliver value to platforms.</p>
+
+                <h4>Core Asset</h4>
+
+                <p>In the agile workflow space, industry is globally connecting its competitive synergies.</p>
+            </div>
+
+            <!-- right div -->
+            <div class="col-lg-6">
+                <h4>Ballpark Figure</h4>
+
+                <p>Virtually facilitating effectively unparalleled industry leaders is crucial to our long-term organic
+                    growth.</p>
+
+                <h4>Paradigm Shift</h4>
+
+                <p>Best-in-class step-changes are becoming end-to-end dot-bomb experts.</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <center>
+                <p>
+                    This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
+                    and
+                    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+                </p>
+            </center>
+        </footer>
+
+    </div>
+</div>
 </body>
 
 </html>

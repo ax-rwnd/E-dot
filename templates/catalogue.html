@@ -1,122 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Catalogue</title>
-<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-<!--	<link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">-->
-	<link href="/static/favicon.ico" rel="shortcut icon" />
-	<link href="/static/style.css" rel="stylesheet">
-
+    <title>Catalogue</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/favicon.ico" rel="shortcut icon"/>
+    <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/catalogue_style.css" rel="stylesheet">
+    <style>
+        .content{
+            width:75%;
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<div class="header">
-			<nav>
-				<ul class="nav nav-pills pull-right">
-					{% if current_user.is_authenticated %}
-					<li role="presentation"><a href="/basket"><img src="/static/basket.png"/></a>
-					</li>
-					{% endif %}
-					<li role="presentation"><a href="/">Home</a></li>
-					<li role="presentation" class="active"><a href="/catalogue">Catalogue</a>
-					</li> {% if not current_user.is_authenticated %}
-					<li role="presentation"><a href="/login">Sign In</a> {% else
-						%}
-					<li role="presentation"><a href="/logout">Sign Out</a> {%
-						endif %}</li>
-					{% if not current_user.is_authenticated %}
-					<li role="presentation"><a href="/signup">Sign Up</a>
-					</li>
-					{%endif%}
-				</ul>
-			</nav>
-			<h3 class="text-muted">
-				<i>e-dot &#8212; drop the com.</i>
-			</h3>
-		</div>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/></a>
+                </li>
+                {% endif %}
+                <li role="presentation"><a href="/">Home</a></li>
+                <li role="presentation" class="active"><a href="/catalogue">Catalogue</a>
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/login">Sign In</a> {% else
+                    %}
+                <li role="presentation"><a href="/logout">Sign Out</a> {%
+                    endif %}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
+
+<div class="container">
+    <div class="categories">
+        <h3>{{ catname }}</h3>
+
+        <ul class="list-unstyled">
+            {% for name in c %}
+            <a href="/catalogue/{{name}}">{{name}}</a>
+            <br> {% endfor %}
+        </ul>
+    </div>
+    <div class="content">
+        {% if p%}
+            {% for product in p%}
+            <div class="product_box" tabindex="{{p.index(product)}}">
+                <div class="product_info">
+                    <a href="/catalogue/{{catname}}/{{product[0]}}">
+                        <h3>{{product[1]}}</h3></a>
+                        <label for="desc">Description:</label>
+                        <p id="desc">{{product[2]}}</p>
+                        <label for="price">Price:</label>
+                        <p id="price">{{product[3]}}$</p>
+
+                </div>
+                <div class="product_image">
+                    <img src="/{{product[4]}}"/>
+                </div>
+            </div>
+            {% endfor %}
+        {%endif%} {%if prod%}
+
+        <div id="product_page">
+            {% if prod[3] %}
+            <div class="product_page_image">
+                <img src="/{{prod[3]}}"/>
+            </div>
+            {% endif %}
+
+            <div class="product_info">
+                <h3>{{prod[0]}}</h3>
+                {{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
+                {% if current_user.is_authenticated %}
+                <div style="float: right;">
+                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                        <!-- <input type="submit" name="vote_up" value="+1"> -->
+                        <button type="submit" name="vote_up">
+                            <img src="/static/img/arrow_up.svg">
+                        </button>
+                    </form>
+                    <p>{{rating}}</p>
+
+                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                        <button type="submit" name="vote_down">
+                            <img src="/static/img/arrow_down.svg">
+                        </button>
+                    </form>
+                </div>
+                <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                    <input type="submit" name="send" value="Send to Basket">
+                </form>
 
 
+                <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                    Your comment: <input type="text" name="comment_text">
+                    <input type="submit" name="post_comment" maxlength="255" value="Post">
+                </form>
+                {% endif %}
+                <div id="comment-container">
+                    {% for comm in comments %}
+                    <div class="comment-box">
+                        <p><i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+                            <br>
+                            {{comm[2]}} </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
 
-		<div id="categories">
-			<h3>{{ catname }}</h3>
-
-			<ul class="list-unstyled">
-				{% for name in c %}
-				<a href="/catalogue/{{name}}">{{name}}</a>
-				<br> {% endfor %}
-			</ul>
-		</div>
-
-
-		{% if p%}
-		<div id="products">
-			{% for product in p%}
-			<div class="product_box" tabindex="{{p.index(product)}}">
-				<div class="product_info">
-				<a href="/catalogue/{{catname}}/{{product[0]}}">
-					<h3>{{product[1]}}</h3>
-					{{product[2]}} <br> <br> <b>Price: {{product[3]}}$</b>
-				</a>
-				</div>
-				<div class="product_image">
-					<img src="/{{product[4]}}" />
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-		{%endif%} {%if prod%}
-
-		<div id="product_page">
-			{% if prod[3] %}
-			<div class="product_page_image">
-				<img src="/{{prod[3]}}" />
-			</div>
-			{% endif %}
-
-			<div class="product_info">
-			<h3>{{prod[0]}}</h3>
-			{{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
-			{% if current_user.is_authenticated %}
-			<div style="float: right;">
-			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-				<!-- <input type="submit" name="vote_up" value="+1"> -->
-				<button type="submit" name="vote_up">
-					<img src="/static/img/arrow_up.svg">
-				</button>
-			</form>
-			<p>{{rating}}</p>
-			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-				<button type="submit" name="vote_down">
-					<img src="/static/img/arrow_down.svg">
-				</button>
-			</form>
-			</div>
-			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-				<input type="submit" name="send" value="Send to Basket">
-			</form>
-
-
-
-			<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-				Your comment: <input type="text" name="comment_text">
-				<input type="submit" name="post_comment" maxlength="255" value="Post">
-			</form>
-			{% endif %}
-			<div id="comment-container">
-			{% for comm in comments %}
-			<div class="comment-box">
-				<p> <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
-				<br>
-				{{comm[2]}} </p>
-			{% endfor %}
-			</div>
-			</div>
-			</div>
-			
-
-		</div>
-		{%endif%}
+        </div>
+        {%endif%}
+        </div>
+</div>
+<footer class="footer">
+    <center>
+        <p>
+            This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
+            and
+            <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+        </p>
+    </center>
+</footer>
 </body>
 </html>
 
