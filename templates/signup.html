@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Sign Up</title>
-	<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-	<!-- <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> -->
-	<link href="/static/favicon.ico" rel="shortcut icon"/>
-	<link href="/static/style.css" rel="stylesheet">
-
-
-	<script type="text/javascript">
+    <title>Sign Up</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/favicon.ico" rel="shortcut icon"/>
+    <link href="/static/cms_style.css" rel="stylesheet">
+    <style>
+        .content{
+            float:none;
+        }
+    </style>
+    <script type="text/javascript">
 		window.addEventListener("load", function load(event){
 			window.removeEventListener("load", load, false); //remove listener, no longer needed
 			document.getElementById('signup_button').disabled = true;
 		},false);
-	</script>
 
-	<script type="text/javascript">
+    </script>
+
+    <script type="text/javascript">
 		function pwcheck()
 		{
 			var one = document.getElementsByName("pwtext")[0].value;
@@ -62,98 +65,114 @@
 				document.getElementById('signup_button').disabled = true;
 			}
 		}
-	</script>
+
+    </script>
 </head>
 <body>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                <li role="presentation"><a href="/">Home</a>
+                </li>
+                <li role="presentation"><a href="catalogue">Catalogue</a>
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="login">Sign In</a>
+                    {% else %}
+                <li role="presentation"><a href="logout">Sign Out</a>
+                    {% endif %}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation" class="active"><a href="signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
+
 <div class="container">
-	<div class="header">
-		<nav>
-			<ul class="nav nav-pills pull-right">
-				<li role="presentation"><a href="/">Home</a>
-				</li>
-				<li role="presentation"><a href="catalogue">Catalogue</a>
-				</li>
-				{% if not current_user.is_authenticated %}
-				<li role="presentation"><a href="login">Sign In</a>
-					{% else %}
-				<li role="presentation"><a href="logout">Sign Out</a>
-					{% endif %}
-				</li>
-				{% if not current_user.is_authenticated %}
-				<li role="presentation" class="active"><a href="signup">Sign Up</a>
-				</li>
-				{%endif%}
-			</ul>
-		</nav>
-		<h3 class="text-muted"><i>e-dot &#8212; drop the com.</i></h3>
-	</div>
-	{%if message%}
-	<div class="alert alert-danger fade in">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		<strong>Error!</strong> {{message}}
-	</div>
-	{%endif%}
-	<center>
-		<center>
-			<form id="manage" action="/signup" method="POST">
-				<fieldset>
-					<legend>Step 1: Account Details:</legend>
-					<ol>
-						<li>
-							<label for=emailtext>Email:</label>
-							<input id=emailtext name=emailtext type=text placeholder="example@domain.com" required autofocus onchange="checkDone()">
-						</li>
-						<li>
-							<label for=pwtext>Password:</label>
-							<input id=pwtext name=pwtext type=password required onkeyup="checkDone()">
-							<br>
-						</li>
-						<li>
-							<label for=pwrepeat>Repeat Password: </label>
-							<input id=pwrepeat name=pwrepeat type=password required onkeyup="checkDone()"> <br>
-						</li>
-						<li>
-							<label>Password Match: </label>
-							<span id="match_icon" class="glyphicon glyphicon-remove"></span>
-						</li>
-						<li>
-							<label>Password Strength: </label>
-							<label id="strength_label">---</label>
-							<br>
-						</li>
-					</ol>
-				</fieldset>
-				<fieldset>
-					<legend>Step 2: Personal Information:</legend>
-					<ol>
-						<li>
-							<label for=nametext>Name:</label>
-							<input id=nametext name=nametext type=text placeholder="First and last name" required onkeyup="checkDone()">
-						</li>
-						<li>
-							<label for=addresstext>Address:</label>
-							<input id=addresstext name=addresstext type=text required autofocus onkeyup="checkDone()">
-						</li>
-						<li>
-							<label for=postcodetext>Post Code:</label>
-							<input id=postcodetext name=postcodetext type=text required autofocus onkeyup="checkDone()">
-						</li>
-						<li>
-							<label for=citytext>City:</label>
-							<input id=citytext name=citytext type=text required autofocus onkeyup="checkDone()">
-						</li>
-						<li>
-							<label for=countrytext>Country:</label>
-							<input id=countrytext name=countrytext type=text required autofocus onkeyup="checkDone()">
-						</li>
-					</ol>
-				</fieldset>
-				<fieldset>
-					<button type=submit id="signup_button" name="signup_button" class="btn btn-primary btn-file">Sign Up</button>
-				</fieldset>
-			</form>
-		</center>
-	</center>
+    <div class="content">
+        {%if message%}
+        <div class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error!</strong> {{message}}
+        </div>
+        {%endif%}
+        <center>
+            <center>
+                <form id="manage" action="/signup" method="POST">
+                    <fieldset>
+                        <legend>Step 1: Account Details:</legend>
+                        <ol>
+                            <li>
+                                <label for=emailtext>Email:</label>
+                                <input id=emailtext name=emailtext type=text placeholder="example@domain.com" required
+                                       autofocus onchange="checkDone()">
+                            </li>
+                            <li>
+                                <label for=pwtext>Password:</label>
+                                <input id=pwtext name=pwtext type=password required onkeyup="checkDone()">
+                                <br>
+                            </li>
+                            <li>
+                                <label for=pwrepeat>Repeat Password: </label>
+                                <input id=pwrepeat name=pwrepeat type=password required onkeyup="checkDone()"> <br>
+                            </li>
+                            <li>
+                                <label>Password Match: </label>
+                                <span id="match_icon" class="glyphicon glyphicon-remove"></span>
+                            </li>
+                            <li>
+                                <label>Password Strength: </label>
+
+                                <p id="strength_label">---</p>
+                            </li>
+                        </ol>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Step 2: Personal Information:</legend>
+                        <ol>
+                            <li>
+                                <label for=nametext>Name:</label>
+                                <input id=nametext name=nametext type=text placeholder="First and last name" required
+                                       onkeyup="checkDone()">
+                            </li>
+                            <li>
+                                <label for=addresstext>Address:</label>
+                                <input id=addresstext name=addresstext type=text required autofocus
+                                       onkeyup="checkDone()">
+                            </li>
+                            <li>
+                                <label for=postcodetext>Post Code:</label>
+                                <input id=postcodetext name=postcodetext type=text required autofocus
+                                       onkeyup="checkDone()">
+                            </li>
+                            <li>
+                                <label for=citytext>City:</label>
+                                <input id=citytext name=citytext type=text required autofocus onkeyup="checkDone()">
+                            </li>
+                            <li>
+                                <label for=countrytext>Country:</label>
+                                <input id=countrytext name=countrytext type=text required autofocus
+                                       onkeyup="checkDone()">
+                            </li>
+                        </ol>
+                    </fieldset>
+                    <fieldset>
+                        <button type=submit id="signup_button" name="signup_button" class="btn btn-primary btn-file">
+                            Sign Up
+                        </button>
+                    </fieldset>
+                </form>
+            </center>
+        </center>
+    </div>
+</div>
 </body>
 </html>
 	
