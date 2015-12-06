@@ -75,6 +75,10 @@ def teardown_request(exception):
 def main():
 	return render_template("index.html")
 
+@app.errorhandler(401)
+def unauthorized(e):
+	return render_template("/login.html", status = False, message = "You must be logged in to do that.")
+
 #setup ssl context
 def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)

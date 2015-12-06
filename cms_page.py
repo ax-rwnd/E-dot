@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Blueprint, request, render_template, g
+from flask.ext.login import login_required
 from config import config
 from werkzeug import secure_filename
 
@@ -11,6 +12,7 @@ cms_page = Blueprint('cms_page', __name__, template_folder='templates')
 
 # render catalogue with listed categories
 @cms_page.route("/cms/")
+@login_required
 def show_cms():
 	return render_template("cms.html", editname="Content Management")
 
@@ -38,6 +40,7 @@ def show_cms_editor(editname):
 	return render_template("cms.html", editname=editname)
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
+@login_required
 def add_category():
 	catname = request.form['catname']
 	categories = read_categories()
@@ -56,6 +59,7 @@ def add_category():
 	return render_template("cms.html", editname="Add Category", ins="success")
 
 @cms_page.route("/cms/Add Product", methods=['POST'])
+@login_required
 def add_product():
 	prodname = request.form['prodname']
 	prodprice = request.form['prodprice']
@@ -93,6 +97,7 @@ def add_product():
 	return render_template("cms.html", editname = "Add Product", cat_info=cat_info, ins = "success")
 
 @cms_page.route("/cms/Edit Categories", methods=['POST'])
+@login_required
 def edit_categories():
 
 	newname = request.form['rename_cat']
@@ -160,6 +165,7 @@ def edit_specific_product(oldname):
 
 
 @cms_page.route("/cms/Edit Products", methods=['POST'])
+@login_required
 def edit_products():
 
 	alt = request.form['edit']
@@ -201,6 +207,7 @@ def edit_products():
 	return render_template("cms.html", editname="Edit Products", info=info, others=others, ins = "success")
 
 @cms_page.route("/cms/Remove Category", methods=['POST'])
+@login_required
 def remove_category():
 	cats = read_categories()
 	to_remove = []
@@ -235,6 +242,7 @@ def category_remover(catname):
 		return False
 
 @cms_page.route("/cms/Remove Product", methods=['POST'])
+@login_required
 def remove_product():
 	prods = read_products()
 	to_remove = []
