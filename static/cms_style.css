@@ -10,6 +10,12 @@ body {
 	padding-bottom: 20px;
 }
 
+.footer {
+	padding-top: 19px;
+	color: #777;
+	border-top: 1px solid #e5e5e5;
+}
+
 table{
     width: 100%;
     border-collapse: collapse;
@@ -41,6 +47,7 @@ th, td {
 .content{
     padding-top:80px;
     float:right;
+    padding-bottom:30px;
 }
 
 
