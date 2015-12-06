@@ -19,17 +19,8 @@
 
 #product_page {
 	float:right;
-	/*height:600px;*/
 	width:75%;
 	border: 1px solid gray;
-	background: rgba(212,228,239,1);
-	background: -moz-linear-gradient(top, rgba(212,228,239,1) 0%, rgba(134,174,204,0.19) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(212,228,239,1)), color-stop(100%, rgba(134,174,204,0.19)));
-	background: -webkit-linear-gradient(top, rgba(212,228,239,1) 0%, rgba(134,174,204,0.19) 100%);
-	background: -o-linear-gradient(top, rgba(212,228,239,1) 0%, rgba(134,174,204,0.19) 100%);
-	background: -ms-linear-gradient(top, rgba(212,228,239,1) 0%, rgba(134,174,204,0.19) 100%);
-	background: linear-gradient(to bottom, rgba(212,228,239,1) 0%, rgba(134,174,204,0.19) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc', GradientType=0 );
 }
 
 .product_page_image{
@@ -50,30 +41,24 @@
 .product_box{
 	float: right;
 	width:450px;
-	margin-bottom:2px;
+	margin-bottom:10px;
 	border-radius: 8px;
 	border:2px solid #e5e5e5;
 }
 
-
 .product_info{
-	/*float:left;*/
+	float:left;
 	border:5px;
   	margin:10px;
-  	margin-top:0px;
-  	/*width:70%;*/
 }
 
 
 .product_image{
+	float:right;
 	width:100px;
 	height:100px;
-	margin-top: auto;
-    margin-bottom: auto; 
-    	border-style: solid;
-	border-width:1px;
+	border:5px;
   	margin:10px;
-	float:right;
 }
 
 .product_image img{
