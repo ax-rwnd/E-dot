@@ -3,6 +3,7 @@ from _mysql_exceptions import IntegrityError
 from flask import Blueprint, render_template, request, g
 from flask.ext.login import current_user, login_required
 from itertools import product
+from config import config
 
 from basket_page import add_to_basket
 
@@ -44,10 +45,11 @@ def post_comment (uid, pid, comment):
 	with db as cursor:
 		query = "insert into tbl_review (user_id, prod_id, comment, commentdate) values\
 			( (select id from tbl_user where id = %s),\
-			(select id from tbl_product where id = %s), %s, NOW()) on duplicate key\
-			update comment=values(comment), commentdate=NOW();"
+			(select id from tbl_product where id = %s), %s, NOW()) on duplicate key update comment=values(comment), " \
+				"commentdate=NOW();"
 		cursor.execute(query, (uid, pid, comment))
-		
+		db.commit()
+
 def read_comments (pid):
 	db = getattr(g, 'db', None)
 	
@@ -66,33 +68,51 @@ def read_score (pid):
 @catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
 @login_required
 def show_product_post(catname, prodid):
+	message = ""
+	status = ""
 	if 'send' in request.form:
-		return add_to_basket(prodid, current_user.uid)
+		if add_to_basket(prodid, current_user.uid):
+			status = "success"
+			message = "Product Added To Basket!"
 	elif 'post_comment' in request.form:
 		try:
 			post_comment(current_user.uid, prodid, request.form['comment_text'])
+			message = "You Commented!"
+			status = "success"
 		except IntegrityError:
-			return "You have already commented."
-		return 'You commented.'
+			message = "You have already commented."
+			status = "error"
 	elif 'vote_up' in request.form:
 		vote(current_user.uid, prodid, 1)	
-		return 'You voted up!'
+		message = 'You voted up!'
+		status = "success"
 	elif 'vote_down' in request.form:
 		vote(current_user.uid, prodid, -1)	
-		return 'You voted down.'
+		message = 'You voted down.'
+		status = "success"
 	else:
 		abort(500)
+
+	product_info = read_product_info(prodid)
+	cats = read_categories()
+	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid),
+						   catname=catname, prodid=prodid, c = cats, prod = product_info, status=status,
+						   message=message)
 
 def read_product_info(prodid):
 	
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select name, description, price, image_url from tbl_product where id = %s;")
+	query = ("SELECT tbl_product.name, tbl_product.description, tbl_product.price, tbl_product.image_url, "
+			 "tbl_stock.amount FROM tbl_product "
+			 "inner join tbl_stock on tbl_product.id = tbl_stock.product_id where tbl_product.id = %s;")
 	data = (prodid,)
 	cursor.execute(query, data)
 	
-	prod_info = cursor.fetchone()
-	
+	prod_info = list(cursor.fetchone())
+
+	prod_info[3] = config['UPLOAD_FOLDER'] + prod_info[3]
+
 	return prod_info
 
 #Read products from catalogue where catname is correct
@@ -110,8 +130,11 @@ def read_products(catname):
 	prod = []
 		
 	for x in cursor:
+		x = list(x)
+		x[4] = config['UPLOAD_FOLDER'] + x[4]
 		prod.append(x)
-	
+
+
 	return prod
 
 #Read categories fom database and returm them as a list

@@ -21,7 +21,9 @@ def add_to_basket(prod_id, user_id):
 		cursor.execute(query,data)
 		db.commit()
 
-	return render_template("/basket.html", status=True, message="Your product was added.", plist = map(resolve, get_lines(current_user.uid))) 
+	#return render_template("/basket.html", status=True, message="Your product was added.", plist = map(resolve,
+	# get_lines(current_user.uid)))
+	return True
 	
 def amount_in_basket (prod_id, user_id):
 	db = getattr(g, 'db', None)

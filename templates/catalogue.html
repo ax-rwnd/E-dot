@@ -3,6 +3,8 @@
 <head>
     <title>Catalogue</title>
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <link href="/static/favicon.ico" rel="shortcut icon"/>
     <link href="/static/style.css" rel="stylesheet">
     <link href="/static/form_style.css" rel="stylesheet">
@@ -54,6 +56,17 @@
         </ul>
     </div>
     <div class="content">
+        {%if message%}
+        {%if status == "success" %}
+        <div class="alert alert-success fade in">
+            {%elif status == "error"%}
+            <div class="alert alert-danger fade in">
+                {%endif%}
+
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{%if status %}Success!{%else%}Failure:{%endif%}</strong> {{message}}
+            </div>
+            {%endif%}
         {% if p%}
         {% for product in p%}
         <div class="product_box">
@@ -61,14 +74,17 @@
                 <a href="/catalogue/{{catname}}/{{product[0]}}">
                     <h3>{{product[1]}}</h3></a>
                 <label for="desc">Description:</label>
+
                 <p id="desc">{{product[2]}}</p>
                 <label for="price">Price:</label>
+
                 <p id="price">{{product[3]}}$</p>
                 <label for="stock">Stock:</label>
+
                 <p id="stock">{{product[5]}}</p>
             </div>
             <div class="product_image">
-                <img src="/static/img/{{product[4]}}"/>
+                <img src="{{product[4]}}"/>
             </div>
         </div>
         {% endfor %}
@@ -77,54 +93,66 @@
         <div class="product_box" style="float:right;">
             {% if prod[3] %}
             <div class="product_page_image">
-                <img src="/static/img/{{prod[3]}}"/>
+                <img src="{{prod[3]}}"/>
             </div>
             {% endif %}
 
             <div class="product_info">
                 <h3>{{prod[0]}}</h3>
-                {{prod[1]}} <br> <br> <b>Price: {{prod[2]}}$</b>
+                <label for="desc">Description:</label>
+
+                <p id="desc">{{prod[1]}}</p>
+                <label for="price">Price:</label>
+
+                <p id="price">{{prod[2]}}$</p>
+                <label for="stock">Stock:</label>
+
+                <p id="stock">{{prod[4]}}</p>
                 {% if current_user.is_authenticated %}
                 <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
                     <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
                 </form>
+                {% endif %}
             </div>
         </div>
         <br><br>
-
-        <div class="product_box" style="float: right;">
-            <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                <!-- <input type="submit" name="vote_up" value="+1"> -->
-                <button type="submit" name="vote_up">
-                    <span class="glyphicon glyphicon-menu-up"></span>
-                </button>
-            </form>
-            <p>{{rating}}</p>
-
-            <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                <button type="submit" name="vote_down">
-                    <span class="glyphicon glyphicon-menu-down"></span>
-                </button>
-            </form>
-        </div>
         <br>
-
-        <form id="manage" action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-            <label for="comment">Your comment:</label>
-            <input id="comment" name="comment_text">
-            <input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
-                   value="Post Comment">
-            <br>
-            <br>
-            {% for comm in comments %}
-            <div class="comment-box">
-                <p><i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+            <div class="product_box">
+                <div class="product_info">
+                <label>Rate This Product:</label>
+                <p>This Product has rating <b>({{rating}})</b></p>
+                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                        <button type="submit" name="vote_up">
+                            Vote Up <span class="glyphicon glyphicon-menu-up"></span>
+                        </button>
+                        <button type="submit" name="vote_down">
+                            Vote Down<span class="glyphicon glyphicon-menu-down"></span>
+                        </button>
+                    </form>
+                    </div>
+                </div>
+        <div class="product_box">
+            <div class="product_info" style="float:left;">
+                <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                    <label>Comment on this product:</label><br>
+                    <textarea id="comment" name="comment_text" style="resize: none" rows=4 cols=38"
+                              placeholder="Write comment..." required></textarea>
                     <br>
-                    {{comm[2]}} </p>
-                {% endfor %}
+                    <br>
+                    <input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
+                           value="Post Comment">
+                    <br>
+                    <br>
+                    {% for comm in comments %}
+                    <div class="comment-box">
+                        <p><i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+                            <br>
+                            {{comm[2]}} </p>
+                        {% endfor %}
+                    </div>
+                </form>
             </div>
-        </form>
-        {% endif %}
+        </div>
         {%endif%}
     </div>
 </div>
