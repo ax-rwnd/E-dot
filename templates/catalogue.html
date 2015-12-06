@@ -2,6 +2,18 @@
 <html lang="en">
 <head>
     <title>Catalogue</title>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"/>
+    <style type="text/css">
+        a.fancybox img {
+        border: none;
+        box-shadow: 0 1px 7px rgba(0,0,0,0.6);
+        }
+        a.fancybox:hover img {
+        position: relative; -o-transform: scale(1.03,1.03); -ms-transform: scale(1.03,1.03);
+        -moz-transform: scale(1.03,1.03); -webkit-transform: scale(1.03,1.03); transform: scale(1.03,1.03);
+        }
+    </style>
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
@@ -14,6 +26,7 @@
         width:75%;
         }
     </style>
+
 </head>
 <body>
 <div class="header-cont">
@@ -70,125 +83,162 @@
             {%endif%}
             {%if not (p or prod)%}
             <br>
+            {% if catname == "Categories" %}
+            <center><p>Select a Category to browse products!</p></center>
+            {% else %}
             <center><p>No products Found for <i>{{catname}}</i></p></center>
-            {%endif%}
-        {% if p%}
-        {% for product in p%}
-        <div class="product_box">
-            <div class="product_image">
-                <img src="{{product[4]}}"/>
-            </div>
-            <div class="product_info" style="width:60%">
-                <a href="/catalogue/{{catname}}/{{product[0]}}">
-                    <h3>{{product[1]}}</h3></a>
-                <label for="desc">Description:</label>
-                <p style="font-style:italic;font-"id="desc">
-                    {{product[2][0:60]}}
-                    {%if product[2][60]%}
-                        ...
-                    {%endif%}
-                </p>
-            </div>
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{product[3]}}$</td>
-                    <td>{{product[5]}}</td>
-                    <td>{% if current_user.is_authenticated %}
-                        <form action="/catalogue/{{catname}}/{{product[0]}}"
-                              method="POST">
-                            <input type="submit" name="send" class="btn btn-success" value="Buy Now!">
-                        </form>
-                        {% endif %}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        {% endfor %}
-        {%endif%} {%if prod%}
-
-        <div class="product_box" style="float:right;">
-            {% if prod[3] %}
-            <div class="product_page_image">
-                <img src="{{prod[3]}}"/>
-            </div>
             {% endif %}
-
-            <div class="product_info">
-                <h3>{{prod[0]}}</h3>
-                <label for="desc">Description:</label>
-
-                <p id="desc">{{prod[1]}}</p>
-                <label for="price">Price:</label>
-
-                <p id="price">{{prod[2]}}$</p>
-                <label for="stock">Stock:</label>
-
-                <p id="stock">{{prod[4]}}</p>
-                {% if current_user.is_authenticated %}
-                <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                    <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
-                </form>
-                {% endif %}
-            </div>
-        </div>
-        <br><br>
-        <br>
+            {% endif %}
+            {% if p%}
+            {% for product in p%}
             <div class="product_box">
-                <div class="product_info">
-                <label>Rate This Product:</label>
-                <p>This Product has rating <b>({{rating}})</b></p>
-                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                        <button type="submit" name="vote_up">
-                            Vote Up <span class="glyphicon glyphicon-menu-up"></span>
-                        </button>
-                        <button type="submit" name="vote_down">
-                            Vote Down<span class="glyphicon glyphicon-menu-down"></span>
-                        </button>
-                    </form>
-                    </div>
+                <div class="product_image">
+                    <img src="{{product[4]}}"/>
                 </div>
-        <div class="product_box">
-            <div class="product_info" style="float:left;">
-                <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                    <label>Comment on this product:</label><br>
+                <div class="product_info" style="width:60%">
+                    <a href="/catalogue/{{catname}}/{{product[0]}}">
+                        <h3>{{product[1]}}</h3></a>
+                    <label for="desc">Description:</label>
+
+                    <p style="font-style:italic;font-" id="desc">
+                        {{product[2][0:60]}}
+                        {%if product[2][60]%}
+                        ...
+                        {%endif%}
+                    </p>
+                </div>
+                <table style="width:100%;">
+                    <thead>
+                    <tr>
+                        <th width="40%">Price</th>
+                        <th width="30%">Stock</th>
+                        <th width="30%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{product[3]}}$</td>
+                        <td>{{product[5]}}</td>
+                        <td>{% if current_user.is_authenticated %}
+                            <form action="/catalogue/{{catname}}/{{product[0]}}"
+                                  method="POST">
+                                <input type="submit" name="send" class="btn btn-success" value="Buy Now!">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+            {%endif%} {%if prod%}
+
+            <div class="product_box" style="float:right;">
+                {% if prod[3] %}
+                <div class="product_page_image">
+                    <img class="fancybox" src="{{prod[3]}}"/>
+                </div>
+                {% endif %}
+
+                <div class="product_info">
+                    <h3>{{prod[0]}}</h3>
+                    <label for="desc">Description:</label>
+
+                    <p id="desc">{{prod[1]}}</p>
+
+
+                    <div class="product_info" style="float:right;">
+                        <label>Rate This Product:</label>
+
+                        <p>This Product has rating <b>({{rating}})</b></p>
+
+                        <form id="vote" action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                            <button type="submit" name="vote_up"><span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                            <button type="submit" name="vote_down"><span
+                                    class="glyphicon glyphicon-minus"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="product_info" style="float:left;">
+                        <label for="price">Price:</label>
+                    <p id="price">{{prod[2]}}$</p>
+                    <label for="stock">Stock:</label>
+
+                    <p id="stock">{{prod[4]}}</p>
+                    {% if current_user.is_authenticated %}
+                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                        <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
+                    </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <br><br>
+            <br>
+            <div class="product_box">
+                <div class="product_info" style="float:left;">
+                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                        <label>Comment on this product:</label><br>
                     <textarea id="comment" name="comment_text" style="resize: none" rows=4 cols=38"
                               placeholder="Write comment..." required></textarea>
-                    <br>
-                    <br>
-                    <input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
-                           value="Post Comment">
-                    <br>
-                    <br>
-                    {% for comm in comments %}
-                    <div class="comment-box">
-                        <p><i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
-                            <br>
-                            {{comm[2]}} </p>
-                        {% endfor %}
-                    </div>
-                </form>
+                        <br>
+                        <br>
+                        <input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
+                               value="Post Comment">
+                        <br>
+                        <br>
+                        {% for comm in comments %}
+                        <div class="comment-box">
+                            <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+                                <br>
+                                {{comm[2]}}
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
             </div>
+            {%endif%}
         </div>
-        {%endif%}
     </div>
-</div>
-<footer class="footer">
-    <center>
-        <p>
-            This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
-            and
-            <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
-        </p>
-    </center>
-</footer>
+    <footer class="footer">
+        <center>
+            <p>
+                This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
+                and
+                <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+            </p>
+        </center>
+    </footer>
+
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript"
+            src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js"></script>
+    <script type="text/javascript">
+    $(function($){
+        var addToAll = false;
+        var gallery = false;
+        var titlePosition = 'inside';
+        $(addToAll ? 'img' : 'img.fancybox').each(function(){
+            var $this = $(this);
+            var title = $this.attr('title');
+            var src = $this.attr('data-big') || $this.attr('src');
+            var a = $('<a href="#" class="fancybox"></a>').attr('href', src).attr('title', title);
+            $this.wrap(a);
+        });
+        if (gallery)
+            $('a.fancybox').attr('rel', 'fancyboxgallery');
+        $('a.fancybox').fancybox({
+            titlePosition: titlePosition
+        });
+    });
+    $.noConflict();
+
+    </script>
+
 </body>
 </html>
 

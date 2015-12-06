@@ -65,10 +65,18 @@ th, td {
     width:730px;
     margin:0px auto;
     border-bottom: 1px solid #e5e5e5;
+    z-index:1;
 }
 
 @media (min-width: 768px) {
     .container {
 	    max-width: 730px;
 	}
+}
+
+
+.row{
+    border-bottom: solid #EEEEEE 2px;
+    padding:4px;
+    margin-bottom:4px;
 }

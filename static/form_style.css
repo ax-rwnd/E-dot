@@ -81,6 +81,20 @@ form#manage button {
 	text-transform: uppercase;
 }
 
+form#vote button{
+	background: #337AB7;
+	border: none;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	border-radius: 2px;
+	color: #ffffff;
+	display: block;
+	font: 6px;
+	letter-spacing: 1px;
+	margin-bottom:2px;
+}
+
 form#manage button:focus {
 	background: #23567F;
 }
@@ -116,4 +130,9 @@ form#manage button:hover {
 input[readonly] {
   background-color: white !important;
   cursor: text !important;
+}
+
+th {
+    background-color: #FFFFFF;
+    color: black;
 }
