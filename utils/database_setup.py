@@ -26,6 +26,7 @@ tbl_category = "tbl_category"
 tbl_stock = "tbl_stock"
 tbl_rating = "tbl_rating"
 tbl_review = "tbl_review"
+tbl_admin = "tbl_admin"
 
 def main():
     print "E-dot commerce database script starting..."
@@ -42,11 +43,23 @@ def main():
     create_stock_tbl()
     create_rating_tbl()
     create_review_tbl()
+    create_admin_tbl()
 
     print "Completed sucessfully"
 
+def create_admin_tbl():
+	db = DBFUNC(config["SQLDB"])
+	print "Creating table", tbl_admin
+	with db as cursor:
+		query = "create table "+tbl_admin+" (user_id int(11) unsigned not null primary key, level int(4) unsigned);"
+		cursor.execute(query)
+
+		query = "alter table "+tbl_admin+" add constraint fk_admin_user foreign key (user_id) references "+tbl_user+"(id);"
+	db.commit()
+
 def create_review_tbl():
 	db = DBFUNC(config["SQLDB"])
+	print "Creating table", tbl_review
 	with db as cursor:
 		query = "create table "+tbl_review+" (user_id INT(11) UNSIGNED NOT NULL, prod_id INT(11) UNSIGNED NOT NULL, commentdate datetime not null, comment VARCHAR(256), PRIMARY KEY (user_id, prod_id));"
 		cursor.execute(query)
@@ -61,6 +74,7 @@ def create_review_tbl():
 
 def create_rating_tbl():
 	db = DBFUNC(config["SQLDB"])
+	print "Creating table", tbl_rating
 	with db as cursor:
 		query = "create table "+tbl_rating+" (user_id INT(11) UNSIGNED NOT NULL, prod_id INT(11) UNSIGNED NOT NULL, score INT(2), PRIMARY KEY (user_id, prod_id));"
 		cursor.execute(query)
