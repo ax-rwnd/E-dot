@@ -75,36 +75,41 @@
         {% if p%}
         {% for product in p%}
         <div class="product_box">
-            <div class="product_info">
-                <a href="/catalogue/{{catname}}/{{product[0]}}">
-                    <h3>{{product[1]}}</h3></a>
-                <label for="desc">Description:</label>
-                <p style="border:2px solid #e5e5e5;border-radius: 8px;padding: 3px;"id="desc">{{product[2]}}</p>
-                <table style="width:100%;">
-                    <thead>
-                    <tr>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{product[3]}}$</td>
-                        <td>{{product[5]}}</td>
-                        <td>{% if current_user.is_authenticated %}
-                            <form action="/catalogue/{{catname}}/{{product[0]}}"
-                                  method="POST">
-                                <input type="submit" name="send" class="btn btn-success" value="Buy Now!">
-                            </form>
-                            {% endif %}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
             <div class="product_image">
                 <img src="{{product[4]}}"/>
             </div>
+            <div class="product_info" style="width:60%">
+                <a href="/catalogue/{{catname}}/{{product[0]}}">
+                    <h3>{{product[1]}}</h3></a>
+                <label for="desc">Description:</label>
+                <p style="font-style:italic;font-"id="desc">
+                    {{product[2][0:60]}}
+                    {%if product[2][60]%}
+                        ...
+                    {%endif%}
+                </p>
+            </div>
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{product[3]}}$</td>
+                    <td>{{product[5]}}</td>
+                    <td>{% if current_user.is_authenticated %}
+                        <form action="/catalogue/{{catname}}/{{product[0]}}"
+                              method="POST">
+                            <input type="submit" name="send" class="btn btn-success" value="Buy Now!">
+                        </form>
+                        {% endif %}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         {% endfor %}
         {%endif%} {%if prod%}

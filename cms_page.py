@@ -99,10 +99,9 @@ def add_product():
 	#attempt fileupload
 	if id:
 		filename = str(id) + "_" + secure_filename(prodfile.filename)
-		if add_file(prodfile, filename):
-			produrl = filename
-		else:
-			produrl = "Default.png"
+		add_file(prodfile, filename)
+		produrl = filename
+
 
 	query = "UPDATE tbl_product SET image_url=%s WHERE id=%s;"
 	with db as cursor:
@@ -147,14 +146,6 @@ def edit_specific_product(oldname):
 	existing_products = read_products()
 	cat_info = read_categories()
 
-
-	if prodfile and allowed_file(prodfile.filename) and not os.path.isfile(config['UPLOAD_FOLDER'] + "/" + prodfile.filename):
-		# Make the filename safe, remove unsupported chars
-		filename = secure_filename(prodfile.filename)
-		prodfile.save(os.path.join(config['UPLOAD_FOLDER'], filename))
-		produrl = config['UPLOAD_FOLDER'] + "/" + filename
-	else:
-		produrl = config['DEFAULT_IMAGE']
 	db = getattr(g, 'db', None)
 
 	query = "UPDATE tbl_product SET name=%s, description=%s, image_url=%s, price=%s, cat_id=(SELECT id FROM " \
@@ -169,6 +160,30 @@ def edit_specific_product(oldname):
 		data = (prodstock,prodname)
 		cursor.execute(query, data)
 		db.commit()
+
+
+	query = "SELECT id FROM tbl_product WHERE name = %s;"
+	id = None
+	with db as cursor:
+		data = (prodname,)
+		cursor.execute(query, data)
+		db.commit()
+		id = cursor.fetchone()[0]
+
+	#attempt fileupload
+	if id:
+		filename = str(id) + "_" + secure_filename(prodfile.filename)
+		if add_file(prodfile, filename):
+			produrl = filename
+		else:
+			produrl = "Default.png"
+
+	query = "UPDATE tbl_product SET image_url=%s WHERE id=%s;"
+	with db as cursor:
+		data = (produrl, id)
+		cursor.execute(query, data)
+		db.commit()
+
 	return render_template("cms.html", editname = "Add Product", cat_info=cat_info, ins = "success")
 
 
