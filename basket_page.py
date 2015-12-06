@@ -120,7 +120,9 @@ def decrement_product(uid, pid):
 				query = "update tbl_basketlines set amount = amount - 1 where prod_id = %s and user_id = %s;"
 				cursor.execute(query, (pid, uid))
 
-			return (True, "Product "+str(pid)+" was removed from the basket.")
+			cursor.execute("select name from tbl_product where id=%s", (pid,))
+			name = cursor.fetchone()[0]
+			return (True, "Product "+name+" was removed from the basket.")
 
 @basket_page.route("/basket", methods=['POST'])
 @login_required
@@ -168,7 +170,6 @@ def prods_in_basket(uid):
 		data = (uid,)
 		cursor.execute(query,data)
 		l = len(cursor.fetchall())
-		print l
 		return l
 
 @basket_page.route("/basket")

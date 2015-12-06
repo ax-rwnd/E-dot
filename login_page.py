@@ -6,6 +6,7 @@ from user import User
 login_page = Blueprint('login_page', __name__, template_folder='templates')
 logout_page = Blueprint('logout_page', __name__, template_folder='templates')
 
+from basket_page import prods_in_basket
 
 @login_page.route("/login")
 def show_login():
@@ -42,6 +43,7 @@ def show_login_post():
 
 	if check_password_hash(pw, password):
 		login_user(User(uid))
-		return render_template("/index.html", message="You have been logged in!", status = True)
+		numbasket = prods_in_basket(current_user.get_id())
+		return render_template("/index.html", message="You have been logged in!", status = True, numbasket=numbasket)
 	else:
 		 return render_template("/login.html", message="Invalid e-mail or password.")

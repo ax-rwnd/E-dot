@@ -15,6 +15,8 @@ from signup_page import signup_page
 from basket_page import basket_page
 from cms_page import cms_page
 
+from basket_page import prods_in_basket
+
 #DB support
 import MySQLdb
 
@@ -73,7 +75,9 @@ def teardown_request(exception):
 #main website route
 @app.route("/")
 def main():
-	return render_template("index.html")
+	#Make check if user is logged in???
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("index.html", numbasket=numbasket)
 
 @app.errorhandler(401)
 def unauthorized(e):
