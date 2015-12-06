@@ -5,7 +5,7 @@ from flask.ext.login import current_user, login_required
 from itertools import product
 from config import config
 
-from basket_page import add_to_basket
+from basket_page import add_to_basket, prods_in_basket
 
 catalogue_page = Blueprint('catalogue_page', __name__, template_folder='templates')
 
@@ -13,20 +13,24 @@ catalogue_page = Blueprint('catalogue_page', __name__, template_folder='template
 @catalogue_page.route("/catalogue/")
 def show_catalogue_index():
 	cats = read_categories()
-	return render_template("catalogue.html", catname='Categories', c = cats)
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("catalogue.html", catname='Categories', c = cats, numbasket=numbasket)
 
 #render catalogue with product
 @catalogue_page.route("/catalogue/<catname>")
 def show_catalogue(catname):
 	products = read_products(catname)
 	cats = read_categories()
-	return render_template("catalogue.html", catname=catname, c = cats, p = products)
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("catalogue.html", catname=catname, c = cats, p = products, numbasket=numbasket)
 
 @catalogue_page.route("/catalogue/<catname>/<prodid>")
 def show_product(catname, prodid):
 	product_info = read_product_info(prodid)
 	cats = read_categories()
-	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid), catname=catname, prodid=prodid, c = cats, prod = product_info)
+	numbasket = prods_in_basket(current_user.get_id())
+	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid),
+						   catname=catname, prodid=prodid, c = cats, prod = product_info, numbasket=numbasket)
 
 #set user vote
 def vote (uid, pid, mod):
@@ -95,9 +99,10 @@ def show_product_post(catname, prodid):
 
 	product_info = read_product_info(prodid)
 	cats = read_categories()
+	numbasket = prods_in_basket(current_user.get_id())
 	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid),
 						   catname=catname, prodid=prodid, c = cats, prod = product_info, status=status,
-						   message=message)
+						   message=message, numbasket=numbasket)
 
 def read_product_info(prodid):
 	
