@@ -1,19 +1,20 @@
 config = dict(
 	#server
-	HOSTIP='192.168.1.6',
+	HOSTIP='localhost',
 	HOSTPORT=5000,
 	HOSTDBG=True,
 	HOSTKEY="SUPER-SECRET-SIGNING-KEY-:o)",
 
-	UPLOAD_FOLDER = 'static/img',
+	DEFAULT_IMAGE = '/static/img/default.png',
+	UPLOAD_FOLDER = '/static/img',
 	ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif']),
 
 	#mysql
-	HOST='localhost',
+	HOST='',
 	PORT=3306,
-	USER='axel',
-	PASSWD='bollboll',
-	SQLDB='db_adot',
+	USER='',
+	PASSWD='',
+	SQLDB='db_edot',
 	CHARSET='utf8',
 
 	#SSL-enabled?
