@@ -25,7 +25,18 @@ def add_to_basket(prod_id, user_id):
 	#return render_template("/basket.html", status=True, message="Your product was added.", plist = map(resolve,
 	# get_lines(current_user.uid)))
 	return True
-	
+
+def prods_in_basket(uid):
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select prod_id from tbl_basketlines where tbl_basketlines.user_id = %s"
+		data = (uid,)
+		cursor.execute(query,data)
+		total = 0
+		for p in cursor.fetchall():
+			total += amount_in_basket(p[0], uid)
+		return total
+
 def amount_in_basket (prod_id, user_id):
 	db = getattr(g, 'db', None)
 	with db as cursor:
@@ -163,14 +174,6 @@ def resolve(tup):
 		ret = cursor.fetchone()
 		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3])
 
-def prods_in_basket(uid):
-	db = getattr(g, 'db', None)
-	with db as cursor:
-		query = "select * from tbl_basketlines where tbl_basketlines.user_id = %s"
-		data = (uid,)
-		cursor.execute(query,data)
-		l = len(cursor.fetchall())
-		return l
 
 @basket_page.route("/basket")
 @login_required
