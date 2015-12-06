@@ -1,1 +1,0 @@
-mysqldump -u usernmae -h host --compatible=ansi --skip-opt -p database_name > dump_file
