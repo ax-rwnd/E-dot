@@ -163,20 +163,23 @@
 
                     <div class="product_info" style="float:left;">
                         <label for="price">Price:</label>
-                    <p id="price">{{prod[2]}}$</p>
-                    <label for="stock">Stock:</label>
 
-                    <p id="stock">{{prod[4]}}</p>
-                    {% if current_user.is_authenticated %}
-                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                        <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
-                    </form>
-                        </div>
+                        <p id="price">{{prod[2]}}$</p>
+                        <label for="stock">Stock:</label>
+
+                        <p id="stock">{{prod[4]}}</p>
+                        {% if current_user.is_authenticated %}
+                        <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                            <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
+                        </form>
+
                     {% endif %}
+                    </div>
                 </div>
             </div>
             <br><br>
             <br>
+
             <div class="product_box">
                 <div class="product_info" style="float:left;">
                     <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
@@ -192,8 +195,8 @@
                         {% for comm in comments %}
                         <div class="comment-box">
                             <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
-                                <br>
-                                {{comm[2]}}
+                            <br>
+                            {{comm[2]}}
                             {% endfor %}
                         </div>
                     </form>
@@ -236,6 +239,8 @@
         });
     });
     $.noConflict();
+
+
 
     </script>
 
