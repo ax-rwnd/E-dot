@@ -79,6 +79,11 @@ def main():
 def unauthorized(e):
 	return render_template("/login.html", status = False, message = "You must be logged in to do that.")
 
+@app.errorhandler(404)
+def forbidden(e):
+	return render_template("/index.html", status = False, message = "That page didn't exists.")
+
+
 #setup ssl context
 def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 	context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
