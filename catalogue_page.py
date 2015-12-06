@@ -99,7 +99,11 @@ def read_product_info(prodid):
 def read_products(catname):
 	db = getattr(g, 'db', None)
 	cursor = db.cursor()
-	query = ("select tbl_product.id, tbl_product.name, description, price, image_url from tbl_product join\
+	query = ("select tbl_product.id, tbl_product.name, tbl_product.description, tbl_product.price, "
+			 "tbl_product.image_url,tbl_stock.amount from tbl_product "
+			 "join "
+			 "tbl_stock "
+			 "on tbl_product.id = tbl_stock.product_id join\
 		tbl_category on tbl_product.cat_id = tbl_category.id where tbl_category.name = %s;")
 	data = (catname,)
 	cursor.execute(query, data)
