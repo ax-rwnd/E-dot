@@ -74,18 +74,10 @@ def add_product():
 	if prodname in existing_products:
 		return render_template("cms.html", editname = "Add Product", cat_info=cat_info, ins = "error")
 
-	if prodfile and allowed_file(prodfile.filename) and not os.path.isfile(config['UPLOAD_FOLDER'] + "/" + prodfile.filename):
-		# Make the filename safe, remove unsupported chars
-		filename = secure_filename(prodfile.filename)
-		prodfile.save(os.path.join(config['UPLOAD_FOLDER'], filename))
-		produrl = config['UPLOAD_FOLDER'] + "/" + filename
-	else:
-		produrl = config['DEFAULT_IMAGE']
 	db = getattr(g, 'db', None)
-
-	query = "INSERT INTO tbl_product (name, description, image_url, price, cat_id) VALUES (%s, %s, %s, %s, (SELECT id from tbl_category WHERE name=%s));"
+	query = "INSERT INTO tbl_product (name, description,price, cat_id) VALUES (%s, %s, %s, (SELECT id from tbl_category WHERE name=%s));"
 	with db as cursor:
-		data = (prodname, proddesc, produrl, prodprice, prodcat)
+		data = (prodname, proddesc, prodprice, prodcat)
 		cursor.execute(query, data)
 		db.commit()
 
@@ -94,6 +86,30 @@ def add_product():
 		data = (prodname, prodstock)
 		cursor.execute(query, data)
 		db.commit()
+
+
+	query = "SELECT id FROM tbl_product WHERE name = %s;"
+	id = None
+	with db as cursor:
+		data = (prodname,)
+		cursor.execute(query, data)
+		db.commit()
+		id = cursor.fetchone()[0]
+
+	#attempt fileupload
+	if id:
+		filename = str(id) + "_" + secure_filename(prodfile.filename)
+		if add_file(prodfile, filename):
+			produrl = filename
+		else:
+			produrl = "Default.png"
+
+	query = "UPDATE tbl_product SET image_url=%s WHERE id=%s;"
+	with db as cursor:
+		data = (produrl, id)
+		cursor.execute(query, data)
+		db.commit()
+
 	return render_template("cms.html", editname = "Add Product", cat_info=cat_info, ins = "success")
 
 @cms_page.route("/cms/Edit Categories", methods=['POST'])
@@ -120,20 +136,12 @@ def edit_categories():
 
 
 def edit_specific_product(oldname):
-	print oldname
 	prodname = request.form['prodname']
-	print prodname
 	prodprice = request.form['prodprice']
-	print prodprice
 	proddesc = request.form['proddesc']
-	print proddesc
 	prodcat = request.form['prodcat']
-	print prodcat
 	prodstock = request.form['prodstock']
-	print prodstock
 	prodfile = request.files['prodfile']
-	print prodfile
-
 	produrl = ""
 
 	existing_products = read_products()
@@ -272,9 +280,10 @@ def product_remover(prodname):
 	with db as cursor:
 		cursor.execute(query, (prodname,))
 		url = cursor.fetchone()[0]
-		if url and os.path.isfile(url):
-			os.remove(url)
 		db.commit()
+
+	if url != config['DEFAULT_IMAGE']:
+		remove_file(url)
 
 	query = "DELETE FROM tbl_product WHERE name = %s;"
 	with db as cursor:
@@ -391,3 +400,23 @@ def add_to_stock(product, stock_value):
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in config['ALLOWED_EXTENSIONS']
+
+
+def remove_file(filename):
+	print "removing", filename
+	url = get_os_string(filename)
+	print "removing url", url
+	if filename and os.path.isfile(url):
+		os.remove(url)
+
+def add_file(prodfile, filename):
+	url = get_os_string(filename)
+	if prodfile and allowed_file(prodfile.filename) and not os.path.isfile(url):
+		prodfile.save(url)
+		return True
+	else:
+		return False
+
+
+def get_os_string(filename):
+	return os.path.dirname(os.path.realpath(__file__)) + config['UPLOAD_FOLDER'] + filename
