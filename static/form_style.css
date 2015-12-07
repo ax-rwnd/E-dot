@@ -1,3 +1,6 @@
+
+
+
 form#manage {
     float:right;
 	background: #FFFFFF;
@@ -130,9 +133,4 @@ form#manage button:hover {
 input[readonly] {
   background-color: white !important;
   cursor: text !important;
-}
-
-th {
-    background-color: #FFFFFF;
-    color: black;
 }
