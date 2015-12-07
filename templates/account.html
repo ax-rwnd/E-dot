@@ -6,6 +6,7 @@
     <link href="/static/favicon.ico" rel="shortcut icon"/>
     <link href="/static/style.css" rel="stylesheet">
     <link href="/static/order_style.css" rel="stylesheet">
+    <link href="/static/form_style.css" rel="stylesheet">
     <style>
         .content{
         float:none;
@@ -17,6 +18,49 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+		function pwcheck()
+		{
+			var one = document.getElementsByName("pwtext_new")[0].value;
+			var two = document.getElementsByName("pwrepeat_new")[0].value;
+
+			if(one.length < 1){
+				return false;
+			}
+			else if(one.length < 6){
+				document.getElementById("strength_label").style.color="red";
+				document.getElementById("strength_label").innerHTML = "Weak";
+			} else if (one.length > 10){
+				document.getElementById("strength_label").style.color="green";
+				document.getElementById("strength_label").innerHTML = "Good";
+			} else if (one.length > 6){
+				document.getElementById("strength_label").style.color="yellow";
+				document.getElementById("strength_label").innerHTML = "Medium";
+			}
+
+			if(one == two)
+			{
+				document.getElementById("match_icon").className = "glyphicon glyphicon-ok";
+				return true;
+			} else
+			{
+				document.getElementById("match_icon").className = "glyphicon glyphicon-remove";
+				return false;
+			}
+		}
+
+		function checkDone()
+		{
+			var pw = pwcheck();
+
+			if(pw){
+				document.getElementById('update_password').disabled = false;
+			} else {
+				document.getElementById('update_password').disabled = true;
+			}
+		}
+
+    </script>
 </head>
 <body>
 <div class="header-cont">
@@ -25,7 +69,7 @@
             <ul class="nav nav-pills pull-right">
                 {% if current_user.is_authenticated %}
                 <li role="presentation"><a href="/basket"><img src="/static/basket.png"/> &nbsp <span
-                        class="badge">{{numbasket}}</span></a>
+                        class="badge">{{current_user.numbasket}}</span></a>
                 </li>
                 {% endif %}
                 <li role="presentation"><a href="/">Home</a>
@@ -34,8 +78,8 @@
                 </li>
                 {% if current_user.is_authenticated %}
                 <li role="presentation" class="active"><a href="/account"><span
-                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
-                    Kurt{{username}}</span></a>
+                        class="glyphicon glyphicon-user"></span> &nbsp
+                    <span class="badge">{{current_user.name}}</span></a>
                 </li>
                 {%endif%}
                 {% if not current_user.is_authenticated %}
@@ -81,8 +125,130 @@
             <strong>Error!</strong> {{message}}
         </div>
         {%endif%}
+        {% if pagename == "Account Settings"%}
+        <form id="manage" action="/account/update_info" method="POST" style="float:right;">
+            <fieldset>
+                <legend>Account Information:</legend>
+                <ol>
+                    <li>
+                        <label for=emailtext>Email:</label>
+                        <input id=emailtext name=emailtext type=text value="{{user_info[0]}}" required
+                               autofocus>
+                    </li>
+                    <li>
+                        <label for=nametext>Name:</label>
+                        <input id=nametext name=nametext type=text value="{{user_info[1]}}" required>
+                    </li>
+                    <li>
+                        <label for=addresstext>Address:</label>
+                        <input id=addresstext name=addresstext type=text value="{{user_info[2]}}" required>
+                    </li>
+                    <li>
+                        <label for=postcodetext>Post Code:</label>
+                        <input id=postcodetext name=postcodetext type=text value="{{user_info[3]}}" required>
+                    </li>
+                    <li>
+                        <label for=citytext>City:</label>
+                        <input id=citytext name=citytext type=text value="{{user_info[4]}}" required>
+                    </li>
+                    <li>
+                        <label for=countrytext>Country:</label>
+                        <input id=countrytext name=countrytext type=text value="{{user_info[5]}}" required>
+                    </li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit id="update_account" name="update_account" class="btn btn-primary btn-file">
+                    Update Information
+                </button>
+            </fieldset>
+        </form>
+        <form id="manage" action="/account/update_password" method="POST" style="float:right;">
+            <fieldset>
+                <legend>Change Password:</legend>
+                <ol>
+                    <li>
+                        <label for=pwtext>Current Password:</label>
+                        <input id=pwtext name=pwtext_current type=password required onkeyup="checkDone()">
+                        <br>
+                    </li>
+                    <li>
+                        <label for=pwtext>New Password:</label>
+                        <input id=pwtext name=pwtext_new type=password required onkeyup="checkDone()">
+                        <br>
+                    </li>
+                    <li>
+                        <label for=pwrepeat>Repeat New Password: </label>
+                        <input id=pwrepeat name=pwrepeat_new type=password required onkeyup="checkDone()"> <br>
+                    </li>
+                    <li>
+                        <label>Password Match: </label>
+                        <span id="match_icon" class="glyphicon glyphicon-remove"></span>
+                    </li>
+                    <li>
+                        <label>Password Strength: </label>
 
-        {% if pagename == "Orders" %}
+                        <p id="strength_label">---</p>
+                    </li>
+                </ol>
+            </fieldset>
+            <fieldset>
+                <button type=submit id="update_password" name="update_account" class="btn btn-primary btn-file">
+                    Update Password
+                </button>
+            </fieldset>
+        </form>
+        {% elif pagename == "Orders" %}
+
+        {% if request.args.get('order_id') %}
+        <div class="order_box">
+
+
+            <br>
+            <center><label>Order Confirmation</label></center>
+            <div class="order_info">
+            <label for="order_id">Order id:</label>
+            <p id="order_id">{{request.args.get('order_id')}}</p>
+            <label for="placed">Placed:</label>
+            <p id="placed">{{request.args.get('date')}}</p>
+
+                <label for="order_prods">Products:</label>
+                </div>
+
+
+            <table id="order_prods" style="width:100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in order_info %}
+                <tr>
+                    <td></td>
+                    <td><a href="/catalogue/Katter/20">KATT</td>
+                    <td>25</td>
+                    <td>1995.90$</td>
+                </tr>
+                {% endfor %}
+                <tr style="background-color: #337AB7;color: white;">
+                    <td>Total:</td>
+                    <td></td>
+                    <td>500</td>
+                    <td>99959.90$</td>
+                </tr>
+                </tbody>
+            </table>
+            {% if not order_info %}
+            <br>
+            <center><p>No Previous orders found!</p></center>
+            {% endif %}
+        </div>
+        {% else %}
+
         <div class="order_box">
             <br>
             <center><label>Orders in progress</label></center>
@@ -98,22 +264,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for item in info %}
+                {% for item in order_info %}
                 <tr>
-                    <td><a href="1">View</a></td>
+                    <td><a href="?order_id={{item[0]}}&date={{item[1]}}">View</a></td>
                     <td>{{item[0]}}</td>
                     <td>{{item[1]}}</td>
-                    <td>{{item[2]}} $</td>
+                    <td>{{item[3]}} $</td>
                     <td>Verified</td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            {% if not info %}
+            {% if not order_info %}
             <br>
-            <center>    <p>No Previous orders found!</p></center>
+            <center><p>No Previous orders found!</p></center>
             {% endif %}
         </div>
+        {% endif %}
         {% endif %}
 
     </div>

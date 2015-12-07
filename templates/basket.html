@@ -30,7 +30,7 @@
             <ul class="nav nav-pills pull-right">
                 {% if current_user.is_authenticated %}
                 <li role="presentation" class="active"><a href="/basket"><img src="/static/basket.png"/> &nbsp <span
-                        class="badge">{{numbasket}}</span></a>
+                        class="badge">{{current_user.numbasket}}</span></a>
                 </li>
                 {% endif %}
                 <li role="presentation"><a href="/">Home</a>
@@ -39,8 +39,7 @@
                 </li>
                 {% if current_user.is_authenticated %}
                 <li role="presentation"><a href="/account"><span
-                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
-                    Kurt{{username}}</span></a>
+                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">{{current_user.name}}</span></a>
                 </li>
                 {%endif%}
                 {% if not current_user.is_authenticated %}
@@ -96,7 +95,7 @@
                 {% for prod in plist %}
                 <div class="row basket-row">
                     <div class="col-sm-3">
-                        <p>{{prod[0]}}</p>
+                        <p><a href="/catalogue/{{prod[5]}}/{{prod[4]}}">{{prod[0]}}</a></p>
                     </div>
                     <div class="col-sm-2">
                         <p>{{prod[1]}} $</p>
