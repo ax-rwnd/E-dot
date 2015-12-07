@@ -144,12 +144,12 @@ def show_basket_post():
 		suc, resstr = place_order(current_user.uid)
 	elif 'remove_item' in request.form:
 		suc, resstr = decrement_product(current_user.uid, request.form['target'])
+		current_user.numbasket = prods_in_basket(current_user.uid)
 	else:
 		abort(500)
 
-	numbasket = prods_in_basket(current_user.get_id())
 	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
-		current_user.uid)), numbasket=numbasket)
+		current_user.uid)))
 
 
 def get_lines (uid):
@@ -168,15 +168,17 @@ def get_lines (uid):
 def resolve(tup):
 	db = getattr(g, 'db', None)
 	with db as cursor:
-		query = "select name, price, image_url, id from tbl_product where id = %s;"
+		query = "select tbl_product.name, tbl_product.price, tbl_product.image_url, tbl_product.id, " \
+				"tbl_category.name from tbl_product join " \
+				"tbl_category on " \
+				"tbl_product.cat_id = tbl_category.id where tbl_product.id = %s;"
 		data = (tup[0],)
 		cursor.execute(query,data)
 		ret = cursor.fetchone()
-		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3])
+		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3], ret[4])
 
 
 @basket_page.route("/basket")
 @login_required
 def show_basket():
-	numbasket = prods_in_basket(current_user.get_id())
-	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)), numbasket=numbasket)
+	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)))
