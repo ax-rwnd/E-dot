@@ -41,6 +41,12 @@
                 <li role="presentation"><a href="/">Home</a></li>
                 <li role="presentation" class="active"><a href="/catalogue">Catalogue</a>
                 </li>
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/account"><span
+                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
+                    Kurt{{username}}</span></a>
+                </li>
+                {%endif%}
                 {% if not current_user.is_authenticated %}
                 <li role="presentation"><a href="/login">Sign In</a> {% else
                     %}
@@ -152,6 +158,7 @@
 
                         <p>This Product has rating <b>({{rating}})</b></p>
 
+                        {% if current_user.is_authenticated %}
                         <form id="vote" action="/catalogue/{{catname}}/{{prodid}}" method="POST">
                             <button type="submit" name="vote_up"><span class="glyphicon glyphicon-plus"></span>
                             </button>
@@ -159,6 +166,7 @@
                                     class="glyphicon glyphicon-minus"></span>
                             </button>
                         </form>
+                        {% endif %}
                     </div>
 
                     <div class="product_info" style="float:left;">
@@ -172,8 +180,9 @@
                         <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
                             <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
                         </form>
-
-                    {% endif %}
+                        {% else %}
+                        <p><i>Log in to buy.</i></p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -182,6 +191,7 @@
 
             <div class="product_box">
                 <div class="product_info" style="float:left;">
+                    {% if current_user.is_authenticated %}
                     <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
                         <label>Comment on this product:</label><br>
                     <textarea id="comment" name="comment_text" style="resize: none" rows=4 cols=38"
@@ -192,14 +202,15 @@
                                value="Post Comment">
                         <br>
                         <br>
-                        {% for comm in comments %}
-                        <div class="comment-box">
-                            <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
-                            <br>
-                            {{comm[2]}}
-                            {% endfor %}
-                        </div>
                     </form>
+                    {%endif%}
+                    {% for comm in comments %}
+                    <div class="comment-box">
+                        <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+                        <br>
+                        {{comm[2]}}
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
             {%endif%}
@@ -214,7 +225,6 @@
             </p>
         </center>
     </footer>
-
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -247,3 +257,4 @@
 </body>
 </html>
 
+             

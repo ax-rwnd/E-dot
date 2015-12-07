@@ -41,6 +41,12 @@
             <ul class="nav nav-pills pull-right">
                 <li role="presentation"><a href="/">Home</a></li>
                 <li role="presentation"><a href="/catalogue">Catalogue</a></li>
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/account"><span
+                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
+                    Kurt{{username}}</span></a>
+                </li>
+                {%endif%}
                 {%if not current_user.is_authenticated%}
                 <li role="presentation"><a href="/login">Sign In</a> {%else%}
                 <li role="presentation"><a href="/logout">Sign Out</a>
@@ -89,7 +95,7 @@
             <strong>Error!</strong> Something went wrong.
         </div>
         {%endif%}
-
+        
         {% if editname == "Add Category" %}
         <form id="manage" action="/cms/Add Category" method="POST">
             <fieldset>
