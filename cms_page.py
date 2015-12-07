@@ -148,10 +148,10 @@ def edit_specific_product(oldname):
 
 	db = getattr(g, 'db', None)
 
-	query = "UPDATE tbl_product SET name=%s, description=%s, image_url=%s, price=%s, cat_id=(SELECT id FROM " \
+	query = "UPDATE tbl_product SET name=%s, description=%s, price=%s, cat_id=(SELECT id FROM " \
 			"tbl_category WHERE tbl_category.name=%s) WHERE name=%s;"
 	with db as cursor:
-		data = (prodname, proddesc, produrl, prodprice,prodcat, oldname)
+		data = (prodname, proddesc, prodprice,prodcat, oldname)
 		cursor.execute(query, data)
 		db.commit()
 
@@ -162,27 +162,30 @@ def edit_specific_product(oldname):
 		db.commit()
 
 
-	query = "SELECT id FROM tbl_product WHERE name = %s;"
+	query = "SELECT id, image_url FROM tbl_product WHERE name = %s;"
 	id = None
+	old_url = ""
 	with db as cursor:
 		data = (prodname,)
 		cursor.execute(query, data)
 		db.commit()
-		id = cursor.fetchone()[0]
+		temp = cursor.fetchone()
+		id = temp[0]
+		old_url = temp[1]
+
 
 	#attempt fileupload
 	if id:
 		filename = str(id) + "_" + secure_filename(prodfile.filename)
-		if add_file(prodfile, filename):
+		if prodfile:
+			add_file(prodfile, filename)
+			remove_file(old_url)
 			produrl = filename
-		else:
-			produrl = "Default.png"
-
-	query = "UPDATE tbl_product SET image_url=%s WHERE id=%s;"
-	with db as cursor:
-		data = (produrl, id)
-		cursor.execute(query, data)
-		db.commit()
+			query = "UPDATE tbl_product SET image_url=%s WHERE id=%s;"
+			with db as cursor:
+				data = (produrl, id)
+				cursor.execute(query, data)
+				db.commit()
 
 	return render_template("cms.html", editname = "Add Product", cat_info=cat_info, ins = "success")
 
@@ -418,9 +421,7 @@ def allowed_file(filename):
 
 
 def remove_file(filename):
-	print "removing", filename
 	url = get_os_string(filename)
-	print "removing url", url
 	if filename and os.path.isfile(url):
 		os.remove(url)
 
