@@ -1,6 +1,8 @@
 from flask import g
 from flask.ext.login import UserMixin, current_user, logout_user
 
+from basket_page import prods_in_basket
+
 class User (UserMixin):
 	def __init__(self, uid=None):
 		#load from db if uid specified!
@@ -20,10 +22,15 @@ class User (UserMixin):
 				else:
 					email = ""
 
+
 			#create user
 			self.email = email
 			self.name = name
 			self.uid = uid
+			self.numbasket = prods_in_basket(uid)
+
+
+			print "initierar"
 
 
 
