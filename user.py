@@ -30,10 +30,6 @@ class User (UserMixin):
 			self.numbasket = prods_in_basket(uid)
 
 
-			print "initierar"
-
-
-
 	@classmethod
 	def get (self, uid):
 		try:

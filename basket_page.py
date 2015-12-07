@@ -144,10 +144,10 @@ def show_basket_post():
 		suc, resstr = place_order(current_user.uid)
 	elif 'remove_item' in request.form:
 		suc, resstr = decrement_product(current_user.uid, request.form['target'])
-		current_user.numbasket = prods_in_basket(current_user.uid)
 	else:
 		abort(500)
 
+	current_user.numbasket = prods_in_basket(current_user.uid)
 	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
 		current_user.uid)))
 

@@ -13,24 +13,21 @@ catalogue_page = Blueprint('catalogue_page', __name__, template_folder='template
 @catalogue_page.route("/catalogue/")
 def show_catalogue_index():
 	cats = read_categories()
-	numbasket = prods_in_basket(current_user.get_id())
-	return render_template("catalogue.html", catname='Categories', c = cats, numbasket=numbasket)
+	return render_template("catalogue.html", catname='Categories', c = cats)
 
 #render catalogue with product
 @catalogue_page.route("/catalogue/<catname>")
 def show_catalogue(catname):
 	products = read_products(catname)
 	cats = read_categories()
-	numbasket = prods_in_basket(current_user.get_id())
-	return render_template("catalogue.html", catname=catname, c = cats, p = products, numbasket=numbasket)
+	return render_template("catalogue.html", catname=catname, c = cats, p = products)
 
 @catalogue_page.route("/catalogue/<catname>/<prodid>")
 def show_product(catname, prodid):
 	product_info = read_product_info(prodid)
 	cats = read_categories()
-	numbasket = prods_in_basket(current_user.get_id())
 	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid),
-						   catname=catname, prodid=prodid, c = cats, prod = product_info, numbasket=numbasket)
+						   catname=catname, prodid=prodid, c = cats, prod = product_info)
 
 #set user vote
 def vote (uid, pid, mod):
@@ -99,10 +96,10 @@ def show_product_post(catname, prodid):
 
 	product_info = read_product_info(prodid)
 	cats = read_categories()
-	numbasket = prods_in_basket(current_user.get_id())
+	current_user.numbasket = prods_in_basket(current_user.get_id())
 	return render_template("catalogue.html", rating = read_score(prodid), comments=read_comments(prodid),
 						   catname=catname, prodid=prodid, c = cats, prod = product_info, status=status,
-						   message=message, numbasket=numbasket)
+						   message=message)
 
 def read_product_info(prodid):
 	
