@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Log In</title>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/favicon.ico" rel="shortcut icon"/>
+    <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/order_style.css" rel="stylesheet">
+    <style>
+        .content{
+        float:none;
+        width:100%;
+        }
+        form#manage{
+        float:none;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/> &nbsp <span
+                        class="badge">{{numbasket}}</span></a>
+                </li>
+                {% endif %}
+                <li role="presentation"><a href="/">Home</a>
+                </li>
+                <li role="presentation"><a href="/catalogue">Catalogue</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li role="presentation" class="active"><a href="/account"><span
+                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
+                    Kurt{{username}}</span></a>
+                </li>
+                {%endif%}
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/login">Sign In</a>
+                    {% else %}
+                <li role="presentation"><a href="/logout">Sign Out</a>
+                    {% endif %}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="categories">
+        <h3>{{pagename}}</h3>
+
+        <ul class="list-unstyled">
+            <a href="/account/Account Settings">Account Settings</a>
+            <br>
+            <a href="/account/Orders">Orders</a>
+            <br>
+        </ul>
+    </div>
+
+    <div class="content">
+        {%if message and status%}
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> {{message}}
+        </div>
+        {%elif message and not status%}
+        <div class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error!</strong> {{message}}
+        </div>
+        {%endif%}
+
+        {% if pagename == "Orders" %}
+        <div class="order_box">
+            <br>
+            <center><label>Orders in progress</label></center>
+            <br>
+            <table style="width:100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total cost</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in info %}
+                <tr>
+                    <td><a href="1">View</a></td>
+                    <td>{{item[0]}}</td>
+                    <td>{{item[1]}}</td>
+                    <td>{{item[2]}} $</td>
+                    <td>Verified</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not info %}
+            <br>
+            <center>    <p>No Previous orders found!</p></center>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+<footer class="footer">
+    <center>
+        <p>
+            This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and
+            <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+        </p>
+    </center>
+</footer>
+</body>
+</html>
+	
