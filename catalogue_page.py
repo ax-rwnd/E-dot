@@ -66,6 +66,18 @@ def read_score (pid):
 		cursor.execute(query, (pid,))
 		return cursor.fetchone()[0]
 
+@catalogue_page.route("/catalogue/<catname>", methods=['POST'])
+@login_required
+def add_from_catalogue(catname):
+	prodid = request.form['add_basket_id']
+	if add_to_basket(prodid, current_user.uid):
+		status = "success"
+		message = "Product Added To Basket!"
+	products = read_products(catname)
+	cats = read_categories()
+	current_user.numbasket = prods_in_basket(current_user.get_id())
+	return render_template("catalogue.html", catname=catname, c = cats, p = products, status=status, message=message)
+
 @catalogue_page.route("/catalogue/<catname>/<prodid>", methods=['POST'])
 @login_required
 def show_product_post(catname, prodid):
