@@ -24,30 +24,34 @@ def show_cms():
 def show_cms_editor(editname):
 	perimeter_check("CMSINDEX")
 
-	if editname == "Add Product":
+	if editname == "Add Category":
+		perimeter_check("CMSCATEGORY")
+		return render_template("cms.html", editname=editname)
+	elif editname == "Add Product":
 		perimeter_check("CMSPRODUCT")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info = cat_info)
-	if editname == "Edit Categories":
+	elif editname == "Edit Categories":
 		perimeter_check("CMSCATEGORY")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info = cat_info)
-	if editname == "Edit Products":
+	elif editname == "Edit Products":
 		perimeter_check("CMSSTOCK")
 		info = read_stock()
 		others = read_not_stock()
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, info=info, others=others, cat_info=cat_info)
-	if editname == "Remove Category":
+	elif editname == "Remove Category":
 		perimeter_check("CMSCATEGORY")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info=cat_info)
-	if editname == "Remove Product":
+	elif editname == "Remove Product":
 		perimeter_check("CMSPRODUCT")
 		info =  read_products_and_categories()
 		return render_template("cms.html", editname=editname, info=info)
 
-	return render_template("cms.html", editname=editname)
+	else:
+		return render_template("cms.html", editname="Content Management")
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
 @login_required

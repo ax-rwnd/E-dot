@@ -58,8 +58,8 @@ def show(pagename):
 		return render_template("account.html", pagename=pagename, order_info=order_info)
 	elif pagename == "Account Settings":
 		return render_template("account.html", pagename=pagename, user_info = get_account_info(current_user.uid))
-
-	return render_template("account.html", pagename="Account")
+	else:
+		return render_template("account.html", pagename="Account")
 
 @account_page.route("/account/update_info", methods=["POST"])
 @login_required
