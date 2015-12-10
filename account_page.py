@@ -49,6 +49,30 @@ def show_account():
 	render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 	return render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 
+@account_page.route("/account/Orders/<orderid>")
+@login_required
+def show_orders(orderid):
+	order_and_id =  read_order_info(current_user.uid)
+	print order_and_id
+	return render_template("account.html", pagename="Orders", order_and_id=order_and_id)
+
+def read_order_info(uid):
+	db = getattr(g, 'db', None)
+
+	query ="SELECT tbl_order.id, tbl_order.date, tbl_product.name, tbl"
+
+	query = "select tbl_order.id, tbl_order.date, tbl_orderlines.prod_id,\
+			tbl_orderlines.amount from tbl_order inner join\
+			tbl_orderlines on tbl_order.id=tbl_orderlines.order_id\
+			where tbl_order.customer_id = %s and tbl_order.id = %s ORDER BY tbl_order.id DESC;"
+
+	print uid
+	with db as cursor:
+		cursor.execute(query, (uid, uid))
+		for x in cursor.fetchall():
+			print x
+
+		return None
 
 @account_page.route("/account/<pagename>")
 @login_required
