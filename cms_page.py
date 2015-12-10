@@ -24,7 +24,11 @@ def show_cms():
 def show_cms_editor(editname):
 	perimeter_check("CMSINDEX")
 
-	if editname == "Add Category":
+	if editname == "Browse Orders":
+		perimeter_check("CMSCATEGORY")
+		order_row = read_orders()
+		return render_template("cms.html", editname=editname, order_row=order_row)
+	elif editname == "Add Category":
 		perimeter_check("CMSCATEGORY")
 		return render_template("cms.html", editname=editname)
 	elif editname == "Add Product":
@@ -52,6 +56,62 @@ def show_cms_editor(editname):
 
 	else:
 		return render_template("cms.html", editname="Content Management")
+
+def read_order_detail(orderid):
+	db = getattr(g, 'db', None)
+
+
+	query = "select tbl_order.id, tbl_order.date, \
+		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount) from tbl_orderlines inner join\
+		tbl_order on tbl_orderlines.order_id=tbl_order.id\
+		where tbl_order.id = %s;"
+
+	query2 = "select tbl_order.id, tbl_order.date from tbl_order where tbl_order.id=%s;"
+
+	with db as cursor:
+		cursor.execute(query, (orderid,))
+		return cursor.fetchone()
+
+def read_orders():
+	db = getattr(g, 'db', None)
+	query = "select tbl_order.id, tbl_order.date from tbl_order order by tbl_order.id desc;"
+	with db as cursor:
+		cursor.execute(query)
+		return cursor.fetchall()
+
+def read_product_rows(orderid):
+	db = getattr(g, 'db', None)
+
+	query ="SELECT tbl_category.name, tbl_product.id, tbl_product.name, tbl_orderlines.amount, " \
+		   "tbl_orderlines.price " \
+		   "from tbl_orderlines " \
+		   "left join tbl_product on tbl_orderlines.prod_id = tbl_product.id " \
+		   "join tbl_order on tbl_orderlines.order_id = tbl_order.id " \
+		   "join tbl_category on tbl_product.cat_id = tbl_category.id " \
+		   "where tbl_order.id = %s;"
+
+	with db as cursor:
+		cursor.execute(query, (orderid, ))
+		return cursor.fetchall()
+
+def read_user_details(orderid):
+	db = getattr(g, 'db', None)
+
+	query ="SELECT tbl_user.name, tbl_user.address, tbl_user.postcode, tbl_user.city, tbl_user.country from tbl_user " \
+		   "where tbl_user.id = (select tbl_order.customer_id from tbl_order where tbl_order.id = %s);"
+
+	with db as cursor:
+		cursor.execute(query, (orderid, ))
+		return cursor.fetchone()
+
+@cms_page.route("/cms/Browse Orders/<orderid>")
+@login_required
+def show_order(orderid):
+	order_detail = read_order_detail(orderid)
+	product_rows = read_product_rows(orderid)
+	user_details = read_user_details(orderid)
+	return render_template("cms.html", editname="Browse Orders", order_detail=order_detail,
+						   product_rows=product_rows, user_details=user_details)
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
 @login_required
@@ -380,7 +440,6 @@ def read_not_stock():
 			"FROM tbl_stock);"
 	cursor.execute(query)
 	for x in cursor.fetchall():
-		print x
 		info.append(x)
 
 	return info

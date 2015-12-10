@@ -1,4 +1,9 @@
+table#order_table th{
+    background-color: #FFFFFF;
+    color: black;
+}
 
+table#order_table td:nth-child(even) {background-color: #FFFFFF}
 
 
 form#manage {
