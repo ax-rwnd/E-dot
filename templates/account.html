@@ -126,7 +126,7 @@
         </div>
         {%endif%}
         {% if pagename == "Account Settings"%}
-        <form id="manage" action="/account/update_info" method="POST" style="float:right;">
+        <form id="manage" action="/account/{{pagename}}" method="POST" style="float:right;">
             <fieldset>
                 <legend>Account Information:</legend>
                 <ol>
