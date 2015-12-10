@@ -104,10 +104,11 @@
                         <p>{{prod[2]}}</p>
                     </div>
                     <div class="col-sm-1">
+                        {{prod[4]}}
                         <form method="POST">
                             <input type="hidden" name="target" value="{{prod[4]}}">
                             <button type="submit" name="remove_item" class="btn btn-xs btn-danger">X</button>
-                            <form>
+                        </form>
                     </div>
                     <div class="col-sm-4">
                         {% if prod[3] %}
@@ -121,9 +122,14 @@
                         <p>Total:</p>
                     </div>
                     <div class="col-sm-2">
-                        <p>{{total}}$</p>
+                        {% if total_row[1] %}
+                        <p>{{total_row[1]}}$</p>
+                        {%endif%}
                     </div>
                     <div class="col-sm-7">
+                        {% if total_row[0] %}
+                        <p>{{total_row[0]}}</p>
+                        {%endif%}
                     </div>
 
                 </div>

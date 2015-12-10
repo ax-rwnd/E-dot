@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, g
+from flask import Blueprint, render_template, request, g, abort
 from flask.ext.login import login_required, current_user
 from config import config
 
@@ -136,23 +136,6 @@ def decrement_product(uid, pid):
 			name = cursor.fetchone()[0]
 			return (True, "Product "+name+" was removed from the basket.")
 
-@basket_page.route("/basket", methods=['POST'])
-@login_required
-#transact all wares from basket to order
-def show_basket_post():
-	db = getattr(g, 'db', None)
-	if 'place_order' in request.form:
-		suc, resstr = place_order(current_user.uid)
-	elif 'remove_item' in request.form:
-		suc, resstr = decrement_product(current_user.uid, request.form['target'])
-	else:
-		abort(500)
-
-	current_user.numbasket = prods_in_basket(current_user.uid)
-	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
-		current_user.uid)))
-
-
 def get_lines (uid):
 	db = getattr(g, 'db', None)
 
@@ -179,7 +162,41 @@ def resolve(tup):
 		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3], ret[4])
 
 
+def get_total_row():
+	db = getattr(g, 'db', None)
+	with db as cursor:
+		query = "select sum(tbl_basketlines.amount), sum(tbl_product.price * tbl_basketlines.amount) from " \
+				"tbl_basketlines " \
+				"inner " \
+				"join tbl_product on tbl_basketlines.user_id=tbl_product.id;"
+		cursor.execute(query)
+		return cursor.fetchone()
+
+
 @basket_page.route("/basket")
 @login_required
 def show_basket():
-	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)))
+	total_row = get_total_row()
+	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)), total_row = total_row)
+
+
+@basket_page.route("/basket", methods=['POST'])
+@login_required
+#transact all wares from basket to order
+def show_basket_post():
+	db = getattr(g, 'db', None)
+	if 'place_order' in request.form:
+		suc, resstr = place_order(current_user.uid)
+	elif 'remove_item' in request.form:
+		suc, resstr = decrement_product(current_user.uid, request.form['target'])
+	else:
+		abort(500)
+
+	current_user.numbasket = prods_in_basket(current_user.uid)
+
+	total_row = get_total_row()
+
+	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
+		current_user.uid)), total_row=total_row)
+
+
