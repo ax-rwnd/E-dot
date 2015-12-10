@@ -145,26 +145,27 @@
                             <li>
                                 <label for=nametext>Name:</label>
                                 <input id=nametext name=nametext type=text placeholder="First and last name" required
-                                       onkeyup="checkDone()">
+                                       onkeyup="checkDone()" maxlength="64">
                             </li>
                             <li>
                                 <label for=addresstext>Address:</label>
                                 <input id=addresstext name=addresstext type=text required autofocus
-                                       onkeyup="checkDone()">
+                                       onkeyup="checkDone()" maxlength="64">
                             </li>
                             <li>
                                 <label for=postcodetext>Post Code:</label>
                                 <input id=postcodetext name=postcodetext type=text required autofocus
-                                       onkeyup="checkDone()">
+                                       onkeyup="checkDone()" maxlength="9">
                             </li>
                             <li>
                                 <label for=citytext>City:</label>
-                                <input id=citytext name=citytext type=text required autofocus onkeyup="checkDone()">
+                                <input id=citytext name=citytext type=text required autofocus onkeyup="checkDone()"
+					 maxlength="32">
                             </li>
                             <li>
                                 <label for=countrytext>Country:</label>
                                 <input id=countrytext name=countrytext type=text required autofocus
-                                       onkeyup="checkDone()">
+                                       onkeyup="checkDone()" maxlength="32">
                             </li>
                         </ol>
                     </fieldset>
