@@ -107,5 +107,10 @@ def show_post():
 			return render_template("account.html", pagename="Account Settings",\
 						user_info = get_account_info(current_user.uid), status = True,\
 						message="Your password was updated.")
+		else:
+			return render_template("account.html", pagename="Account Settings",\
+						user_info = get_account_info(current_user.uid), status = False,\
+						message="Wrong password entered.")
+
 	else:
 		abort(500)
