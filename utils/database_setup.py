@@ -1,5 +1,7 @@
+from getpass import getpass
 from util_config import config
 from flask import Flask, render_template, request, g
+from werkzeug.security import generate_password_hash
 app = Flask(__name__)
 
 # DB support
@@ -45,9 +47,25 @@ def main():
 	create_review_tbl()
 	create_admin_tbl()
 
-
+	#get user info for first user
+	email = raw_input("Root user e-mail:")
+	pwd = getpass()
+	setup_root_user(email, pwd)
 
 	print "Completed sucessfully"
+
+def setup_root_user(email, passwd):
+	db = DBFUNC(config["SQLDB"])
+
+	print 'Setting root user "'+email+'" up...'
+	with db as cursor:
+		query = "insert into "+tbl_user+" (id, email, password, name) values (1, %s, %s, 'root');"
+		cursor.execute(query, (email, generate_password_hash(passwd)))
+
+		query = "insert into "+tbl_admin+" (user_id, level) values((select id from tbl_user where id=1), 0);"
+		cursor.execute(query)
+	db.commit()
+	
 
 def create_admin_tbl():
 	db = DBFUNC(config["SQLDB"])
