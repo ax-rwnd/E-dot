@@ -120,7 +120,6 @@ def place_order (uid):
 def decrement_product(uid, pid):
 	db = getattr(g, 'db', None)
 	with db as cursor:
-		print uid, pid
 		query = "select amount from tbl_basketlines where user_id = %s and prod_id = %s;"
 		if cursor.execute(query, (uid, pid)) <= 0:
 			return (False, "Product "+str(pid)+" was not found in basket.")
