@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, request, g
+from flask import Blueprint, render_template, abort, request, g, abort
 from flask.ext.login import current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -9,10 +9,9 @@ account_page = Blueprint('account_page', __name__, template_folder='templates')
 def read_order_details(uid):
 	db = getattr(g, 'db', None)
 
-	query = "select tbl_order.id, tbl_order.date, tbl_orderlines.prod_id,\
-		tbl_orderlines.amount from tbl_order inner join\
-		tbl_orderlines on tbl_order.id=tbl_orderlines.order_id\
-		where tbl_order.customer_id = %s ORDER BY tbl_order.id DESC;"
+
+	query = "select tbl_order.id, tbl_order.date from tbl_order where tbl_order.customer_id = %s ORDER BY " \
+			"tbl_order.id DESC;"
 
 	with db as cursor:
 		cursor.execute(query, (uid,))
@@ -52,33 +51,46 @@ def show_account():
 @account_page.route("/account/Orders/<orderid>")
 @login_required
 def show_orders(orderid):
-	order_and_id =  read_order_info(current_user.uid)
-	print order_and_id
-	return render_template("account.html", pagename="Orders", order_and_id=order_and_id)
+	product_rows =  read_product_rows(current_user.uid, orderid)
+	order_row = read_order_details_by_id(current_user.uid, orderid)
+	if not order_row[0]:
+		abort(404)
+	return render_template("account.html", pagename="Orders", order_id=orderid, product_rows = product_rows,
+						   order_row=order_row)
 
-def read_order_info(uid):
+def read_order_details_by_id(uid, orderid):
 	db = getattr(g, 'db', None)
 
-	query ="SELECT tbl_order.id, tbl_order.date, tbl_product.name, tbl"
+	query = "select tbl_order.date, \
+		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount) from tbl_orderlines inner join\
+		tbl_order on tbl_orderlines.order_id=tbl_order.id\
+		where tbl_order.customer_id = %s and tbl_order.id = %s;"
 
-	query = "select tbl_order.id, tbl_order.date, tbl_orderlines.prod_id,\
-			tbl_orderlines.amount from tbl_order inner join\
-			tbl_orderlines on tbl_order.id=tbl_orderlines.order_id\
-			where tbl_order.customer_id = %s and tbl_order.id = %s ORDER BY tbl_order.id DESC;"
-
-	print uid
 	with db as cursor:
-		cursor.execute(query, (uid, uid))
-		for x in cursor.fetchall():
-			print x
+		cursor.execute(query, (uid,orderid))
+		return cursor.fetchone()
 
-		return None
+def read_product_rows(uid, orderid):
+	db = getattr(g, 'db', None)
+
+	query ="SELECT tbl_category.name, tbl_product.id, tbl_product.name, tbl_orderlines.amount, " \
+		   "tbl_orderlines.price " \
+		   "from tbl_orderlines " \
+		   "left join tbl_product on tbl_orderlines.prod_id = tbl_product.id " \
+		   "join tbl_order on tbl_orderlines.order_id = tbl_order.id " \
+		   "join tbl_category on tbl_product.cat_id = tbl_category.id " \
+		   "where tbl_order.id = %s;"
+
+	with db as cursor:
+		cursor.execute(query, (orderid, ))
+		return cursor.fetchall()
 
 @account_page.route("/account/<pagename>")
 @login_required
 def show(pagename):
 	if pagename =="Orders":
 		order_info =  read_order_details(current_user.uid)
+		print order_info
 		return render_template("account.html", pagename=pagename, order_info=order_info)
 	elif pagename == "Account Settings":
 		return render_template("account.html", pagename=pagename, user_info = get_account_info(current_user.uid))

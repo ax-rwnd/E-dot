@@ -200,22 +200,18 @@
         </form>
         {% elif pagename == "Orders" %}
 
-        {% if request.args.get('order_id') %}
+        {% if order_id %}
         <div class="order_box">
-
-
             <br>
             <center><label>Order Confirmation</label></center>
             <div class="order_info">
             <label for="order_id">Order id:</label>
-            <p id="order_id">{{request.args.get('order_id')}}</p>
+            <p id="order_id">{{order_id}}</p>
             <label for="placed">Placed:</label>
-            <p id="placed">{{request.args.get('date')}}</p>
+            <p id="placed">{{order_row[0]}}</p>
 
                 <label for="order_prods">Products:</label>
                 </div>
-
-
             <table id="order_prods" style="width:100%">
                 <thead>
                 <tr>
@@ -226,23 +222,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for item in order_info %}
+                {% for item in product_rows %}
                 <tr>
                     <td></td>
-                    <td><a href="/catalogue/Katter/20">KATT</td>
-                    <td>25</td>
-                    <td>1995.90$</td>
+                    <td><a href="/catalogue/{{item[0]}}/{{item[1]}}">{{item[2]}}</td>
+                    <td>{{item[3]}}</td>
+                    <td>{{item[4]}}$</td>
                 </tr>
                 {% endfor %}
-                <tr style="background-color: #337AB7;color: white;">
-                    <td>Total:</td>
+                <tr style="background-color: #FFF;color: black;">
+                    <td><b>Total:</b></td>
                     <td></td>
-                    <td>500</td>
-                    <td>99959.90$</td>
+                    <td><b>{{order_row[1]}}</b></td>
+                    <td><b>{{order_row[2]}}$</b></td>
                 </tr>
                 </tbody>
             </table>
-            {% if not order_info %}
+            {% if not order_id %}
             <br>
             <center><p>No Previous orders found!</p></center>
             {% endif %}
@@ -259,17 +255,15 @@
                     <th></th>
                     <th>Order ID</th>
                     <th>Date</th>
-                    <th>Total cost</th>
                     <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for item in order_info %}
                 <tr>
-                    <td><a href="?order_id={{item[0]}}&date={{item[1]}}">View</a></td>
+                    <td><a href="/account/Orders/{{item[0]}}">View</a></td>
                     <td>{{item[0]}}</td>
                     <td>{{item[1]}}</td>
-                    <td>{{item[3]}} $</td>
                     <td>Verified</td>
                 </tr>
                 {% endfor %}
