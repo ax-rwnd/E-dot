@@ -34,65 +34,14 @@ def get_account_info(uid):
 		else:
 			abort (500)
 
-def set_account_info(uid, name, address, postcode, city, country, email = None):
+def set_account_info(uid, name, address, postcode, city, country):
 	db = getattr(g, 'db', None)
+	query = "update tbl_user set name=%s, address=%s, postcode=%s, city=%s, country=%s\
+		where tbl_user.id = %s;"
 
-	data = None
-
-	if email:
-		data = (email,name, address, postcode, city, country, uid)
-		query = "update tbl_user set email=%s, name=%s, address=%s, postcode=%s, city=%s, country=%s\
-			where tbl_user.id = %s;"
-	else:
-		data = (name, address, postcode, city, country, uid)
-		query = "update tbl_user set name=%s, address=%s, postcode=%s, city=%s, country=%s\
-			where tbl_user.id = %s;"
-
-	if data:
-		with db as cursor:
-			cursor.execute(query, data)
-		db.commit()
-
-
-def update_account_info():
-	email = request.form['emailtext']
-	nametext = request.form['nametext']
-	addresstext = request.form['addresstext']
-	postcodetext = request.form['postcodetext']
-	citytext = request.form['citytext']
-	country = request.form['countrytext']
-
-	db = getattr(g, 'db', None)
-
-	try:
-		query = ""
-		with db as cursor:
-			data = (email,)
-			query = "SELECT * FROM tbl_user WHERE email=%s;"
-			if cursor.execute(query, data) > 0:
-				#update all but email
-				set_account_info(current_user.uid, nametext, addresstext, postcodetext, citytext,country)
-			else:
-				#it is ok to update mail
-				set_account_info(current_user.uid, nametext, addresstext, postcodetext, citytext,country, email)
-	except Exception:
-		print "Error..."
-
-	return True
-
-
-@account_page.route("/account/<pagename>", methods=['POST'])
-@login_required
-def account_update(pagename):
-	status = ""
-	message= ""
-	if pagename == "Account Settings":
-		update_account_info()
-		message = "Information Updated!"
-		status = "success"
-
-	return render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account Settings",
-						   status=status, message=message)
+	with db as cursor:
+		cursor.execute(query, (name, address, postcode, city, country, uid))
+	db.commit()
 
 @account_page.route("/account")
 @login_required

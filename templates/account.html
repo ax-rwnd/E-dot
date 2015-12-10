@@ -126,14 +126,14 @@
         </div>
         {%endif%}
         {% if pagename == "Account Settings"%}
-        <form id="manage" action="/account/{{pagename}}" method="POST" style="float:right;">
+        <form id="manage" action="/account/update_info" method="POST" style="float:right;">
             <fieldset>
                 <legend>Account Information:</legend>
                 <ol>
                     <li>
                         <label for=emailtext>Email:</label>
                         <input id=emailtext name=emailtext type=text value="{{user_info[0]}}" required
-                               autofocus>
+                               autofocus disabled>
                     </li>
                     <li>
                         <label for=nametext>Name:</label>
