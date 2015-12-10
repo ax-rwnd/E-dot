@@ -122,11 +122,12 @@
                     <tr>
                         <td>{{product[3]}}$</td>
                         <td>{{product[5]}}</td>
-                        <td>
+                        <td>{% if current_user.is_authenticated %}
                             <form action="/catalogue/{{catname}}" method="POST">
                                 <input type="hidden" name="add_basket_id" value="{{product[0]}}">
                                 <input type="submit" name="add_basket" class="btn btn-default" value="Basket +">
                             </form>
+                            {% endif %}
                         </td>
                         <td>{% if current_user.is_authenticated %}
                             <a href="/catalogue/{{catname}}/{{product[0]}}" class="btn btn-success">Check it out!</a>
