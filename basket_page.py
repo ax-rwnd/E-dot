@@ -97,14 +97,15 @@ def place_order (uid):
 
 			#update stock amount
 			update_query = "update tbl_stock set amount = amount - %s where product_id = %s and amount > 0;"
-			query = "insert into tbl_orderlines (prod_id, order_id, amount) values (\
+			query = "insert into tbl_orderlines (prod_id, order_id, amount, price) values (\
 				(select id from tbl_product where id = %s),\
 				(select id from tbl_order where id = %s), \
-				%s);"
+				%s,\
+				(select price from tbl_product where id=%s));"
 
 			#add to order, remove from stock
 			for current in prods:
-				cursor.execute(query, (current[0], last_row, current[1]))
+				cursor.execute(query, (current[0], last_row, current[1], current[0]))
 				cursor.execute(update_query, (current[1], current[0]))
 
 			#remove from basket

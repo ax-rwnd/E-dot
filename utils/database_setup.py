@@ -128,7 +128,7 @@ def create_orderlines_tbl():
     cursor = db.cursor()
     print "Creating table", tbl_orderlines
     query = "create table "+ tbl_orderlines +" (prod_id INT(11) UNSIGNED, order_id INT(11) UNSIGNED, amount INT(11) " \
-											 "UNSIGNED);"
+											 "UNSIGNED, price DECIMAL(6,2));"
     cursor.execute(query)
     
     query = "alter table "+tbl_orderlines+" add CONSTRAINT fk_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
