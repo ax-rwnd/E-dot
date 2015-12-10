@@ -144,7 +144,7 @@
                     </li>
                     <li>
                         <label for=prodstock>In Stock:</label>
-                        <input id=prodstock name=prodstock type=number min="0" max="999" step="1"
+                        <input id=prodstock name=prodstock type=number min="0" max="4294967295" step="1"
                                style="text-align:right;" value="0" required>
                     </li>
                     <li><label>Image:</label>
@@ -247,7 +247,7 @@
                     <li>
                         <label for=prodstock>In Stock:</label>
                         <input id=prodstock name=prodstock type=number value="{{request.args.get('stock')}}" min="0"
-                               max="999" step="1"
+                               max="4294967295" step="1"
                                style="text-align:right;" value="0" required>
                     </li>
                     <li><label>Image:</label>
@@ -291,7 +291,7 @@
                                 href="?f={{item[1]}}&price={{item[3]}}&cat={{item[0]}}&stock={{item[2]}}&desc={{item[4]}}&img={{item[5]}}">Edit</a></td>
                         <td>{{item[0]}}</td>
                         <td>{{item[1]}}</td>
-                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="999"
+                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="4294967295"
                                     style="text-align:right;"
                                     value="{{item[2]}}"></td>
                         <td><input type="checkbox" name="check_{{item[1]}}" value="{{item[1]}}" checked></td>
@@ -326,7 +326,7 @@
                         <td><a href="/cms/Edit">Edit</a></td>
                         <td>{{item[0]}}</td>
                         <td>{{item[1]}}</td>
-                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="999"
+                        <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="4294967295"
                                     style="text-align:right;"
                                     value="0"></td>
                         <td><input type="checkbox" name="check_{{item[1]}}" value="{{item[1]}}"></td>

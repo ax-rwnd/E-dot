@@ -112,7 +112,7 @@ def create_stock_tbl():
 	db = DBFUNC(config["SQLDB"])
 	cursor = db.cursor()
 	print "Creating table", tbl_stock
-	query = "create table " + tbl_stock + "(product_id INT(11) UNSIGNED PRIMARY KEY, amount INT(9));"
+	query = "create table " + tbl_stock + "(product_id INT(11) UNSIGNED PRIMARY KEY, amount INT(11) UNSIGNED);"
 	cursor.execute(query)
 	query = "alter table " + tbl_stock+" add CONSTRAINT fk_prod_stock FOREIGN KEY (product_id) REFERENCES " \
 									   ""+tbl_product+"(id);"
