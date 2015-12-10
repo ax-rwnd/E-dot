@@ -55,6 +55,7 @@ def create_admin_tbl():
 		cursor.execute(query)
 
 		query = "alter table "+tbl_admin+" add constraint fk_admin_user foreign key (user_id) references "+tbl_user+"(id);"
+		cursor.execute(query)
 	db.commit()
 
 def create_review_tbl():
