@@ -5,6 +5,7 @@ from flask.ext.login import login_required
 from config import config
 from werkzeug import secure_filename
 
+from admin import perimeter_check
 
 cms_page = Blueprint('cms_page', __name__, template_folder='templates')
 
@@ -14,26 +15,35 @@ cms_page = Blueprint('cms_page', __name__, template_folder='templates')
 @cms_page.route("/cms/")
 @login_required
 def show_cms():
+	perimeter_check("CMSINDEX")
 	return render_template("cms.html", editname="Content Management")
 
 # render catalogue with product
 @cms_page.route("/cms/<editname>")
+@login_required
 def show_cms_editor(editname):
+	perimeter_check("CMSINDEX")
+
 	if editname == "Add Product":
+		perimeter_check("CMSPRODUCT")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info = cat_info)
 	if editname == "Edit Categories":
+		perimeter_check("CMSCATEGORY")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info = cat_info)
 	if editname == "Edit Products":
+		perimeter_check("CMSSTOCK")
 		info = read_stock()
 		others = read_not_stock()
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, info=info, others=others, cat_info=cat_info)
 	if editname == "Remove Category":
+		perimeter_check("CMSCATEGORY")
 		cat_info = read_categories()
 		return render_template("cms.html", editname=editname, cat_info=cat_info)
 	if editname == "Remove Product":
+		perimeter_check("CMSPRODUCT")
 		info =  read_products_and_categories()
 		return render_template("cms.html", editname=editname, info=info)
 
@@ -42,6 +52,8 @@ def show_cms_editor(editname):
 @cms_page.route("/cms/Add Category", methods=['POST'])
 @login_required
 def add_category():
+	perimeter_check("CMSCATEGORY")
+
 	catname = request.form['catname']
 	categories = read_categories()
 
@@ -61,6 +73,8 @@ def add_category():
 @cms_page.route("/cms/Add Product", methods=['POST'])
 @login_required
 def add_product():
+	perimeter_check("CMSPRODUCT")
+
 	prodname = request.form['prodname']
 	prodprice = request.form['prodprice']
 	proddesc = request.form['proddesc']
@@ -114,6 +128,8 @@ def add_product():
 @cms_page.route("/cms/Edit Categories", methods=['POST'])
 @login_required
 def edit_categories():
+	perimeter_check("CMSCATEGORY")
+
 
 	newname = request.form['rename_cat']
 	oldname = request.form['old_name']
@@ -135,6 +151,8 @@ def edit_categories():
 
 
 def edit_specific_product(oldname):
+	perimeter_check("CMSPRODUCT")
+
 	prodname = request.form['prodname']
 	prodprice = request.form['prodprice']
 	proddesc = request.form['proddesc']
@@ -193,6 +211,7 @@ def edit_specific_product(oldname):
 @cms_page.route("/cms/Edit Products", methods=['POST'])
 @login_required
 def edit_products():
+	perimeter_check("CMSPRODUCT")
 
 	alt = request.form['edit']
 
@@ -235,6 +254,8 @@ def edit_products():
 @cms_page.route("/cms/Remove Category", methods=['POST'])
 @login_required
 def remove_category():
+	perimeter_check("CMSCATEGORY")
+
 	cats = read_categories()
 	to_remove = []
 	status = "error"
@@ -270,6 +291,8 @@ def category_remover(catname):
 @cms_page.route("/cms/Remove Product", methods=['POST'])
 @login_required
 def remove_product():
+	perimeter_check("CMSPRODUCT")
+
 	prods = read_products()
 	to_remove = []
 	for p in prods:
