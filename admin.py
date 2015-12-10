@@ -1,6 +1,8 @@
 from flask import abort, g
 from flask.ext.login import current_user
 
+from access_levels import access
+
 ## Admin Table
 # pk(user_id), level
 # user_id - fk, int(11)
@@ -23,8 +25,8 @@ def test_access (uid, access):
 			return True
 
 #check if current_user actually has access
-def perimeter_check (access):
-	if not test_access(current_user.uid, access):
+def perimeter_check (access_str):
+	if not test_access(current_user.uid, access[access_str]):
 		abort(403)
 
 def admin_config (uid, newaccess):
