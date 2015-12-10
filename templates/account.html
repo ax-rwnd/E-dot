@@ -209,7 +209,10 @@
         {% if order_id %}
         <div class="order_box">
             <br>
-            <center><label>Order Confirmation</label></center>
+            <div
+                    style="float:left; margin-left:15px;"><a href="/account/Orders" class="btn btn-primary">Back
+            </a></div>
+            <div><center><legend>Order Confirmation</legend></center></div>
             <div class="order_info">
             <label for="order_id">Order id:</label>
             <p id="order_id">{{order_id}}</p>
@@ -253,7 +256,7 @@
 
         <div class="order_box">
             <br>
-            <center><label>Orders in progress</label></center>
+            <center><legend>Orders in progress</legend></center>
             <br>
             <table style="width:100%">
                 <thead>
