@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, abort, g,request
+from flask import Blueprint, render_template, abort, request, g
 from flask.ext.login import current_user, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from basket_page import prods_in_basket
 
@@ -16,6 +17,13 @@ def read_order_details(uid):
 	with db as cursor:
 		cursor.execute(query, (uid,))
 		return cursor.fetchall()
+
+def set_password(uid, plaintext):
+	db = getattr(g, 'db', None)
+
+	query = "update tbl_user set password=%s where tbl_user.id = %s;"
+	with db as cursor:
+		cursor.execute(query, (generate_password_hash(plaintext),uid))
 		
 def get_account_info(uid):
 	db = getattr(g, 'db', None)
@@ -89,13 +97,12 @@ def account_update(pagename):
 @account_page.route("/account")
 @login_required
 def show_account():
-	#set_account_info(current_user.uid, "Kurt","road","123","gavle","sweden")
-	#print get_account_info(current_user.uid)
 	render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 	return render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 
 
 @account_page.route("/account/<pagename>")
+@login_required
 def show(pagename):
 	if pagename =="Orders":
 		order_info =  read_order_details(current_user.uid)
@@ -104,3 +111,28 @@ def show(pagename):
 		return render_template("account.html", pagename=pagename, user_info = get_account_info(current_user.uid))
 
 	return render_template("account.html", pagename="Account")
+
+@account_page.route("/account/update_info", methods=["POST"])
+@login_required
+def show_post():
+	if 'update_account' in request.form:
+		set_account_info(current_user.uid, request.form['nametext'], request.form['addresstext'],\
+					request.form['postcodetext'], request.form['citytext'], request.form['countrytext'])
+		return render_template("account.html", pagename="Account Settings",\
+					user_info = get_account_info(current_user.uid), status = True,\
+					message="Your information was updated.")
+	
+	elif 'update_pass' in request.form:
+		db = getattr(g, 'db', None)
+		query = "select password from tbl_user where id=%s;"
+		with db as cursor:
+			cursor.execute(query, (current_user.uid,))
+			pw = cursor.fetchone()[0]
+
+		if check_password_hash(pw, request.form['pwtext_current']):
+			set_password(current_user.uid, request.form['pwtext_new'])
+			return render_template("account.html", pagename="Account Settings",\
+						user_info = get_account_info(current_user.uid), status = True,\
+						message="Your password was updated.")
+	else:
+		abort(500)
