@@ -110,6 +110,7 @@ def show_order(orderid):
 	order_detail = read_order_detail(orderid)
 	product_rows = read_product_rows(orderid)
 	user_details = read_user_details(orderid)
+	perimeter_check("CMSCATEGORY")
 	return render_template("cms.html", editname="Browse Orders", order_detail=order_detail,
 						   product_rows=product_rows, user_details=user_details)
 
