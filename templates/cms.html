@@ -417,7 +417,6 @@
                 <table style="width:100%">
                     <thead>
                     <tr>
-                        <th></th>
                         <th>Kategori</th>
                         <th>Produkt</th>
                         <th>Stock</th>
@@ -427,7 +426,6 @@
                     <tbody>
                     {% for item in others %}
                     <tr>
-                        <td><a href="/cms/Edit">Edit</a></td>
                         <td>{{item[0]}}</td>
                         <td>{{item[1]}}</td>
                         <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="999"
