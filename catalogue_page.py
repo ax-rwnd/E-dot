@@ -136,6 +136,7 @@ def read_product_info(prodid):
 		if cursor.execute(query, data) >0:
 			prod_info = list(cursor.fetchone())
 			prod_info[3] = config['UPLOAD_FOLDER'] + prod_info[3]
+			prod_info.append(None)
 			return prod_info
 
 		##if product does not exist
