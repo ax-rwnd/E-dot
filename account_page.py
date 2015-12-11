@@ -23,7 +23,7 @@ def set_password(uid, plaintext):
 	query = "update tbl_user set password=%s where tbl_user.id = %s;"
 	with db as cursor:
 		cursor.execute(query, (generate_password_hash(plaintext),uid))
-		
+
 def get_account_info(uid):
 	db = getattr(g, 'db', None)
 	with db as cursor:
@@ -48,16 +48,6 @@ def show_account():
 	render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 	return render_template("account.html", user_info = get_account_info(current_user.uid), pagename="Account")
 
-@account_page.route("/account/Orders/<orderid>")
-@login_required
-def show_orders(orderid):
-	product_rows =  read_product_rows(current_user.uid, orderid)
-	order_row = read_order_details_by_id(current_user.uid, orderid)
-	if not order_row[0]:
-		abort(404)
-	return render_template("account.html", pagename="Orders", order_id=orderid, product_rows = product_rows,
-						   order_row=order_row)
-
 def read_order_details_by_id(uid, orderid):
 	db = getattr(g, 'db', None)
 
@@ -79,18 +69,28 @@ def read_product_rows(uid, orderid):
 		   "left join tbl_product on tbl_orderlines.prod_id = tbl_product.id " \
 		   "join tbl_order on tbl_orderlines.order_id = tbl_order.id " \
 		   "join tbl_category on tbl_product.cat_id = tbl_category.id " \
-		   "where tbl_order.id = %s;"
+		   "where tbl_order.id = %s and tbl_order.customer_id = %s;"
 
 	with db as cursor:
-		cursor.execute(query, (orderid, ))
+		cursor.execute(query, (orderid, uid))
 		return cursor.fetchall()
+
+
+@account_page.route("/account/Orders/<orderid>")
+@login_required
+def show_orders(orderid):
+	product_rows =  read_product_rows(current_user.uid, orderid)
+	order_row = read_order_details_by_id(current_user.uid, orderid)
+	if not order_row[0]:
+		abort(404)
+	return render_template("account.html", pagename="Orders", order_id=orderid, product_rows = product_rows,
+						   order_row=order_row)
 
 @account_page.route("/account/<pagename>")
 @login_required
 def show(pagename):
 	if pagename =="Orders":
 		order_info =  read_order_details(current_user.uid)
-		print order_info
 		return render_template("account.html", pagename=pagename, order_info=order_info)
 	elif pagename == "Account Settings":
 		return render_template("account.html", pagename=pagename, user_info = get_account_info(current_user.uid))
@@ -101,12 +101,12 @@ def show(pagename):
 @login_required
 def show_post():
 	if 'update_account' in request.form:
-		set_account_info(current_user.uid, request.form['nametext'], request.form['addresstext'],\
-					request.form['postcodetext'], request.form['citytext'], request.form['countrytext'])
-		return render_template("account.html", pagename="Account Settings",\
-					user_info = get_account_info(current_user.uid), status = True,\
-					message="Your information was updated.")
-	
+		set_account_info(current_user.uid, request.form['nametext'], request.form['addresstext'], \
+						 request.form['postcodetext'], request.form['citytext'], request.form['countrytext'])
+		return render_template("account.html", pagename="Account Settings", \
+							   user_info = get_account_info(current_user.uid), status = True, \
+							   message="Your information was updated.")
+
 	elif 'update_pass' in request.form:
 		db = getattr(g, 'db', None)
 		query = "select password from tbl_user where id=%s;"
@@ -116,13 +116,13 @@ def show_post():
 
 		if check_password_hash(pw, request.form['pwtext_current']):
 			set_password(current_user.uid, request.form['pwtext_new'])
-			return render_template("account.html", pagename="Account Settings",\
-						user_info = get_account_info(current_user.uid), status = True,\
-						message="Your password was updated.")
+			return render_template("account.html", pagename="Account Settings", \
+								   user_info = get_account_info(current_user.uid), status = True, \
+								   message="Your password was updated.")
 		else:
-			return render_template("account.html", pagename="Account Settings",\
-						user_info = get_account_info(current_user.uid), status = False,\
-						message="Wrong password entered.")
+			return render_template("account.html", pagename="Account Settings", \
+								   user_info = get_account_info(current_user.uid), status = False, \
+								   message="Wrong password entered.")
 
 	else:
 		abort(500)

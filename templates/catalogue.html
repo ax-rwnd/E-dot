@@ -176,9 +176,15 @@
                         <label for="price">Price:</label>
 
                         <p id="price">{{prod[2]}}$</p>
-                        <label for="stock">Stock:</label>
 
+
+                        {%if prod[4]%}
+                        <label for="stock">Stock:</label>
                         <p id="stock">{{prod[4]}}</p>
+                        {%else%}
+                            <label for="stock"><strike>Stock:</strike></label>
+                            <p id="stock"><font color="red">This product is not in store.</font></p>
+                        {%endif%}
                         {% if current_user.is_authenticated %}
                         <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
                             <input type="submit" name="send" class="btn btn-success" value="Send to Basket">

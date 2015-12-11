@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from _mysql_exceptions import IntegrityError
-from flask import Blueprint, render_template, request, g
+from flask import Blueprint, render_template, request, g, abort
 from flask.ext.login import current_user, login_required
 from itertools import product
 from config import config
@@ -121,13 +121,30 @@ def read_product_info(prodid):
 			 "tbl_stock.amount FROM tbl_product "
 			 "inner join tbl_stock on tbl_product.id = tbl_stock.product_id where tbl_product.id = %s;")
 	data = (prodid,)
-	cursor.execute(query, data)
-	
-	prod_info = list(cursor.fetchone())
 
-	prod_info[3] = config['UPLOAD_FOLDER'] + prod_info[3]
+	#Show product if it is in stock
+	if cursor.execute(query, data) > 0:
+		prod_info = list(cursor.fetchone())
+		prod_info[3] = config['UPLOAD_FOLDER'] + prod_info[3]
+		return prod_info
 
-	return prod_info
+	#show product if not in stock
+	else:
+		query = ("SELECT tbl_product.name, tbl_product.description, tbl_product.price, tbl_product.image_url "
+				 "FROM tbl_product "
+				 "where tbl_product.id = %s;")
+		if cursor.execute(query, data) >0:
+			prod_info = list(cursor.fetchone())
+			prod_info[3] = config['UPLOAD_FOLDER'] + prod_info[3]
+			return prod_info
+
+		##if product does not exist
+		else:
+			query = "select tbl_orderlines.prod_id from tbl_orderlines where tbl_orderlines.prod_id = %s;"
+			if cursor.execute(query, (prodid,)) > 0:
+				return list(cursor.fetchone())
+			else:
+				abort(403)
 
 #Read products from catalogue where catname is correct
 def read_products(catname):
