@@ -88,7 +88,8 @@ def create_review_tbl():
 		query = "alter table "+tbl_review+" add constraint fk_review_user foreign key (user_id) references "+tbl_user+"(id);"
 		cursor.execute(query)
 
-		query = "alter table "+tbl_review+" add constraint fk_review_product foreign key (prod_id) references "+tbl_product+"(id);"
+		query = "alter table "+tbl_review+" add constraint fk_review_product foreign key (prod_id) references " \
+										  ""+tbl_product+"(id) ON DELETE CASCADE;"
 		cursor.execute(query)
 
 	db.commit()
@@ -103,7 +104,8 @@ def create_rating_tbl():
 		query = "alter table "+tbl_rating+" add constraint fk_rating_user foreign key (user_id) references "+tbl_user+"(id);"
 		cursor.execute(query)
 
-		query = "alter table "+tbl_rating+" add constraint fk_rating_product foreign key (prod_id) references "+tbl_product+"(id);"
+		query = "alter table "+tbl_rating+" add constraint fk_rating_product foreign key (prod_id) references " \
+										  ""+tbl_product+"(id) ON DELETE CASCADE;"
 		cursor.execute(query)
 
 	db.commit()
@@ -115,7 +117,7 @@ def create_stock_tbl():
 	query = "create table " + tbl_stock + "(product_id INT(11) UNSIGNED PRIMARY KEY, amount INT(9));"
 	cursor.execute(query)
 	query = "alter table " + tbl_stock+" add CONSTRAINT fk_prod_stock FOREIGN KEY (product_id) REFERENCES " \
-									   ""+tbl_product+"(id);"
+									   ""+tbl_product+"(id) ON DELETE CASCADE;"
 	cursor.execute(query)
 	db.commit()
 	db.close()
@@ -138,7 +140,7 @@ def create_product_tbl():
 											"description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
 	cursor.execute(query)
 	
-	query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id);"
+	query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id) ON DELETE CASCADE;"
 	cursor.execute(query)
 
 	db.commit()
@@ -152,8 +154,9 @@ def create_orderlines_tbl():
 											 "UNSIGNED, price DECIMAL(6,2));"
 	cursor.execute(query)
 	
-	query = "alter table "+tbl_orderlines+" add CONSTRAINT fk_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
-	cursor.execute(query)
+#	query = "alter table "+tbl_orderlines+" add CONSTRAINT fk_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(" \
+# "id) ON DELETE SET NULL;"
+#	cursor.execute(query)
 	
 	query = "alter table "+tbl_orderlines +" add CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES "+tbl_order+"(id);"
 	cursor.execute(query)
@@ -168,7 +171,8 @@ def create_basketlines_tbl():
 	query = "create table "+ tbl_basketlines +" (user_id INT(11) UNSIGNED, prod_id INT(11) UNSIGNED, amount INT(11) UNSIGNED, PRIMARY KEY(user_id, prod_id));"
 	cursor.execute(query)
 	
-	query = "alter table "+tbl_basketlines + " add CONSTRAINT fk_basket_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(id);"
+	query = "alter table "+tbl_basketlines + " add CONSTRAINT fk_basket_prod FOREIGN KEY (prod_id) REFERENCES " \
+											 ""+tbl_product+"(id) ON DELETE CASCADE;"
 	cursor.execute(query)
 	
 	query = "alter table "+tbl_basketlines +" add CONSTRAINT fk_basket_user FOREIGN KEY (user_id) REFERENCES "+tbl_user+"(id);"
