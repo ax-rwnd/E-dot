@@ -162,21 +162,20 @@ def resolve(tup):
 		return (ret[0], ret[1], tup[1], config['UPLOAD_FOLDER'] + ret[2], ret[3], ret[4])
 
 
-def get_total_row():
+def get_total_row(uid):
 	db = getattr(g, 'db', None)
 	with db as cursor:
 		query = "select sum(tbl_basketlines.amount), sum(tbl_product.price * tbl_basketlines.amount) from " \
 				"tbl_basketlines " \
-				"inner " \
-				"join tbl_product on tbl_basketlines.user_id=tbl_product.id;"
-		cursor.execute(query)
+				"left join tbl_product on tbl_basketlines.prod_id=tbl_product.id where tbl_basketlines.user_id = %s;"
+		cursor.execute(query, (uid,))
 		return cursor.fetchone()
 
 
 @basket_page.route("/basket")
 @login_required
 def show_basket():
-	total_row = get_total_row()
+	total_row = get_total_row(current_user.uid)
 	return render_template("basket.html", plist = map(resolve, get_lines(current_user.uid)), total_row = total_row)
 
 
@@ -194,7 +193,7 @@ def show_basket_post():
 
 	current_user.numbasket = prods_in_basket(current_user.uid)
 
-	total_row = get_total_row()
+	total_row = get_total_row(current_user.uid)
 
 	return render_template("/basket.html", status=suc, message=resstr, plist = map(resolve, get_lines(
 		current_user.uid)), total_row=total_row)

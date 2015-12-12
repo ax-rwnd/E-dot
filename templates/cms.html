@@ -7,6 +7,7 @@
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/favicon.ico" rel="shortcut icon">
     <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/order_style.css" rel="stylesheet">
     <link href="/static/form_style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
@@ -68,6 +69,8 @@
     <div class="categories">
         <h3>{{editname}}</h3>
         <ul class="list-unstyled">
+            <a href="/cms/Browse Orders">Browse Orders</a>
+            <br>
             <a href="/cms/Add Category">Add Category</a>
             <br>
             <a href="/cms/Add Product">Add Product</a>
@@ -96,7 +99,108 @@
         </div>
         {%endif%}
 
-        {% if editname == "Add Category" %}
+        {% if editname == "Browse Orders" %}
+        {% if order_detail %}
+        <div class="order_box">
+            <br>
+            <div
+                    style="float:left; margin-left:15px;"><a href="/cms/Browse Orders" class="btn btn-primary">Back
+            </a></div>
+            <div><center><legend>Order Information</legend></center></div>
+            <div class="order_info">
+                <label for="order_id">Order id:</label>
+                <p id="order_id">{{order_detail[0]}}</p>
+                <label for="placed">Placed:</label>
+                <p id="placed">{{order_detail[1]}}</p>
+                <label for="order_table">Customer Information:</label>
+                <table id="order_table">
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{user_details[0]}}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{user_details[1]}}</td>
+                    </tr>
+                    <tr>
+                        <th>Post Code:</th>
+                        <td>{{user_details[2]}}</td>
+                    </tr>
+                    <tr>
+                        <th>City:</th>
+                        <td>{{user_details[3]}}</td>
+                    </tr>
+                    <tr>
+                        <th>Country:</th>
+                        <td>{{user_details[4]}}</td>
+                    </tr>
+                </table>
+                <br>
+                <label for="order_prods">Products:</label>
+            </div>
+            <table id="order_prods" style="width:100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in product_rows %}
+                <tr>
+                    <td></td>
+                    <td><a href="/catalogue/{{item[0]}}/{{item[1]}}">{{item[2]}}</td>
+                    <td>{{item[3]}}</td>
+                    <td>{{item[4]}}$</td>
+                </tr>
+                {% endfor %}
+                <tr style="background-color: #FFF;color: black;">
+                    <td><b>Total:</b></td>
+                    <td></td>
+                    <td><b>{{order_detail[2]}}</b></td>
+                    <td><b>{{order_detail[3]}}$</b></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {%if order_row%}
+
+        <div class="order_box">
+            <br>
+            <center><legend>Orders in progress</legend></center>
+            <br>
+            <table style="width:100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in order_row %}
+                <tr>
+                    <td><a href="/cms/Browse Orders/{{item[0]}}">View</a></td>
+                    <td>{{item[0]}}</td>
+                    <td>{{item[1]}}</td>
+                    <td>Verified</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not order_row %}
+            <br>
+            <center><p>No Previous orders found!</p></center>
+            {% endif %}
+        </div>
+        {%endif%}
+
+        {% elif editname == "Add Category" %}
         <form id="manage" action="/cms/Add Category" method="POST">
             <fieldset>
                 <legend>
@@ -313,7 +417,6 @@
                 <table style="width:100%">
                     <thead>
                     <tr>
-                        <th></th>
                         <th>Kategori</th>
                         <th>Produkt</th>
                         <th>Stock</th>
@@ -323,7 +426,6 @@
                     <tbody>
                     {% for item in others %}
                     <tr>
-                        <td><a href="/cms/Edit">Edit</a></td>
                         <td>{{item[0]}}</td>
                         <td>{{item[1]}}</td>
                         <td> <input id=stock name="stock_{{item[1]}}" type=number min="0" max="4294967295"
@@ -418,6 +520,15 @@
 
     </div>
 </div>
+
+<footer class="footer">
+    <center>
+        <p>
+            This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and
+            <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+        </p>
+    </center>
+</footer>
 
 </body>
 </html>

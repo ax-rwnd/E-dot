@@ -176,16 +176,20 @@
                         <label for="price">Price:</label>
 
                         <p id="price">{{prod[2]}}$</p>
-                        <label for="stock">Stock:</label>
-
-                        <p id="stock">{{prod[4]}}</p>
-                        {% if current_user.is_authenticated %}
-                        <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                            <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
-                        </form>
-                        {% else %}
-                        <p><i>Log in to buy.</i></p>
+                        {%if prod[4] != None%}
+                            <label for="stock">Stock:</label>
+                            <p id="stock">{{prod[4]}}</p>
+                            {% if current_user.is_authenticated %}
+                            <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+                                <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
+                            </form>
+                            {% else %}
+                            <p><i>Log in to buy.</i></p>
                         {% endif %}
+                        {%else%}
+                            <label for="stock"><strike>Stock:</strike></label>
+                            <p id="stock"><font color="red">This product is not in store.</font></p>
+                        {%endif%}
                     </div>
                 </div>
             </div>
