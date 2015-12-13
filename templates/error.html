@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{{message}}</title>
+    <link href="/static/favicon.ico" rel="shortcut icon"/>
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+    <link href="/static/index_style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+<div class="header-cont">
+    <div class="header">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/>&nbsp <span
+                        class="badge">{{current_user.numbasket}}</span></a>
+                </li>
+                {% endif %}
+                <li role="presentation" class="active"><a href="/">Home</a>
+                </li>
+                <li role="presentation"><a href="/catalogue">Catalogue</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li role="presentation"><a href="/account"><span
+                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">{{current_user.name}}</span></a>
+                </li>
+                {%endif%}
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="/login">Sign In</a>
+                    {% else %}
+                <li role="presentation"><a href="/logout">Sign Out</a>
+                    {% endif %}
+                </li>
+                {% if not current_user.is_authenticated %}
+                <li role="presentation"><a href="signup">Sign Up</a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h3 class="text-muted">
+            <i>e-dot &#8212; drop the com.</i>
+        </h3>
+    </div>
+</div>
+
+<br>
+<br> <!-- Dirty hack -->
+<br>
+
+<div class="container">
+        {%if message %}
+		{% if status %}
+		<div class="alert alert-success fade in">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Success!</strong> {{message}}
+		{% else %}
+		<div class="alert alert-danger fade in">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Failure:</strong> {{message}}
+		{%endif%}
+		</div>
+        {%endif%}
+        <div class="bg"></div>
+
+
+        <footer class="footer">
+            <center>
+                <p>
+                    This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
+                    and
+                    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
+                </p>
+            </center>
+        </footer>
+</div>
+</body>
+
+</html>

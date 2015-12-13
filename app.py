@@ -84,9 +84,12 @@ def unauthorized(e):
 	return render_template("/login.html", status = False, message = "You must be logged in to do that.")
 
 @app.errorhandler(404)
-def forbidden(e):
-	return render_template("/index.html", status = False, message = "That page didn't exists.")
+def no_exist(e):
+	return render_template("error.html", status = False, message = "That page doesn't exist.")
 
+@app.errorhandler(403)
+def no_exist(e):
+	return render_template("error.html", status = False, message = "You are not allowed to visit that page.")
 
 #setup ssl context
 def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
