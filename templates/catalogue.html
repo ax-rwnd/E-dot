@@ -1,267 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Catalogue</title>
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"/>
-    <style type="text/css">
-        a.fancybox img {
-        border: none;
-        box-shadow: 0 1px 7px rgba(0,0,0,0.6);
-        }
-    </style>
-    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-    <link href="/static/favicon.ico" rel="shortcut icon"/>
-    <link href="/static/style.css" rel="stylesheet">
-    <link href="/static/form_style.css" rel="stylesheet">
-    <link href="/static/catalogue_style.css" rel="stylesheet">
-    <style>
-        .content{
-        width:450px;
-        }
-    </style>
+	<title>Catalogue</title>
+	<link rel="stylesheet" type="text/css" media="screen"
+		  href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css"/>
+	<style type="text/css">
+		a.fancybox img {
+		border: none;
+		box-shadow: 0 1px 7px rgba(0,0,0,0.6);
+		}
+	</style>
+	<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+	<link href="/static/favicon.ico" rel="shortcut icon"/>
+	<link href="/static/style.css" rel="stylesheet">
+	<link href="/static/form_style.css" rel="stylesheet">
+	<link href="/static/catalogue_style.css" rel="stylesheet">
+	<style>
+		.content{
+		width:450px;
+		}
+	</style>
 
 </head>
 <body>
-<div class="header-cont">
-    <div class="header">
-        <nav>
-            <ul class="nav nav-pills pull-right">
-                {% if current_user.is_authenticated %}
-                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/>&nbsp <span class="badge">
-                    {{current_user.numbasket}}</span></a>
-                </li>
-                {% endif %}
-                <li role="presentation"><a href="/">Home</a></li>
-                <li role="presentation" class="active"><a href="/catalogue">Catalogue</a>
-                </li>
-                {% if current_user.is_authenticated %}
-                <li role="presentation"><a href="/account"><span
-                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">
-                    {{current_user.name}}</span></a>
-                </li>
-                {%endif%}
-                {% if not current_user.is_authenticated %}
-                <li role="presentation"><a href="/login">Sign In</a> {% else
-                    %}
-                <li role="presentation"><a href="/logout">Sign Out</a> {%
-                    endif %}
-                </li>
-                {% if not current_user.is_authenticated %}
-                <li role="presentation"><a href="/signup">Sign Up</a>
-                </li>
-                {%endif%}
-            </ul>
-        </nav>
-        <h3 class="text-muted">
-            <i>e-dot &#8212; drop the com.</i>
-        </h3>
-    </div>
-</div>
+{% include 'navbar.html' %}
 
 <div class="container">
-    <div class="categories">
-        <h3>{{ catname }}</h3>
+	<div class="categories">
+		<h3>{{ catname }}</h3>
 
-        <ul class="list-unstyled">
-            {% for name in c %}
-            <a href="/catalogue/{{name}}">{{name}}</a>
-            <br> {% endfor %}
-        </ul>
-    </div>
-    <div class="content">
-        {%if message%}
-        {%if status == "success" %}
-        <div class="alert alert-success fade in">
-            {%elif status == "error"%}
-            <div class="alert alert-danger fade in">
-                {%endif%}
+		<ul class="list-unstyled">
+			{% for name in c %}
+			<a href="/catalogue/{{name}}">{{name}}</a>
+			<br> {% endfor %}
+		</ul>
+	</div>
+	<div class="content">
+		{%if message%}
+		{%if status == "success" %}
+		<div class="alert alert-success fade in">
+			{%elif status == "error"%}
+			<div class="alert alert-danger fade in">
+				{%endif%}
 
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>{%if status %}Success!{%else%}Failure:{%endif%}</strong> {{message}}
-            </div>
-            {%endif%}
-            {%if not (p or prod)%}
-            <br>
-            {% if catname == "Categories" %}
-            <center><p>Select a Category to browse products!</p></center>
-            {% else %}
-            <center><p>No products Found for <i>{{catname}}</i></p></center>
-            {% endif %}
-            {% endif %}
-            {% if p%}
-            {% for product in p%}
-            <div class="product_box">
-                <div class="product_image">
-                    <img src="{{product[4]}}"/>
-                </div>
-                <div class="product_info" style="width:60%">
-                    <a href="/catalogue/{{catname}}/{{product[0]}}">
-                        <h3>{{product[1]}}</h3></a>
-                    <label for="desc">Description:</label>
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>{%if status %}Success!{%else%}Failure:{%endif%}</strong> {{message}}
+			</div>
+			{%endif%}
+			{%if not (p or prod)%}
+			<br>
+			{% if catname == "Categories" %}
+			<center><p>Select a Category to browse products!</p></center>
+			{% else %}
+			<center><p>No products Found for <i>{{catname}}</i></p></center>
+			{% endif %}
+			{% endif %}
+			{% if p%}
+			{% for product in p%}
+			<div class="product_box">
+				<div class="product_image">
+					<img src="{{product[4]}}"/>
+				</div>
+				<div class="product_info" style="width:60%">
+					<a href="/catalogue/{{catname}}/{{product[0]}}">
+						<h3>{{product[1]}}</h3></a>
+					<label for="desc">Description:</label>
 
-                    <p style="font-style:italic;font-" id="desc">
-                        {{product[2][0:60]}}
-                        {%if product[2][60]%}
-                        ...
-                        {%endif%}
-                    </p>
-                </div>
-                <table style="width:100%;">
-                    <thead>
-                    <tr>
-                        <th width="40%">Price</th>
-                        <th width="30%">Stock</th>
-                        <th width="10%"></th>
-                        <th width="20%"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{product[3]}}$</td>
-                        <td>{{product[5]}}</td>
-                        <td>{% if current_user.is_authenticated %}
-                            <form action="/catalogue/{{catname}}" method="POST">
-                                <input type="hidden" name="add_basket_id" value="{{product[0]}}">
-                                <input type="submit" name="add_basket" class="btn btn-default" value="Basket +">
-                            </form>
-                            {% endif %}
-                        </td>
-                        <td>{% if current_user.is_authenticated %}
-                            <a href="/catalogue/{{catname}}/{{product[0]}}" class="btn btn-success">Check it out!</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            {% endfor %}
-            {%endif%} {%if prod%}
+					<p style="font-style:italic;font-" id="desc">
+						{{product[2][0:60]}}
+						{%if product[2][60]%}
+						...
+						{%endif%}
+					</p>
+				</div>
+				<table style="width:100%;">
+					<thead>
+					<tr>
+						<th width="40%">Price</th>
+						<th width="30%">Stock</th>
+						<th width="10%"></th>
+						<th width="20%"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>{{product[3]}}$</td>
+						<td>{{product[5]}}</td>
+						<td>{% if current_user.is_authenticated %}
+							<form action="/catalogue/{{catname}}" method="POST">
+								<input type="hidden" name="add_basket_id" value="{{product[0]}}">
+								<input type="submit" name="add_basket" class="btn btn-default" value="Basket +">
+							</form>
+							{% endif %}
+						</td>
+						<td>{% if current_user.is_authenticated %}
+							<a href="/catalogue/{{catname}}/{{product[0]}}" class="btn btn-success">Check it out!</a>
+							{% endif %}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			{% endfor %}
+			{%endif%} {%if prod%}
 
-            <div class="product_box" style="float:right;">
-                {% if prod[3] %}
-                <div class="product_page_image">
-                    <img class="fancybox" src="{{prod[3]}}"/>
-                </div>
-                {% endif %}
+			<div class="product_box" style="float:right;">
+				{% if prod[3] %}
+				<div class="product_page_image">
+					<img class="fancybox" src="{{prod[3]}}"/>
+				</div>
+				{% endif %}
 
-                <div class="product_info">
+				<div class="product_info">
 
-                    <div class="product_info" style="width:100%;">
-                        <h3>{{prod[0]}}</h3>
-                        <label for="desc">Description:</label>
+					<div class="product_info" style="width:100%;">
+						<h3>{{prod[0]}}</h3>
+						<label for="desc">Description:</label>
 
-                        <p id="desc">{{prod[1]}}</p>
-                    </div>
+						<p id="desc">{{prod[1]}}</p>
+					</div>
 
-                    <div class="product_info" style="float:right;">
-                        <label>Rate This Product:</label>
+					<div class="product_info" style="float:right;">
+						<label>Rate This Product:</label>
 
-                        <p>This Product has rating <b>({{rating}})</b></p>
+						<p>This Product has rating <b>({{rating}})</b></p>
 
-                        {% if current_user.is_authenticated %}
-                        <form id="vote" action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                            <button type="submit" name="vote_up"><span class="glyphicon glyphicon-plus"></span>
-                            </button>
-                            <button type="submit" name="vote_down"><span
-                                    class="glyphicon glyphicon-minus"></span>
-                            </button>
-                        </form>
-                        {% endif %}
-                    </div>
+						{% if current_user.is_authenticated %}
+						<form id="vote" action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+							<button type="submit" name="vote_up"><span class="glyphicon glyphicon-plus"></span>
+							</button>
+							<button type="submit" name="vote_down"><span
+									class="glyphicon glyphicon-minus"></span>
+							</button>
+						</form>
+						{% endif %}
+					</div>
 
-                    <div class="product_info" style="float:left;">
-                        <label for="price">Price:</label>
+					<div class="product_info" style="float:left;">
+						<label for="price">Price:</label>
 
-                        <p id="price">{{prod[2]}}$</p>
-                        {%if prod[4] != None%}
-                            <label for="stock">Stock:</label>
-                            <p id="stock">{{prod[4]}}</p>
-                            {% if current_user.is_authenticated %}
-                            <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                                <input type="submit" name="send" class="btn btn-success" value="Send to Basket">
-                            </form>
-                            {% else %}
-                            <p><i>Log in to buy.</i></p>
-                        {% endif %}
-                        {%else%}
-                            <label for="stock"><strike>Stock:</strike></label>
-                            <p id="stock"><font color="red">This product is not in store.</font></p>
-                        {%endif%}
-                    </div>
-                </div>
-            </div>
-            <br><br>
-            <br>
+						<p id="price">{{prod[2]}}$</p>
+						{%if prod[4] != None%}
+							<label for="stock">Stock:</label>
+							<p id="stock">{{prod[4]}}</p>
+							{% if current_user.is_authenticated %}
+							<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+								<input type="submit" name="send" class="btn btn-success" value="Send to Basket">
+							</form>
+							{% else %}
+							<p><i>Log in to buy.</i></p>
+						{% endif %}
+						{%else%}
+							<label for="stock"><strike>Stock:</strike></label>
+							<p id="stock"><font color="red">This product is not in store.</font></p>
+						{%endif%}
+					</div>
+				</div>
+			</div>
+			<br><br>
+			<br>
 
-            <div class="product_box">
-                <div class="product_info" style="float:left;">
-                    {% if current_user.is_authenticated %}
-                    <form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
-                        <label>Comment on this product:</label><br>
-                    <textarea id="comment" name="comment_text" style="resize: none" rows=4 cols=38"
-                              placeholder="Write comment..." required></textarea>
-                        <br>
-                        <br>
-                        <input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
-                               value="Post Comment">
-                        <br>
-                        <br>
-                    </form>
-                    {%endif%}
-                    {% for comm in comments %}
-                    <div class="comment-box">
-                        <i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
-                        <br>
-                        {{comm[2]}}
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {%endif%}
-        </div>
-    </div>
-    <footer class="footer">
-        <center>
-            <p>
-                This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
-                and
-                <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
-            </p>
-        </center>
-    </footer>
+			<div class="product_box">
+				<div class="product_info" style="float:left;">
+					{% if current_user.is_authenticated %}
+					<form action="/catalogue/{{catname}}/{{prodid}}" method="POST">
+						<label>Comment on this product:</label><br>
+					<textarea id="comment" name="comment_text" style="resize: none" rows=4 cols=38"
+							  placeholder="Write comment..." required></textarea>
+						<br>
+						<br>
+						<input type="submit" name="post_comment" class="btn btn-default" maxlength="255"
+							   value="Post Comment">
+						<br>
+						<br>
+					</form>
+					{%endif%}
+					{% for comm in comments %}
+					<div class="comment-box">
+						<i>Written by user {{comm[0]}} on {{comm[1]}}:</i>
+						<br>
+						{{comm[2]}}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+			{%endif%}
+		</div>
+	</div>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript"
-            src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js"></script>
-    <script type="text/javascript">
-    $(function($){
-        var addToAll = false;
-        var gallery = false;
-        var titlePosition = 'inside';
-        $(addToAll ? 'img' : 'img.fancybox').each(function(){
-            var $this = $(this);
-            var title = $this.attr('title');
-            var src = $this.attr('data-big') || $this.attr('src');
-            var a = $('<a href="#" class="fancybox"></a>').attr('href', src).attr('title', title);
-            $this.wrap(a);
-        });
-        if (gallery)
-            $('a.fancybox').attr('rel', 'fancyboxgallery');
-        $('a.fancybox').fancybox({
-            titlePosition: titlePosition
-        });
-    });
-    $.noConflict();
+	{% include 'footer.html' %}
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript"
+			src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.pack.min.js"></script>
+	<script type="text/javascript">
+	$(function($){
+		var addToAll = false;
+		var gallery = false;
+		var titlePosition = 'inside';
+		$(addToAll ? 'img' : 'img.fancybox').each(function(){
+			var $this = $(this);
+			var title = $this.attr('title');
+			var src = $this.attr('data-big') || $this.attr('src');
+			var a = $('<a href="#" class="fancybox"></a>').attr('href', src).attr('title', title);
+			$this.wrap(a);
+		});
+		if (gallery)
+			$('a.fancybox').attr('rel', 'fancyboxgallery');
+		$('a.fancybox').fancybox({
+			titlePosition: titlePosition
+		});
+	});
+	$.noConflict();
 
 
 
 
 
-    </script>
+	</script>
 
 </body>
 </html>

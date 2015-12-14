@@ -1,91 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Log In</title>
-    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/favicon.ico" rel="shortcut icon"/>
-    <link href="/static/style.css" rel="stylesheet">
-    <link href="/static/form_style.css" rel="stylesheet">
-    <style>
-        .content{
-            float:none;
-            width:100%;
-        }
-        form#manage{
-            float:none;
-        }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+	<title>Log In</title>
+	<link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/static/favicon.ico" rel="shortcut icon"/>
+	<link href="/static/style.css" rel="stylesheet">
+	<link href="/static/form_style.css" rel="stylesheet">
+	<style>
+		.content{
+			float:none;
+			width:100%;
+		}
+		form#manage{
+			float:none;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="header-cont">
-    <div class="header">
-        <nav>
-            <ul class="nav nav-pills pull-right">
-                <li role="presentation"><a href="/">Home</a>
-                </li>
-                <li role="presentation"><a href="/catalogue">Catalogue</a>
-                </li>
-                {% if not current_user.is_authenticated %}
-                <li role="presentation"><a href="/login">Sign In</a>
-                    {% else %}
-                <li role="presentation"><a href="/logout">Sign Out</a>
-                    {% endif %}
-                </li>
-                <li role="presentation"><a href="/signup">Sign Up</a>
-                </li>
-            </ul>
-        </nav>
-        <h3 class="text-muted">
-            <i>e-dot &#8212; drop the com.</i>
-        </h3>
-    </div>
-</div>
+{% include 'navbar.html' %}
 
 <div class="container">
-    <div class="content">
-        {%if message and status%}
-        <div class="alert alert-success fade in">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Success!</strong> {{message}}
-        </div>
-        {%elif message and not status%}
-        <div class="alert alert-danger fade in">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Error!</strong> {{message}}
-        </div>
-        {%endif%}
-        <center>
-            <form id="manage" action="/login" method="POST">
-                <fieldset>
-                    <legend>Sign in</legend>
-                    <ol>
-                        <li>
-                            <label for=emailtext>Email:</label>
-                            <input id=emailtext name=emailtext type=text placeholder="example@domain.com" required
-                                   autofocus>
-                        </li>
-                        <li>
-                            <label for=pwtext>Password:</label>
-                            <input id=pwtext name=pwtext type=password required>
-                        </li>
-                    </ol>
-                </fieldset>
-                <fieldset>
-                    <button type=submit class="btn btn-primary btn-file">Sign In</button>
-                </fieldset>
-            </form>
-        </center>
-    </div>
-    <footer class="footer">
-        <center>
-            <p>
-                This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a> and
-                <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
-            </p>
-        </center>
-    </footer>
+	<div class="content">
+		{%if message and status%}
+		<div class="alert alert-success fade in">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Success!</strong> {{message}}
+		</div>
+		{%elif message and not status%}
+		<div class="alert alert-danger fade in">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Error!</strong> {{message}}
+		</div>
+		{%endif%}
+		<center>
+			<form id="manage" action="/login" method="POST">
+				<fieldset>
+					<legend>Sign in</legend>
+					<ol>
+						<li>
+							<label for=emailtext>Email:</label>
+							<input id=emailtext name=emailtext type=text placeholder="example@domain.com" required
+								   autofocus>
+						</li>
+						<li>
+							<label for=pwtext>Password:</label>
+							<input id=pwtext name=pwtext type=password required>
+						</li>
+					</ol>
+				</fieldset>
+				<fieldset>
+					<button type=submit class="btn btn-primary btn-file">Sign In</button>
+				</fieldset>
+			</form>
+		</center>
+	</div>
+{% include 'footer.html' %}
 </div>
 </body>
 </html>

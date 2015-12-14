@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request, g
 from flask.ext.login import LoginManager, UserMixin, current_user
 from config import config
+from flask.ext.navigation import Navigation
 
 #for user session management
 from user import  User
@@ -26,6 +27,10 @@ import ssl
 # Initiate flask 'app'
 app = Flask(__name__)
 app.secret_key = config['HOSTKEY']
+app.config['DESCSTR'] = "e-dot &#8212; drop the com." if not\
+		'DESCSTR' in config else config['DESCSTR']
+app.config['JUMBOSTR'] = "e-dot Web Store" if not\
+		'JUMBOSTR' in config else config['JUMBOSTR']
 
 ##Register Blueprints Here
 app.register_blueprint(login_page)
@@ -51,6 +56,16 @@ def load_user(userid):
 def connect_to_database_mysql():
 	return MySQLdb.connect(host=config['HOST'], port=config['PORT'],\
 	user=config['USER'], passwd=config['PASSWD'], db=config['SQLDB'], charset=config['CHARSET'])
+
+#setup navbar
+nav = Navigation(app)
+nav.Bar('top', [nav.Item('Basket','basket_page.show_basket'),
+		nav.Item('Home', 'main'),
+		nav.Item('Catalogue', 'catalogue_page.show_catalogue_index'),
+		nav.Item('Account','account_page.show_account'),
+		nav.Item('Log In','login_page.show_login'),
+		nav.Item('Log Out','login_page.show_logout'),
+		nav.Item('Register', 'signup_page.show_signup')])
 
 DBFUNC = connect_to_database_mysql
 
@@ -79,6 +94,7 @@ def main():
 	numbasket = prods_in_basket(current_user.get_id())
 	return render_template("index.html", numbasket=numbasket)
 
+#error page handlers
 @app.errorhandler(401)
 def unauthorized(e):
 	return render_template("/login.html", status = False, message = "You must be logged in to do that.")

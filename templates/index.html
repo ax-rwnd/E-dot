@@ -13,42 +13,8 @@
 </head>
 
 <body>
-<div class="header-cont">
-    <div class="header">
-        <nav>
-            <ul class="nav nav-pills pull-right">
-                {% if current_user.is_authenticated %}
-                <li role="presentation"><a href="/basket"><img src="/static/basket.png"/>&nbsp <span
-                        class="badge">{{current_user.numbasket}}</span></a>
-                </li>
-                {% endif %}
-                <li role="presentation" class="active"><a href="/">Home</a>
-                </li>
-                <li role="presentation"><a href="/catalogue">Catalogue</a>
-                </li>
-                {% if current_user.is_authenticated %}
-                <li role="presentation"><a href="/account"><span
-                        class="glyphicon glyphicon-user"></span> &nbsp <span class="badge">{{current_user.name}}</span></a>
-                </li>
-                {%endif%}
-                {% if not current_user.is_authenticated %}
-                <li role="presentation"><a href="/login">Sign In</a>
-                    {% else %}
-                <li role="presentation"><a href="/logout">Sign Out</a>
-                    {% endif %}
-                </li>
-                {% if not current_user.is_authenticated %}
-                <li role="presentation"><a href="signup">Sign Up</a>
-                </li>
-                {%endif%}
-            </ul>
-        </nav>
-        <h3 class="text-muted">
-            <i>e-dot &#8212; drop the com.</i>
-        </h3>
-    </div>
-</div>
 
+{% include 'navbar.html' %}
 
 <div class="container">
 
@@ -62,7 +28,7 @@
         {%endif%}
         <div class="bg"></div>
         <div class="jumbotron">
-            <h1>e-dot Web Store</h1>
+            <h1>{{config['JUMBOSTR']|safe}}</h1>
 
             <p class="lead"></p>
             {% if not current_user.is_authenticated %}
@@ -103,15 +69,7 @@
             </div>
         </div>
 
-        <footer class="footer">
-            <center>
-                <p>
-                    This webstore is running <a href="https://github.com/ax-rwnd/E-dot/blob/master/LICENSE">e-dot</a>
-                    and
-                    <a href="http://flask.pocoo.org/docs/0.10/license/">Flask</a> | <a href="/cms">Administration</a>.
-                </p>
-            </center>
-        </footer>
+	{% include 'footer.html' %}
 
     </div>
 </div>
