@@ -10,7 +10,7 @@ def read_order_details(uid):
 	db = getattr(g, 'db', None)
 
 
-	query = "select tbl_order.id, tbl_order.date from tbl_order where tbl_order.customer_id = %s ORDER BY " \
+	query = "select tbl_order.id, tbl_order.date, tbl_order.order_status from tbl_order where tbl_order.customer_id = %s ORDER BY " \
 			"tbl_order.id DESC;"
 
 	with db as cursor:
@@ -52,7 +52,8 @@ def read_order_details_by_id(uid, orderid):
 	db = getattr(g, 'db', None)
 
 	query = "select tbl_order.date, \
-		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount) from tbl_orderlines inner join\
+		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount), tbl_order.order_status from " \
+			"tbl_orderlines inner join\
 		tbl_order on tbl_orderlines.order_id=tbl_order.id\
 		where tbl_order.customer_id = %s and tbl_order.id = %s;"
 

@@ -176,6 +176,8 @@
             <div class="order_info">
             <label for="order_id">Order id:</label>
             <p id="order_id">{{order_id}}</p>
+            <label for="order_status">Status:</label>
+            <p id="order_status">{{order_row[3]}}</p>
             <label for="placed">Placed:</label>
             <p id="placed">{{order_row[0]}}</p>
 
@@ -233,7 +235,7 @@
                     <td><a href="/account/Orders/{{item[0]}}">View</a></td>
                     <td>{{item[0]}}</td>
                     <td>{{item[1]}}</td>
-                    <td>Verified</td>
+                    <td>{{item[2]}}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
