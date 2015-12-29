@@ -18,6 +18,8 @@ def show_cms():
 	perimeter_check("CMSINDEX")
 	return render_template("cms.html", editname="Content Management")
 
+
+
 # render catalogue with product
 @cms_page.route("/cms/<editname>")
 @login_required
@@ -27,7 +29,8 @@ def show_cms_editor(editname):
 	if editname == "Browse Orders":
 		perimeter_check("CMSCATEGORY")
 		order_row = read_orders()
-		return render_template("cms.html", editname=editname, order_row=order_row)
+		order_status = read_order_status()
+		return render_template("cms.html", editname=editname, order_row=order_row, order_status=order_status)
 	elif editname == "Add Category":
 		perimeter_check("CMSCATEGORY")
 		return render_template("cms.html", editname=editname)
@@ -57,12 +60,24 @@ def show_cms_editor(editname):
 	else:
 		return render_template("cms.html", editname="Content Management")
 
+
+def read_order_status():
+	db = getattr(g, 'db', None)
+	query = "select * from tbl_order_status;"
+	with db as cursor:
+		cursor.execute(query)
+		res = []
+		for s in cursor.fetchall():
+			res.append(s[0])
+		return res
+
 def read_order_detail(orderid):
 	db = getattr(g, 'db', None)
 
 
 	query = "select tbl_order.id, tbl_order.date, \
-		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount) from tbl_orderlines inner join\
+		sum(tbl_orderlines.amount), sum(tbl_orderlines.price * tbl_orderlines.amount), tbl_order.order_status from " \
+			"tbl_orderlines inner join\
 		tbl_order on tbl_orderlines.order_id=tbl_order.id\
 		where tbl_order.id = %s;"
 
@@ -74,7 +89,7 @@ def read_order_detail(orderid):
 
 def read_orders():
 	db = getattr(g, 'db', None)
-	query = "select tbl_order.id, tbl_order.date from tbl_order order by tbl_order.id desc;"
+	query = "select tbl_order.id, tbl_order.date, tbl_order.order_status from tbl_order order by tbl_order.id desc;"
 	with db as cursor:
 		cursor.execute(query)
 		return cursor.fetchall()
@@ -110,9 +125,42 @@ def show_order(orderid):
 	order_detail = read_order_detail(orderid)
 	product_rows = read_product_rows(orderid)
 	user_details = read_user_details(orderid)
+	order_status = read_order_status()
 	perimeter_check("CMSCATEGORY")
 	return render_template("cms.html", editname="Browse Orders", order_detail=order_detail,
-						   product_rows=product_rows, user_details=user_details)
+						   product_rows=product_rows, user_details=user_details, order_status=order_status)
+
+@cms_page.route("/cms/Browse Orders/<orderid>", methods=['POST'])
+@login_required
+def update_status(orderid):
+	perimeter_check("CMSCATEGORY")
+	status = request.form['status']
+
+	db = getattr(g, 'db', None)
+	query = "update tbl_order set tbl_order.order_status = %s where tbl_order.id = %s;"
+	with db as cursor:
+		cursor.execute(query, (status,orderid))
+		db.commit()
+
+	return show_order(orderid)
+
+@cms_page.route("/cms/Browse Orders", methods=["POST"])
+@login_required
+def update_status_2():
+	perimeter_check("CMSCATEGORY")
+
+	orderid = request.form['orderid']
+	status = request.form['status']
+
+	db = getattr(g, 'db', None)
+	query = "update tbl_order set tbl_order.order_status = %s where tbl_order.id = %s;"
+	with db as cursor:
+		cursor.execute(query, (status,orderid))
+		db.commit()
+
+	order_row = read_orders()
+	order_status = read_order_status()
+	return render_template("cms.html", editname="Browse Orders", order_row=order_row, order_status=order_status)
 
 @cms_page.route("/cms/Add Category", methods=['POST'])
 @login_required
@@ -127,7 +175,7 @@ def add_category():
 		return render_template("cms.html", editname="Add Category", ins="error")
 
 	db = getattr(g, 'db', None)
-	query = "insert into tbl_category (name) VALUES (%s);";
+	query = "insert into tbl_category (name) VALUES (%s);"
 	with db as cursor:
 		cursor.execute(query, (catname,))
 		db.commit()

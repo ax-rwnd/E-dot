@@ -12,6 +12,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <script>
+        function setChanged() {
+            document.getElementById("updater").style.color = "red";
+        }
+    </script>
+    <script>
 	  $(document).on('change', '.btn-file :file', function() {
 	  var input = $(this),
 		  numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -76,13 +81,25 @@
         {% if order_detail %}
         <div class="order_box">
             <br>
-            <div
-                    style="float:left; margin-left:15px;"><a href="/cms/Browse Orders" class="btn btn-primary">Back
-            </a></div>
+            <div style="float:left; margin-left:15px;"><a href="/cms/Browse Orders" class="btn btn-primary">Back</a>
+            </div>
             <div><center><legend>Order Information</legend></center></div>
             <div class="order_info">
                 <label for="order_id">Order id:</label>
                 <p id="order_id">{{order_detail[0]}}</p>
+                <label for="status">Status:</label>
+                <p id="status">
+                    <form action="/cms/Browse Orders/{{order_detail[0]}}" method="POST">
+                        <select name="status">
+                            <option selected="true" style="display:none;">{{order_detail[4]}}</option>
+                            {%for s in order_status%}
+                            <option value="{{s}}">{{s}}</option>
+                            {%endfor%}
+                        </select>
+                        &nbsp
+                        <button class="linkButton"type="submit">Update</button>
+                    </form>
+                </p>
                 <label for="placed">Placed:</label>
                 <p id="placed">{{order_detail[1]}}</p>
                 <label for="order_table">Customer Information:</label>
@@ -153,6 +170,7 @@
                     <th>Order ID</th>
                     <th>Date</th>
                     <th>Status</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -161,7 +179,21 @@
                     <td><a href="/cms/Browse Orders/{{item[0]}}">View</a></td>
                     <td>{{item[0]}}</td>
                     <td>{{item[1]}}</td>
-                    <td>Verified</td>
+
+                        <form action="/cms/Browse Orders" method="POST">
+                            <td>
+                            <input type="hidden" name="orderid" value="{{item[0]}}">
+                            <select name="status" onchange="setChanged()">
+                            <option selected="true" style="display:none;">{{item[2]}}</option>
+                            {%for s in order_status%}
+                                <option value="{{s}}">{{s}}</option>
+                            {%endfor%}
+                            </select>
+                    </td>
+                    <td><button class="linkButton"type="submit">Update</button></td>
+                        </form>
+
+
                 </tr>
                 {% endfor %}
                 </tbody>
