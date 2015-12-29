@@ -21,9 +21,10 @@ DBFUNC = connect_to_database_mysql
 
 tbl_user = "tbl_user"
 tbl_product = "tbl_product"
-tbl_orderlines = "tbl_orderlines"
 tbl_basketlines = "tbl_basketlines"
 tbl_order = "tbl_order"
+tbl_orderlines = "tbl_orderlines"
+tbl_order_status = "tbl_order_status"
 tbl_category = "tbl_category"
 tbl_stock = "tbl_stock"
 tbl_rating = "tbl_rating"
@@ -39,6 +40,7 @@ def main():
 	create_user_tbl()
 	create_category_tbl()
 	create_product_tbl()
+	create_order_status_tbl()
 	create_order_tbl()
 	create_orderlines_tbl()
 	create_basketlines_tbl()
@@ -137,7 +139,8 @@ def create_product_tbl():
 	cursor = db.cursor()
 	print "Creating table", tbl_product
 	query = "create table " + tbl_product + " (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), " \
-											"description VARCHAR(256), image_url VARCHAR(128), price DECIMAL(6,2), cat_id INT(11) UNSIGNED);"
+											"description VARCHAR(512), image_url VARCHAR(128), price DECIMAL(11,2), " \
+											"cat_id INT(11) UNSIGNED);"
 	cursor.execute(query)
 	
 	query = "alter table " + tbl_product+" add CONSTRAINT fk_cat FOREIGN KEY (cat_id) REFERENCES "+tbl_category+"(id) ON DELETE CASCADE;"
@@ -151,7 +154,7 @@ def create_orderlines_tbl():
 	cursor = db.cursor()
 	print "Creating table", tbl_orderlines
 	query = "create table "+ tbl_orderlines +" (prod_id INT(11) UNSIGNED, order_id INT(11) UNSIGNED, amount INT(11) " \
-											 "UNSIGNED, price DECIMAL(6,2));"
+											 "UNSIGNED, price DECIMAL(11,2));"
 	cursor.execute(query)
 	
 #	query = "alter table "+tbl_orderlines+" add CONSTRAINT fk_prod FOREIGN KEY (prod_id) REFERENCES "+tbl_product+"(" \
@@ -185,10 +188,30 @@ def create_order_tbl():
 	cursor = db.cursor()
 	print "Creating table", tbl_order
 	query = "create table "+ tbl_order+" (id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, customer_id INT(11) UNSIGNED NOT " \
-					  "NULL, date DATE);"
+					  "NULL, date DATE, order_status VARCHAR(32) DEFAULT 'Verified');"
 	cursor.execute(query)
 	query = "alter table "+ tbl_order+" add CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES "+tbl_user+"(id);"
 	cursor.execute(query)
+
+	query = "alter table " + tbl_order +" add CONSTRAINT fk_status FOREIGN KEY (order_status) REFERENCES " \
+											   ""+tbl_order_status+"(status);"
+	cursor.execute(query)
+
+	db.commit()
+	db.close()
+
+def create_order_status_tbl():
+	db = DBFUNC(config["SQLDB"])
+	cursor = db.cursor()
+	print "Creating table", tbl_order_status
+	query = "create table " + tbl_order_status + "(status VARCHAR(32) PRIMARY KEY NOT NULL);"
+	cursor.execute(query)
+
+	status = ["Verified","Sent", "Debased", "In Progress"]
+
+	for s in status:
+		query = "insert into " + tbl_order_status + " (status) values (%s);"
+		cursor.execute(query, (s,))
 
 	db.commit()
 	db.close()
