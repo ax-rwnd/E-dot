@@ -5,14 +5,14 @@ config = dict(
 	HOSTDBG=True,
 	HOSTKEY="SUPER-SECRET-SIGNING-KEY-:o)",
 
-	DEFAULT_IMAGE = '/static/img/default.png',
-	UPLOAD_FOLDER = '/static/img',
+	DEFAULT_IMAGE = '/static/img/default.png/',
+	UPLOAD_FOLDER = '/static/img/',
 	ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif']),
 
 	#mysql
-	HOST='',
+	HOST='localhost',
 	PORT=3306,
-	USER='',
+	USER='root',
 	PASSWD='',
 	SQLDB='db_edot',
 	CHARSET='utf8',
