@@ -5,7 +5,12 @@ from flask.ext.login import LoginManager, UserMixin, current_user
 from config import config
 from flask.ext.navigation import Navigation
 
-from flask_limiter import Limiter
+#makes limiting optional
+try:
+	from flask_limiter import Limiter
+	using_limit = True
+except ImportError:
+	using_limit = False
 
 #for user session management
 from user import  User
@@ -35,7 +40,8 @@ app.config['JUMBOSTR'] = "e-dot Web Store" if not\
 		'JUMBOSTR' in config else config['JUMBOSTR']
 
 #Sets up rate limiting
-limiter = Limiter(app, global_limits=["9/minute"])
+if using_limit:
+	limiter = Limiter(app, global_limits=config['RATE_LIMIT'])
 
 ##Register Blueprints Here
 app.register_blueprint(login_page)
