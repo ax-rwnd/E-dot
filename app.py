@@ -5,6 +5,8 @@ from flask.ext.login import LoginManager, UserMixin, current_user
 from config import config
 from flask.ext.navigation import Navigation
 
+from flask_limiter import Limiter
+
 #for user session management
 from user import  User
 
@@ -31,6 +33,9 @@ app.config['DESCSTR'] = "e-dot &#8212; drop the com." if not\
 		'DESCSTR' in config else config['DESCSTR']
 app.config['JUMBOSTR'] = "e-dot Web Store" if not\
 		'JUMBOSTR' in config else config['JUMBOSTR']
+
+#Sets up rate limiting
+limiter = Limiter(app, global_limits=["9/minute"])
 
 ##Register Blueprints Here
 app.register_blueprint(login_page)
@@ -104,8 +109,12 @@ def no_exist(e):
 	return render_template("error.html", status = False, message = "That page doesn't exist.")
 
 @app.errorhandler(403)
-def no_exist(e):
+def not_allowed(e):
 	return render_template("error.html", status = False, message = "You are not allowed to visit that page.")
+
+@app.errorhandler(429)
+def rate_limited(e):
+	return "<h1>Rate Limited</h1>You may not load pages that fast, slow down, please."
 
 #setup ssl context
 def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
