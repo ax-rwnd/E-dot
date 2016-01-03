@@ -131,6 +131,7 @@ def ready_ssl_context(cert='misc/edot.crt', key='misc/edot.key'):
 #start server
 if __name__ == "__main__":
 	context = None if not config['USE_SSL'] else ready_ssl_context()
+	assert not DBFUNC() == None
 	app.run(host=config['HOSTIP'], port=config['HOSTPORT'],\
 		debug=config['HOSTDBG'], ssl_context=context)
 		
