@@ -1,12 +1,6 @@
 config = dict(
-	#server
-	HOSTIP='localhost',
-	HOSTPORT=5000,
-	HOSTDBG=True,
-	HOSTKEY="SUPER-SECRET-SIGNING-KEY-:o)",
-
 	#mysql
-	HOST='',
+	HOST='localhost',
 	PORT=3306,
 	USER='',
 	PASSWD='',

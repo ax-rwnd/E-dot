@@ -5,6 +5,12 @@ from basket_page import prods_in_basket
 
 class User (UserMixin):
 	def __init__(self, uid=None):
+		#set user defaults
+		self.email = None
+		self.name = None 
+		self.uid = None
+		self.numbasket = None
+
 		#load from db if uid specified!
 		if not uid==None and not uid==0:
 			db = getattr(g, 'db', None)
@@ -12,8 +18,10 @@ class User (UserMixin):
 			with db as cursor:
 				data = (uid,)
 				query = "select (name) from tbl_user where id = (%s);"
-				cursor.execute(query, data)
-				name = cursor.fetchone()[0]
+				if cursor.execute(query, data) <= 0:
+					return None
+				else:
+					name = cursor.fetchone()[0]
 
 			with db as cursor:
 				query = "select (email) from tbl_user where id = (%s);"
